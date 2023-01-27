@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rest_framework',
     'corsheaders',
-    'api.ads'
+    'api.ads',
+    'api.vehical'
 ]
 
 MIDDLEWARE = [

@@ -5,4 +5,5 @@ from .models import Ads
 class AdSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Ads
-        fields = ['AdName', 'StartDate', 'EndDate', 'TotalCount', 'No_of_Days', 'EDC', 'EMC']
+        fields = ['id', 'AdName', 'AdNameTamil', 'StartDate', 'EndDate', 'TotalCount', 'No_of_Days', 'ECPD', 'ECPM',
+                  'BusCount', 'District']
