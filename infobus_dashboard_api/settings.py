@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api.ads',
-    'api.vehical'
+    'api.vehical',
+    'api.District'
 ]
 
 MIDDLEWARE = [
