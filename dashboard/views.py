@@ -5,4 +5,4 @@ from api.ads.models import Ads
 
 def listads(request):
     ads = Ads.objects.all()
-    return render(request, 'quiz/quiz_level.html', {'ads': ads})
+    return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
