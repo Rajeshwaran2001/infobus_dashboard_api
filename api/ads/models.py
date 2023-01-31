@@ -1,4 +1,5 @@
 from django.db import models
+import datetime as dt
 
 
 # Create your models here.
@@ -16,4 +17,11 @@ class Ads(models.Model):
 
     class Meta:
         verbose_name_plural = "Ads"
+
+    @property
+    def diff(self):
+        return (self.EndDate - self.StartDate).days
+
+    def current(self):
+        return (self.EndDate - dt.date.today()).days
 
