@@ -1,0 +1,669 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+
+          <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+
+            <li class="nav-item d-flex align-items-center">
+              <a href="" class="nav-link text-body font-weight-bold px-0">
+                <i class="fa fa-user me-sm-1"></i>
+                <span class="d-sm-inline d-none">Profile</span>
+              </a>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10" style="font-size:35px;">mode_of_travel</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-xl mb-0 text-capitalize" style="color: black;">Total Availalbe Ad slot</p>
+                <h4 class="mb-0">5000</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <p class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-xl mb-0 text-capitalize" style="color: black;">Total Filled Ad slot</p>
+                <h4 class="mb-0">2,300</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <p class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-xl mb-0 text-capitalize" style="color: black;">Total Free Ad slot</p>
+                <h4 class="mb-0">3,462</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <p class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">weekend</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-xl mb-0 text-capitalize" style="color: black;">Total Filled slots in %</p>
+                <h4 class="mb-0">45%</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              <p class="mb-0"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+
+      </div>
+      <div class="row mb-4">
+        <div class="col-lg-10 col-md-6 mb-md-0 mb-4">
+          <div class="card scroll">
+            <div class="card-header pb-0">
+              <div class="row">
+                <h4 class="text-center"> Ads List</h6>
+              </div>
+            </div>
+            <div class="card-body px-4 pb-2">
+              <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-dark text-bold" style="font-size: 16px;">Id</th>
+                      <th class="text-uppercase text-dark ps-2 text-bold" style="font-size: 16px;">Ad Name</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">status</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">Total Count</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">Recoded Count</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">Completion</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">scheduled on</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">Ends By</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">no Day</th>
+                      <th class="text-center text-uppercase text-dark" style="font-size: 16px;">Days Left</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">1</h4>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">TCS</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h4 class="mb-0 text-dark" style="font-size: 16px;">Up</h4>
+                          </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 25,000 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="font-weight-bold text-dark" style="font-size: 16px;"> 15,000 </span>
+                      </td>
+                      <td class="align-middle">
+                        <div class="progress-wrapper w-75 mx-auto">
+                          <div class="progress-info">
+                            <div class="progress-percentage">
+                              <span class="text-xl text-dark font-weight-bold" style="font-size: 16px;">60%</span>
+                            </div>
+                          </div>
+                          <div class="progress">
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 02/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 29/12/22 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 27 </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold"  style="font-size: 16px;"> 4 </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <div class="card h-100">
+            <div class="card-header pb-0">
+              <h6 class="text-center">Ads Ending Soon</h6>
+
+            </div>
+            <div class="card-body p-3 ">
+              <div class="timeline timeline-one-side ">
+                <div class="timeline-block  mb-3">
+                  <span class="timeline-step ">
+                    <i class="material-icons text-danger text-gradient">notifications</i>
+                  </span>
+                  <div class="timeline-content ">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">A1 Backery</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 JAN 7:20 PM</p>
+                  </div>
+                </div>
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="material-icons text-danger text-gradient">notifications</i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">Devaki</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 JAN 7:20 PM</p>
+                  </div>
+                </div>
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="material-icons text-warning text-gradient">notifications</i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">TCS</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">28 JAN 7:20 PM</p>
+                  </div>
+                </div>
+                <div class="timeline-block mb-3">
+                  <span class="timeline-step">
+                    <i class="material-icons text-warning text-gradient">notifications</i>
+                  </span>
+                  <div class="timeline-content">
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">Devados</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">28 JAN 7:20 PM</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+{% endblock %}

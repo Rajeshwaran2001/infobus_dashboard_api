@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'api.ads',
     'api.vehical',
-    'api.District'
+    'api.District',
+    'dashboard.apps.DashboardConfig'
 ]
 
 MIDDLEWARE = [
