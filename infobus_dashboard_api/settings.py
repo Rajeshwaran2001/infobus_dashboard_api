@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'api.ads',
     'api.vehical',
     'api.District',
-    'dashboard.apps.DashboardConfig'
+    'dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +89,7 @@ DATABASES = {
     }
 }
 
+LOGIN_REDIRECT_URL='/afterlogin'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
