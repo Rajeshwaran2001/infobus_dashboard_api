@@ -1,4 +1,5 @@
 import requests
+from django.db.models import Sum
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from dashboard.forms import ServiceUserForm
@@ -13,7 +14,12 @@ import json
 
 def listads(request):
     ads = Ads.objects.all()
-
+    for ad in ads:
+        ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
+        if ad.TotalCount:
+            ad.percentage = (ad.myads_count / ad.TotalCount) * 100
+        else:
+            ad.percentage = None
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
 
 
