@@ -1,7 +1,11 @@
+import requests
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from dashboard.forms import ServiceUserForm
 from django.contrib.auth.models import Group
+from .models import MyAds
+from django.utils import timezone
+import json
 
 
 # Create your views here.
@@ -9,6 +13,30 @@ from django.contrib.auth.models import Group
 
 def listads(request):
     ads = Ads.objects.all()
+    for ad in ads:  # Loop ads
+        # Prepare the data
+        params = {
+            'name': ad.AdName,
+            'from': ad.StartDate.strftime("%Y-%m-%d"),
+            'to': ad.EndDate.strftime("%Y-%m-%d"),
+        }
+        url = 'https://track.siliconharvest.net/get_adcount.php'  # Request url
+        response = requests.get(url, params=params)
+        data = response.json()
+        print(data)  # For Testing Purpose
+        for item in data:
+            imei = item.get('imei')
+            AdName = ad.AdName
+            for key, value in item.items():
+                if key == 'imei':
+                    continue
+                day = key
+                count = value
+                MyAds.objects.create(adname=AdName, imei=imei, Count=count, date_time=day)
+        status_code = response.status_code
+
+        print(len(data))
+
 
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
 
