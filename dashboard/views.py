@@ -3,6 +3,7 @@ from api.ads.models import Ads
 from dashboard.forms import ServiceUserForm
 from django.contrib.auth.models import Group
 
+
 # Create your views here.
 
 
@@ -17,7 +18,7 @@ def service_engineer_signup_view(request):
     mydict = {'userForm': userForm}
     if request.method == 'POST':
         userForm = ServiceUserForm(request.POST)
-        if userForm.is_valid() :
+        if userForm.is_valid():
             user = userForm.save()
             user.set_password(user.password)
             user.save()

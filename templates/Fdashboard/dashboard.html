@@ -142,13 +142,13 @@
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <h6 class="mb-0 text-sm">{{ a.id }}</h6>
+                            <h6 class="mb-0 text-sm">{{ forloop.counter }}</h6>
                           </div>
 
                         </div>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-xs text-dark font-weight-bold"> {{ a.id }} </span>
+                        <span class="text-xs text-dark font-weight-bold"> {{ a.AdName }}  </span>
                       </td>
                       <td class="align-middle text-center text-sm">
                         <span class="text-xs text-dark font-weight-bold"> up </span>
@@ -188,7 +188,7 @@
         <div class="col-lg-2 col-md-6">
           <div class="card h-100">
             <div class="card-header text-center pb-0">
-              <h5>Ads Ending Soon</h5>
+              <h6>Ads Ending Soon</h6>
             </div>
             <div class="card-body p-3">
               <div class="timeline timeline-one-side">
