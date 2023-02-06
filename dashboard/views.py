@@ -1,12 +1,12 @@
 import requests
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from dashboard.forms import ServiceUserForm
 from django.contrib.auth.models import Group
 from .models import MyAds
-from django.utils import timezone
-import json
+import datetime as dt
 
 
 # Create your views here.
@@ -14,13 +14,21 @@ import json
 
 def listads(request):
     ads = Ads.objects.all()
+    ten_days = []
+    five_days = []
     for ad in ads:
+        if ad.current <= 10 and ad.current >= 5:
+            ten_days.append(ad)
+            print(ten_days)
+        elif ad.current <= 5:
+            five_days.append(ad)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         if ad.TotalCount:
             ad.percentage = (ad.myads_count / ad.TotalCount) * 100
         else:
             ad.percentage = None
-    return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
+    print(ten_days)
+    return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
 
 def service_engineer_signup_view(request):

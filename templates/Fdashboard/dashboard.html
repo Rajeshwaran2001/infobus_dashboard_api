@@ -192,51 +192,30 @@
             </div>
             <div class="card-body p-3">
               <div class="timeline timeline-one-side">
+                  {% for a in five_days %}
                 <div class="timeline-block mb-3">
                   <span class="timeline-step">
                     <i class="material-icons text-danger text-gradient">notifications</i>
                   </span>
                   <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">A1 Backery</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ a.AdName }}</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ a.EndDate}}</p>
                   </div>
                 </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-danger text-gradient">notifications</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Devaki</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
-                  </div>
-                </div>
+                  {% endfor %}
+                {% for ad in ten_days %}
                 <div class="timeline-block mb-3">
                   <span class="timeline-step">
                     <i class="material-icons text-warning text-gradient">notifications</i>
                   </span>
                   <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">TCS</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
+                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{ ad.AdName }}</h6>
+                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ ad.EndDate}}</p>
                   </div>
                 </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-warning text-gradient">notifications</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">TCS</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-warning text-gradient">notifications</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">TCS</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                  </div>
-                </div>
+              {% endfor %}
+
+
 
               </div>
             </div>

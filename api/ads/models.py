@@ -22,6 +22,6 @@ class Ads(models.Model):
     def diff(self):
         return (self.EndDate - self.StartDate).days
 
+    @property
     def current(self):
         return (self.EndDate - dt.date.today()).days
-
