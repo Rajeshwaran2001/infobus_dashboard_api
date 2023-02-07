@@ -6,9 +6,10 @@ from api.ads.models import Ads
 from dashboard.forms import ServiceUserForm
 from django.contrib.auth.models import Group
 from .models import MyAds
-import datetime as dt
+from json.decoder import JSONDecodeError
+import logging
 
-
+logger = logging.getLogger(__name__)
 # Create your views here.
 
 
@@ -49,6 +50,7 @@ def service_engineer_signup_view(request):
 def getupdate(request):
     ads = Ads.objects.all()
     for ad in ads:  # Loop ads
+        print(ad.AdName)
         # Prepare the data
         params = {
             'name': ad.AdName,
@@ -57,9 +59,24 @@ def getupdate(request):
         }
         url = 'https://track.siliconharvest.net/get_adcount.php'  # Request url
         response = requests.get(url, params=params)
+        if response.status_code != 200:
+            # Log the error message for debugging purposes
+            print(f"Error response received with status code {response.status_code}")
+            continue
+        try:
+            data = response.json()
+        except JSONDecodeError:
+            # Log the error message for debugging purposes
+            print(f"Error decoding JSON: {response.text}")
+            continue
         data = response.json()
+        if data is None:   # To handle if the data is not present
+            print("API returned None")
+            continue
+
         print(data)  # For Testing Purpose
-        for item in data:
+
+        for item in data:   # Loop to store data in db
             imei = item.get('imei')
             AdName = ad.AdName
             for key, value in item.items():
@@ -67,8 +84,9 @@ def getupdate(request):
                     continue
                 day = key
                 count = value
-                MyAds.objects.create(adname=AdName, imei=imei, Count=count, date_time=day)
-        status_code = response.status_code
-
+                try:
+                    obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, Count=count, date_time=day)
+                except Exception as e:
+                    logger.error("Error creating or updating MyAds object: %s", e)
         print(len(data))
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
