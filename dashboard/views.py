@@ -10,6 +10,8 @@ from json.decoder import JSONDecodeError
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 # Create your views here.
 
 
@@ -24,10 +26,16 @@ def listads(request):
         elif ad.current <= 5:
             five_days.append(ad)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
-        if ad.TotalCount:
-            ad.percentage = (ad.myads_count / ad.TotalCount) * 100
+        ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
+
+        if ad.myads_count is not None:  # To handle the total count is 0
+            if ad.TotalCount:
+                print(ad.AdName, ad.myads_count, ad.TotalCount)
+                ad.percentage = (ad.myads_count / ad.TotalCount) * 100
+            else:
+                ad.percentage = 0
         else:
-            ad.percentage = None
+            ad.percentage = 0
     print(ten_days)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
@@ -70,13 +78,13 @@ def getupdate(request):
             print(f"Error decoding JSON: {response.text}")
             continue
         data = response.json()
-        if data is None:   # To handle if the data is not present
+        if data is None:  # To handle if the data is not present
             print("API returned None")
             continue
 
         print(data)  # For Testing Purpose
 
-        for item in data:   # Loop to store data in db
+        for item in data:  # Loop to store data in db
             imei = item.get('imei')
             AdName = ad.AdName
             for key, value in item.items():
