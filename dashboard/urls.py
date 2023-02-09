@@ -7,7 +7,8 @@ app_name = "FDashboard"
 
 urlpatterns = [
     path('dash', views.listads, name='dashboard'),
+    path('ad_detail/<int:ad_id>', views.view_ad, name='ad_detail'),
     path('', LoginView.as_view(template_name='Fdashboard/login.html'), name='Flogin'),
-    path('update', views.getupdate, name ='update'),
+    path('update', views.getupdate, name='update'),
     path('Fsignup', views.service_engineer_signup_view, name='Fsignup'),
 ]

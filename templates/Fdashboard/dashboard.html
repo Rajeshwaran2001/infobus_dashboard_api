@@ -18,7 +18,7 @@
             <li class="nav-item d-flex align-items-center">
               <a href="" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">Profile</span>
+                <span class="d-sm-inline d-none">{{ user.username }}</span>
               </a>
             </li>
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
@@ -147,8 +147,8 @@
 
                         </div>
                       </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs text-dark font-weight-bold"> {{ a.AdName }}  </span>
+                      <td class="d-flex px-2 py-1">
+                       <a class="nav-link text-body font-weight-bold px-0" href="{% url 'FDashboard:ad_detail' a.id %}"><span class="text-xs text-dark font-weight-bold"> {{ a.AdName }}  </span></a>
                       </td>
                       <td class="align-middle text-center text-sm">
                         <span class="text-xs text-dark font-weight-bold"> up </span>
