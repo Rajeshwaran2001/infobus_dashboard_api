@@ -13,7 +13,7 @@ class MyAds(models.Model):
 
 class Franchise(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to='profile_pic/Franchise/', null=True, blank=True)
+    photo = models.ImageField(upload_to='Franchise/', null=True, blank=True)
     address = models.CharField(max_length=50, null=False, blank=False)
     mobile_no_1 = models.CharField(max_length=10, null=False, blank=False)
     mobile_no_2 = models.CharField(max_length=10, null=True, blank=True)

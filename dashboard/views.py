@@ -70,9 +70,10 @@ def Franchise_signup_view(request):
     userForm = FranchiseForm()
     FranchiseUser = FranchiseUserForm()
     dist = District.objects.all().filter(is_Active=True)
-    mydict = {'userForm': userForm, 'FForm': FranchiseUser, 'dist': dist}
+    mydict = {'userForm': userForm, 'FranchiseUser': FranchiseUser, 'dist': dist}
     if request.method == 'POST':
         userForm = FranchiseForm(request.POST)
+        FranchiseUser = FranchiseUserForm(request.POST, request.FILES)
         if userForm.is_valid() and FranchiseUser.is_valid():
             user = userForm.save()
             user.set_password(user.password)
