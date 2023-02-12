@@ -6,5 +6,5 @@ pillow==9.4.0
 pytz==2022.7.1
 sqlparse==0.4.3
 tzdata==2022.7
-requests
-celery
+requests==2.28.2
+celery==5.2.7
