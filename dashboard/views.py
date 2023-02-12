@@ -11,13 +11,14 @@ from .models import MyAds
 from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime as dt
 
-
 logger = logging.getLogger(__name__)
 
 
 # Create your views here.
 def is_patner(user):
     return user.groups.filter(name='Franchise').exists()
+
+
 @login_required()
 @user_passes_test(is_patner)
 def dash(request):
@@ -45,6 +46,7 @@ def dash(request):
     getupdate(request)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
+
 @login_required()
 @user_passes_test(is_patner)
 def view_ad(request, ad_id):
@@ -68,7 +70,7 @@ def Franchise_signup_view(request):
     userForm = FranchiseForm()
     FranchiseUser = FranchiseUserForm()
     dist = District.objects.all().filter(Active=True)
-    mydict = {'userForm': userForm,'FForm': FranchiseUser, 'dist': dist}
+    mydict = {'userForm': userForm, 'FForm': FranchiseUser, 'dist': dist}
     if request.method == 'POST':
         userForm = FranchiseForm(request.POST)
         if userForm.is_valid() and FranchiseUser.is_valid():
@@ -111,7 +113,7 @@ def getupdate(request):
             print("API returned None")
             continue
 
-      #  print(data)  # For Testing Purpose
+        #  print(data)  # For Testing Purpose
 
         for item in data:  # Loop to store data in db
             imei = item.get('imei')
@@ -124,8 +126,8 @@ def getupdate(request):
                 count = value
                 try:
                     obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
-                                                                  defaults={'Count':count})
+                                                                  defaults={'Count': count})
                 except Exception as e:
                     logger.error("Error creating or updating MyAds object: %s", e)
-     #   print(len(data))
+    #   print(len(data))
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
