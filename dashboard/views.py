@@ -8,6 +8,7 @@ from api.ads.models import Ads
 from api.District.models import District
 from dashboard.forms import FranchiseForm, FranchiseUserForm
 from .models import MyAds
+from django.contrib.auth.decorators import login_required, user_passes_test
 import datetime as dt
 
 
@@ -15,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 # Create your views here.
-
-
+def is_patner(user):
+    return user.groups.filter(name='Franchise').exists()
+@login_required()
+@user_passes_test(is_patner)
 def dash(request):
     ads = Ads.objects.all()
     ten_days = []
@@ -42,7 +45,8 @@ def dash(request):
     getupdate(request)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
-
+@login_required()
+@user_passes_test(is_patner)
 def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     myad = MyAds.objects.filter(adname=ad.AdName).values('imei').distinct()

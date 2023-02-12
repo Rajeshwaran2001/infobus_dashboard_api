@@ -14,8 +14,7 @@ def is_office(user):
 def afterlogin_view(request):
     if is_patner(request.user):
         return redirect('FDashboard:dashboard')
-
     elif is_office(request.user):
-        return render(request, 'FDashboard:dashboard')
+        return redirect('FDashboard:dashboard')
     else:
-        return redirect('FDashboard:Flogin')
+        return redirect('Login')

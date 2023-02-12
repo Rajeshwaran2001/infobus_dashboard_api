@@ -88,6 +88,7 @@ DATABASES = {
 }
 
 LOGIN_REDIRECT_URL = '/afterlogin'
+LOGIN_URL = 'Login'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

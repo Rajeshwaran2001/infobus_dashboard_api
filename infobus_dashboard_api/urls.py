@@ -15,12 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from django.contrib.auth.views import LoginView
 from infobus_dashboard_api import views
+
+app_name = "home"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('afterlogin', views.afterlogin_view, name='afterlogin')
+    path('afterlogin', views.afterlogin_view, name='afterlogin'),
+    path('login', LoginView.as_view(template_name='common/login.html'), name='Login'),
 ]
