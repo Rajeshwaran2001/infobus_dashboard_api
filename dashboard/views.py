@@ -80,6 +80,7 @@ def Franchise_signup_view(request):
             user.save()
             Franchise = FranchiseUser.save(commit=False)
             Franchise.user = user
+            Franchise.photo = FranchiseUser.cleaned_data.get('photo')
             Franchise.save()
             my_group = Group.objects.get_or_create(name='Franchise')
             my_group[0].user_set.add(user)
