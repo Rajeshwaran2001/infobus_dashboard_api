@@ -24,21 +24,21 @@ def dash(request):
     for ad in ads:
         if ad.current <= 10 and ad.current >= 5:
             ten_days.append(ad)
-            print(ten_days)
+            # print(ten_days)
         elif ad.current <= 5:
             five_days.append(ad)
+            # print(five_days)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
 
         if ad.myads_count is not None:  # To handle the total count is 0
             if ad.TotalCount:
-                print(ad.AdName, ad.myads_count, ad.TotalCount)
+                # print(ad.AdName, ad.myads_count, ad.TotalCount)
                 ad.percentage = (ad.myads_count / ad.TotalCount) * 100
             else:
                 ad.percentage = 0
         else:
             ad.percentage = 0
-    print(ten_days)
     getupdate(request)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
@@ -83,7 +83,7 @@ def Franchise_signup_view(request):
 def getupdate(request):
     ads = Ads.objects.all()
     for ad in ads:  # Loop ads
-        print(ad.AdName)
+        # print(ad.AdName)
         # Prepare the data
         params = {
             'name': ad.AdName,
@@ -107,7 +107,7 @@ def getupdate(request):
             print("API returned None")
             continue
 
-        print(data)  # For Testing Purpose
+      #  print(data)  # For Testing Purpose
 
         for item in data:  # Loop to store data in db
             imei = item.get('imei')
@@ -123,5 +123,5 @@ def getupdate(request):
                                                                   defaults={'Count':count})
                 except Exception as e:
                     logger.error("Error creating or updating MyAds object: %s", e)
-        print(len(data))
+     #   print(len(data))
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads})

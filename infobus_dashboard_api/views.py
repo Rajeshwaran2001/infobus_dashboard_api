@@ -18,4 +18,4 @@ def afterlogin_view(request):
     elif is_office(request.user):
         return render(request, 'FDashboard:dashboard')
     else:
-        return redirect('FDashboard:dashboard')
+        return redirect('FDashboard:Flogin')
