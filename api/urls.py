@@ -5,5 +5,5 @@ urlpatterns = [
 
     path('ads/', include('api.ads.urls')),
     path('vehical/', include('api.vehical.urls')),
-
+    path('district/', include('api.District.urls')),
 ]
