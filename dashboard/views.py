@@ -5,7 +5,8 @@ from django.contrib.auth.models import Group
 from django.db.models import Sum
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
-from dashboard.forms import ServiceUserForm
+from api.District.models import District
+from dashboard.forms import FranchiseForm, FranchiseUserForm
 from .models import MyAds
 import datetime as dt
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 
-def listads(request):
+def dash(request):
     ads = Ads.objects.all()
     ten_days = []
     five_days = []
@@ -56,18 +57,23 @@ def view_ad(request, ad_id):
             ad.percentage = 0
     else:
         ad.percentage = 0
-    return render(request, 'Fdashboard/detail.html', {'ad': ad, 'myad':myad})
+    return render(request, 'Fdashboard/detail.html', {'ad': ad, 'myad': myad})
 
 
-def service_engineer_signup_view(request):
-    userForm = ServiceUserForm()
-    mydict = {'userForm': userForm}
+def Franchise_signup_view(request):
+    userForm = FranchiseForm()
+    FranchiseUser = FranchiseUserForm()
+    dist = District.objects.all().filter(Active=True)
+    mydict = {'userForm': userForm,'FForm': FranchiseUser, 'dist': dist}
     if request.method == 'POST':
-        userForm = ServiceUserForm(request.POST)
-        if userForm.is_valid():
+        userForm = FranchiseForm(request.POST)
+        if userForm.is_valid() and FranchiseUser.is_valid():
             user = userForm.save()
             user.set_password(user.password)
             user.save()
+            Franchise = FranchiseUser.save(commit=False)
+            Franchise.user = user
+            Franchise.save()
             my_group = Group.objects.get_or_create(name='Franchise')
             my_group[0].user_set.add(user)
         return redirect('FDashboard:Flogin')
@@ -110,7 +116,7 @@ def getupdate(request):
                 if key == 'imei':
                     continue
                 day = key
-                #date_time = dt.datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
+                #  date_time = dt.datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
                 count = value
                 try:
                     obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
