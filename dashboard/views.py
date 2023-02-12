@@ -69,7 +69,7 @@ def view_ad(request, ad_id):
 def Franchise_signup_view(request):
     userForm = FranchiseForm()
     FranchiseUser = FranchiseUserForm()
-    dist = District.objects.all().filter(Active=True)
+    dist = District.objects.all().filter(is_Active=True)
     mydict = {'userForm': userForm, 'FForm': FranchiseUser, 'dist': dist}
     if request.method == 'POST':
         userForm = FranchiseForm(request.POST)

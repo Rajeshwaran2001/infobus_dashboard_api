@@ -4,6 +4,7 @@
     <form method="post">
         {% csrf_token %}
     {{ userForm.as_p }}
+        {{ FForm.as_p }}
     <div class="mb-3"><button class="btn btn-primary shadow d-block w-100" type="submit" name="" value="Login">Login</button></div>
     </form>
 

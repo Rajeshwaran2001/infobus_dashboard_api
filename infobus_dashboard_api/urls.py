@@ -16,14 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from infobus_dashboard_api import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 app_name = "home"
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    path('dashboard/', include('dashboard.urls')),
-    path('afterlogin', views.afterlogin_view, name='afterlogin'),
-    path('login/', views.login_user, name='Login'),
-    path('logout/', views.logout_user, name='Logout'),
-]
+                  path('admin/', admin.site.urls),
+                  path('api/', include('api.urls')),
+                  path('dashboard/', include('dashboard.urls')),
+                  path('afterlogin', views.afterlogin_view, name='afterlogin'),
+                  path('login/', views.login_user, name='Login'),
+                  path('logout/', views.logout_user, name='Logout'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
