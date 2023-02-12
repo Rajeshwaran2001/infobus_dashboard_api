@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rest_framework',
     'corsheaders',
-    'phonenumber_field',
     'api.ads',
     'api.vehical',
     'api.District',
