@@ -26,10 +26,10 @@ def dash(request):
     ten_days = []
     five_days = []
     for ad in ads:
-        if ad.current <= 10 and ad.current >= 5:
+        if ad.diff <= 10 and ad.diff >= 5:
             ten_days.append(ad)
             # print(ten_days)
-        elif ad.current <= 5:
+        elif ad.diff <= 5:
             five_days.append(ad)
             # print(five_days)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']

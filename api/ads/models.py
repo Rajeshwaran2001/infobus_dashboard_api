@@ -19,9 +19,13 @@ class Ads(models.Model):
         verbose_name_plural = "Ads"
 
     @property
-    def diff(self):
+    def current(self):
         return (self.EndDate - self.StartDate).days
 
     @property
-    def current(self):
+    def diff(self):
         return (self.EndDate - dt.date.today()).days
+
+    @property
+    def day(self):
+        return (dt.date.today()-self.StartDate).days
