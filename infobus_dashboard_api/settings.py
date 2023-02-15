@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'api.vehical',
     'api.District',
     'dashboard.apps.DashboardConfig',
+    'utility.apps.UtilityConfig'
 ]
 
 MIDDLEWARE = [
