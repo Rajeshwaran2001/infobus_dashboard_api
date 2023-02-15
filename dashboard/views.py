@@ -132,4 +132,4 @@ def getupdate(request):
                 except Exception as e:
                     logger.error("Error creating or updating MyAds object: %s", e)
     #   print(len(data))
-    return render(request, 'ff.html', {'ads': ads})
+    return render(request, 'apitest/ff.html', {'ads': ads})
