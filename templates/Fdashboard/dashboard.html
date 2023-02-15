@@ -145,15 +145,19 @@
                      {% if a.status == 'up' %}
                         <div class="avatar-group mt-2">
                             <img src="{% static 'img/arrow/green.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="UP">
-                           </div>
+                        </div>
                      {% elif a.status == 'down' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/orange.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Action Need">
-                           </div>
-                     {% else %}
+                            <img src="{% static 'img/arrow/orange.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Warning">
+                        </div>
+                     {% elif a.status == 'error' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/red.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Down2">
-                           </div>
+                            <img src="{% static 'img/arrow/red.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Danger">
+                        </div>
+                     {% elif a.status == 'crtical' %}
+                        <div class="avatar-group mt-2">
+                            <img src="{% static 'img/arrow/red-circle.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Action Needed">
+                        </div>
                       {% endif %}
                     </td>
                     <td class="align-middle text-center text-sm">

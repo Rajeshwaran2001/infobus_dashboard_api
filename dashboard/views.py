@@ -35,16 +35,19 @@ def dash(request):
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         statuss = ad.day * ad.ECPD
-        if ad.myads_count is not None:  # To handle the total count is 0
-            if ad.myads_count >= statuss or ad.myads_count <= 200:
-                ad.status = "up"
-            elif ad.myads_count < statuss or ad.myads_count >= 400:
-                ad.status = "down"
-            else:
-                ad.status = "error"
+        diff = abs(ad.myads_count - statuss)
+        if diff <= 200 and ad.myads_count >= statuss:
+            ad.status = "up"
+        elif diff > 200 and diff <= 400:
+            ad.status = "down"
+        elif diff == 0:
+            ad.status = "up"
+        elif ad.myads_count == 0:
+            ad.status = "crtical"
         else:
-            ad.status = "crt"
-        print(ad.day, ad.ECPD, statuss, ad.status)
+            ad.status = "error"
+
+        print(ad.day, ad.ECPD, statuss, ad.status, diff)
         if ad.myads_count is not None:  # To handle the total count is 0
             if ad.TotalCount:
                 # print(ad.AdName, ad.myads_count, ad.TotalCount)
@@ -53,7 +56,7 @@ def dash(request):
                 ad.percentage = 0
         else:
             ad.percentage = 0
-    #getupdate(request)
+    # getupdate(request)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
 
