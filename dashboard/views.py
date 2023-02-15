@@ -43,7 +43,7 @@ def dash(request):
                 ad.percentage = 0
         else:
             ad.percentage = 0
-    getupdate(request)
+    #getupdate(request)
     return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
 
 
@@ -132,4 +132,4 @@ def getupdate(request):
                 except Exception as e:
                     logger.error("Error creating or updating MyAds object: %s", e)
     #   print(len(data))
-    return render(request, 'Fdashboard/dashboard.html', {'ads': ads})
+    return render(request, 'ff.html', {'ads': ads})
