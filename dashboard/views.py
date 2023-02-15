@@ -34,7 +34,17 @@ def dash(request):
             # print(five_days)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
-
+        statuss = ad.day * ad.ECPD
+        if ad.myads_count is not None:  # To handle the total count is 0
+            if ad.myads_count >= statuss or ad.myads_count <= 200:
+                ad.status = "up"
+            elif ad.myads_count < statuss or ad.myads_count >= 400:
+                ad.status = "down"
+            else:
+                ad.status = "error"
+        else:
+            ad.status = "crt"
+        print(ad.day, ad.ECPD, statuss, ad.status)
         if ad.myads_count is not None:  # To handle the total count is 0
             if ad.TotalCount:
                 # print(ad.AdName, ad.myads_count, ad.TotalCount)
