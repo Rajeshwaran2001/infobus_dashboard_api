@@ -15,6 +15,7 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="{% static 'css/material-dashboard.css' %}" rel="stylesheet" />
   <link  href="{% static 'css/style.css' %}" rel="stylesheet" />
+    {% block css %}{% endblock css %}
 </head>
 <body class="g-sidenav-show  bg-gray-200">
 {% include 'include/Navbar.html' %}
@@ -22,6 +23,7 @@
 
 {% endblock %}
 </body>
+{% block js %}{% endblock js %}
  <!--   Core JS Files   -->
   <script src="{% static 'js/core/popper.min.js' %}"></script>
   <script src="{% static 'js/core/bootstrap.min.js' %}"></script>

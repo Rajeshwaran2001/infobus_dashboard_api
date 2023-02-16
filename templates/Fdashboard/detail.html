@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% block css %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM5D6CyxvTCUHB5TW3_VU5fSsXZtgybuU"></script>
+{% endblock css %}
 {% block content %}
  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
@@ -161,6 +164,7 @@
                     </td>
                           <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
+                            <input type="checkbox" value="" aria-label="Checkbox for following text input">
                         </div>
                     </td>
                       <td class="align-middle text-center text-sm">
@@ -236,6 +240,7 @@
 
     </div>
   </main>
-     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM5D6CyxvTCUHB5TW3_VU5fSsXZtgybuU"></script>
-
 {% endblock %}
+{% block js %}
+    <script src="{% static 'js/map.js' %}"></script>
+{% endblock js %}
