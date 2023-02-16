@@ -53,14 +53,14 @@
           </div>
         </div>
         <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
+          <div class="card" >
             <div class="card-header p-3 pt-2">
               <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                 <i class="material-icons opacity-10">person</i>
               </div>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">Monthly Count</p>
-                <h5 class="mb-0">{{ ad.TotalCount}}</h5>
+                <h5 class="mb-0" data-bs-toggle="tooltip" title="Recorded count / Total count">{{ ad.myads_count}} / {{ ad.TotalCount}}</h5>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -87,24 +87,7 @@
             </div>
           </div>
         </div>
-        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">person</i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Total count Up to Today</p>
-                <h5 class="mb-0">{{ ad.myads_count}}</h5>
-              </div>
-            </div>
-            <hr class="dark horizontal my-0">
-            <div class="card-footer p-3">
 
-            </div>
-          </div>
-
-        </div>
         <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
@@ -153,8 +136,6 @@
             <div class="card-header pb-0">
               <div class="row">
                 <h5 class="text-center">Bus List</h5>
-                <input class="input input--date" name="date" type="date" placeholder="Date" required="">
-
               </div>
             </div>
             <div class="card-body px-0 pb-2">
@@ -162,7 +143,8 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                        <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Id</th>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Id</th>
+                        <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Map</th>
                       <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Bus No</th>
                       <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Route</th>
                       <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Count Per Day</th>
@@ -170,21 +152,25 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for a in myad %}
+                  {% for  a, b in mylist %}
                       <tr>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
                           <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ forloop.counter }}</h4>
                         </div>
                     </td>
+                          <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                        </div>
+                    </td>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ a.imei }}</h4>
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ b.0 }}</h4>
                         </div>
                     </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;">  </span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ b.1 }}  </span>
                       </td>
 
                       <td class="align-middle text-center text-sm">
@@ -203,10 +189,7 @@
           </div>
         </div>
         <div class="col-lg-6 col-md-6">
-
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d245.63191138395797!2d78.1232655798069!3d9.924747684707787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5de174fde43%3A0x54be22651157afa6!2sThe%20silicon%20harvest!5e0!3m2!1sen!2sin!4v1675070251779!5m2!1sen!2sin" width="780" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-
-
+        <div id="map" style="height: 400px;"></div>
         </div>
 
 
@@ -253,4 +236,6 @@
 
     </div>
   </main>
+     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM5D6CyxvTCUHB5TW3_VU5fSsXZtgybuU"></script>
+
 {% endblock %}
