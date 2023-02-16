@@ -144,19 +144,19 @@
                     <td class="align-middle text-center text-sm">
                      {% if a.status == 'up' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/green.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="UP">
+                            <img src="{% static 'img/arrow/green.png' %}" class="avatar avatar-xs rounded-circle" alt="up">
                         </div>
                      {% elif a.status == 'down' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/orange.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Warning">
+                            <img src="{% static 'img/arrow/orange.png' %}" class="avatar avatar-xs rounded-circle" alt="down">
                         </div>
                      {% elif a.status == 'error' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/red.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Danger">
+                            <img src="{% static 'img/arrow/red.png' %}" class="avatar avatar-xs rounded-circle" alt="error">
                         </div>
                      {% elif a.status == 'crtical' %}
                         <div class="avatar-group mt-2">
-                            <img src="{% static 'img/arrow/red-circle.png' %}" class="avatar avatar-xs rounded-circle" alt="user1" data-bs-toggle="tooltip" title="Action Needed">
+                            <img src="{% static 'img/arrow/red-circle.png' %}" class="avatar avatar-xs rounded-circle" alt="crtical">
                         </div>
                       {% endif %}
                     </td>
