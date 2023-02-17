@@ -78,6 +78,7 @@ checkboxes.forEach(function(checkbox) {
 
 let markers = [];
 
+//  Fetch Api
 function fetchData() {
   fetch('https://track.siliconharvest.net/get_status.php')
     .then(function(response) {
@@ -95,7 +96,8 @@ function fetchData() {
       const newPositions = filteredData.filter((item) => checkedValues.includes(item.bus_no))
                                 .map((item) => {
                                   const [latitude, longitude] = item.position.split(",");
-                                  return { bus_no: item.bus_no, latitude, longitude };
+                                  return { bus_no: item.bus_no, latitude, longitude, route_name: item.route_name,
+      date_time: item.date_time };
                                 });
       console.log(newPositions);
 
@@ -108,14 +110,39 @@ function fetchData() {
       markers = [];
 
       if (newPositions.length > 0) {
-        for (const position of newPositions) {
-          const marker = new google.maps.Marker({
-            position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
-            map,
-            title: position.bus_no,
-          });
-          markers.push(marker);
-        }
+  for (const position of newPositions) {
+    const marker = new google.maps.Marker({
+      position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
+      map,
+      title: position.bus_no,
+      label: {text: position.bus_no, color:"red", fontSize: "10px"},
+      icon: {
+        url: window.imageURL,
+        scaledSize: new google.maps.Size(50, 50)
+    }
+    });
+
+    // Create the info window content
+    const infoWindowContent = `
+      <div class="info-window">
+        <h3> ${position.bus_no}</h3>
+        <p>${position.route_name}</p>
+        <p>${position.date_time}</p>
+      </div>
+    `;
+
+
+    // Create the info window and attach it to the marker
+    const infoWindow = new google.maps.InfoWindow({
+      content: infoWindowContent,
+    });
+
+    marker.addListener('click', () => {
+      infoWindow.open(map, marker);
+    });
+
+    markers.push(marker);
+  }
 
         // Fit the map to the bounds of the markers, but only if there are multiple markers
         if (markers.length > 1) {

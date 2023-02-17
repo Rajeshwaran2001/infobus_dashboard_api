@@ -244,4 +244,8 @@
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/map.js' %}"></script>
+    <script>
+    window.imageURL = "{% static 'img/logo.png' %}";
+    // Pass the URL to your JavaScript code
+</script>
 {% endblock js %}
