@@ -3,7 +3,6 @@ from json.decoder import JSONDecodeError
 import requests
 from django.contrib.auth.models import Group
 from django.db.models import Sum
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from api.District.models import District
@@ -11,7 +10,6 @@ from dashboard.forms import FranchiseForm, FranchiseUserForm
 from .models import MyAds
 from utility.models import bus_Detail
 from django.contrib.auth.decorators import login_required, user_passes_test
-import datetime as dt
 
 logger = logging.getLogger(__name__)
 

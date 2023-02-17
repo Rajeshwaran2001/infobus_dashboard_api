@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM5D6CyxvTCUHB5TW3_VU5fSsXZtgybuU"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+
 {% endblock css %}
 {% block content %}
  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -164,7 +165,7 @@
                     </td>
                           <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                            <input type="checkbox" value="" aria-label="Checkbox for following text input">
+                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ b.0 }}" value="{{ b.0 }}">
                         </div>
                     </td>
                       <td class="align-middle text-center text-sm">
@@ -192,7 +193,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-6 col-md-6 map-container" style="display:none;">
         <div id="map" style="height: 400px;"></div>
         </div>
 
@@ -242,5 +243,128 @@
   </main>
 {% endblock %}
 {% block js %}
-    <script src="{% static 'js/map.js' %}"></script>
+
+     <script>
+
+ // Declare a variable to store the interval ID
+let updateInterval;
+
+// Get all checkboxes with the "log-checkboxes" class
+const checkboxes = document.querySelectorAll('.log-checkboxes');
+
+// Initialize an empty array to store the checked checkbox values
+let checkedValues = [];
+
+let map;
+
+// Initialize the map
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+       center: { lat: 9.939093, lng: 78.121719 }
+  });
+
+}
+
+// Add event listener to each checkbox
+checkboxes.forEach(function(checkbox) {
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+
+      // Clear any existing update interval
+      clearInterval(updateInterval);
+
+      // Start the update interval
+      updateInterval = setInterval(fetchData, 20000);
+
+      checkedValues.push(this.value);
+      console.log(checkedValues);
+
+      fetchData();
+
+      // Show the map container
+      document.querySelector('.map-container').style.display = 'block';
+
+    } else {
+      const uncheckedBus = this.getAttribute('data-bus');
+      checkedValues = checkedValues.filter(value => value !== this.value);
+      console.log(checkedValues);
+
+      // Remove the unchecked marker from the map
+      markers = markers.filter(marker => {
+        if (marker instanceof google.maps.Marker && marker.getTitle() === uncheckedBus) {
+          marker.setMap(null);
+          return false;
+        }
+        return true;
+      });
+
+      // Clear the update interval when all checkboxes are unchecked
+      if (checkedValues.length === 0) {
+        clearInterval(updateInterval);
+
+        // Hide the map container
+        document.querySelector('.map-container').style.display = 'none';
+
+      }
+    }
+  });
+});
+
+let markers = [];
+
+function fetchData() {
+  fetch('https://track.siliconharvest.net/get_status.php')
+    .then(function(response) {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Network response was not ok');
+      }
+    })
+    .then(function(data) {
+      // console.log(data);
+      // Filter out data with city: "Testing"
+      const filteredData = data.filter((item) => item.city !== "Testing");
+      // Filter out data that doesn't match the checkedValues
+      const newPositions = filteredData.filter((item) => checkedValues.includes(item.bus_no))
+                                .map((item) => {
+                                  const [latitude, longitude] = item.position.split(",");
+                                  return { bus_no: item.bus_no, latitude, longitude };
+                                });
+      console.log(newPositions);
+
+      // Remove existing markers from the map
+      markers.forEach(marker => {
+        if (marker instanceof google.maps.Marker) {
+          marker.setMap(null);
+        }
+      });
+      markers = [];
+
+      if (newPositions.length > 0) {
+        for (const position of newPositions) {
+          const marker = new google.maps.Marker({
+            position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
+            map,
+            title: position.bus_no,
+          });
+          markers.push(marker);
+        }
+
+        // Fit the map to the bounds of the markers
+        const bounds = new google.maps.LatLngBounds();
+        for (const marker of markers) {
+          bounds.extend(marker.getPosition());
+        }
+        map.fitBounds(bounds);
+      } else {
+        console.error("No positions found.");
+      }
+    })
+    .catch(function(error) {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+}
+    </script>
 {% endblock js %}
