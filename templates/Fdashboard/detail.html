@@ -260,7 +260,7 @@ let map;
 // Initialize the map
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
+    zoom: 15,
        center: { lat: 9.939093, lng: 78.121719 }
   });
 
@@ -314,7 +314,7 @@ checkboxes.forEach(function(checkbox) {
 let markers = [];
 
 function fetchData() {
-  fetch('https://track.siliconharvest.net/get_status.php')
+   fetch('https://track.siliconharvest.net/get_status.php')
     .then(function(response) {
       if (response.ok) {
         return response.json();
@@ -352,12 +352,14 @@ function fetchData() {
           markers.push(marker);
         }
 
-        // Fit the map to the bounds of the markers
+        // Calculate the bounds of the new markers
         const bounds = new google.maps.LatLngBounds();
         for (const marker of markers) {
           bounds.extend(marker.getPosition());
         }
-        map.fitBounds(bounds);
+
+        // Move the map to the new bounds
+        map.fitBounds(bounds, { duration: 500 });
       } else {
         console.error("No positions found.");
       }
