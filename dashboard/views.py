@@ -3,6 +3,7 @@ from json.decoder import JSONDecodeError
 import requests
 from django.contrib.auth.models import Group
 from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from api.District.models import District
@@ -67,7 +68,7 @@ def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
     bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no',
-                                                                   'position').distinct().order_by('bus_no')
+                                                                   'position').distinct()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     # print(myad)
