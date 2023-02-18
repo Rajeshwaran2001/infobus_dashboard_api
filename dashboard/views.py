@@ -65,8 +65,7 @@ def dash(request):
 def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
-    bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no',
-                                                                   'position').distinct()
+    bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     # print(myad)
@@ -117,7 +116,7 @@ def getupdate(request):
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        url = 'https://track.siliconharvest.net/get_adcount.php'  # Request url
+        url = 'https://delta.busads.in/get_adcount.php'  # Request url
         response = requests.get(url, params=params)
         if response.status_code != 200:
             # Log the error message for debugging purposes
@@ -150,5 +149,41 @@ def getupdate(request):
                                                                   defaults={'Count': count})
                 except Exception as e:
                     logger.error("Error creating or updating MyAds object: %s", e)
+
+        # Make another API call
+        url2 = 'https://track.siliconharvest.net/get_adcount.php'
+        response2 = requests.get(url2, params=params)
+        if response2.status_code != 200:
+            # Log the error message for debugging purposes
+            print(f"Error response received with status code {response2.status_code}")
+            continue
+        try:
+            data2 = response2.json()
+        except JSONDecodeError:
+            # Log the error message for debugging purposes
+            print(f"Error decoding JSON: {response2.text}")
+            continue
+        data2 = response2.json()
+        if data2 is None:  # To handle if the data is not present
+            print("API returned None")
+            continue
+
+        #  print(data2)  # For Testing Purpose
+
+        for item2 in data2:  # Loop to store data in db
+            imei = item2.get('imei')
+            AdName = ad.AdName
+            for key, value in item2.items():
+                if key == 'imei':
+                    continue
+                day = key
+                #  date_time = dt.datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
+                count = value
+                try:
+                    obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
+                                                                  defaults={'Count': count})
+                except Exception as e:
+                    logger.error("Error creating or updating MyAds object: %s", e)
+
     #   print(len(data))
     return render(request, 'apitest/ff.html', {'ads': ads})
