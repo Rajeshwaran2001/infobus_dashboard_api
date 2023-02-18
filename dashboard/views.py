@@ -116,7 +116,7 @@ def getupdate(request):
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        url = 'https://delta.busads.in/get_adcount.php'  # Request url
+        url = 'https://delta.busads.in/get_adcountv2.php'  # Request url
         response = requests.get(url, params=params)
         if response.status_code != 200:
             # Log the error message for debugging purposes
@@ -151,7 +151,7 @@ def getupdate(request):
                     logger.error("Error creating or updating MyAds object: %s", e)
 
         # Make another API call
-        url2 = 'https://track.siliconharvest.net/get_adcount.php'
+        url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
         response2 = requests.get(url2, params=params)
         if response2.status_code != 200:
             # Log the error message for debugging purposes
