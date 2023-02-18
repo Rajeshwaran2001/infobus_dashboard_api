@@ -10,6 +10,8 @@ from dashboard.forms import FranchiseForm, FranchiseUserForm
 from .models import MyAds
 from utility.models import bus_Detail
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils import timezone
+from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,7 @@ def dash(request):
         else:
             ad.status = "error"
 
-        print(ad.day, ad.ECPD, statuss, ad.status, diff)
+       # print(ad.day, ad.ECPD, statuss, ad.status, diff)
         if ad.myads_count is not None:  # To handle the total count is 0
             if ad.TotalCount:
                 # print(ad.AdName, ad.myads_count, ad.TotalCount)
@@ -70,8 +72,16 @@ def view_ad(request, ad_id):
     bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
+    day = timezone.now().date() - timedelta(days=1)
+    yesterday = day.strftime("%#d/%#m/%Y")
+    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName,date_time__contains=yesterday).aggregate(Sum(
+        'Count'))[
+                                'Count__sum'] or 0
+    if not total_count_yesterday:
+        total_count_yesterday = 0
     # print(myad)
     # print(bus_nos)
+    print(total_count_yesterday,yesterday)
 
     if ad.myads_count is not None:  # To handle the total count is 0
         if ad.TotalCount:
@@ -83,7 +93,7 @@ def view_ad(request, ad_id):
         ad.percentage = 0
 
     mylist = zip(myad, bus_nos)
-    return render(request, 'Fdashboard/detail.html', {'ad': ad, 'mylist': mylist})
+    return render(request, 'Fdashboard/detail.html', {'ad': ad, 'mylist': mylist, 'yesterday':total_count_yesterday})
 
 
 def Franchise_signup_view(request):
