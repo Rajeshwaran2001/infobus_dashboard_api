@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+
+{% endblock css %}
+{% block content %}
+ <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+      <div class="container-fluid py-1 px-3">
+
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+
+            <li class="nav-item d-flex align-items-center">
+              <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
+                <i class="fa fa-user me-sm-1"></i>
+                <span class="d-sm-inline d-none"></span>
+              </a>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">weekend</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Today's Count</p>
+                <h4 class="mb-0">50</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card" >
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Monthly Count</p>
+                <h5 class="mb-0" data-bs-toggle="tooltip" title="Recorded count / Total count">{{ ad.myads_count}} / {{ ad.TotalCount}}</h5>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+
+            </div>
+          </div>
+
+        </div>
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">yesterday Count</p>
+                <h4 class="mb-0">45</h4>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">End Date</p>
+                <h5 class="mb-0">{{ ad.EndDate|date:"d/m/Y"}}</h5>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+
+            </div>
+          </div>
+
+        </div>
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">person</i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Total Count In %</p>
+                <h5 class="mb-0">{{ ad.percentage|floatformat}}%</h5>
+              </div>
+            </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row mt-4">
+
+      </div>
+
+
+      <div class="row mb-6">
+        <div class="col-lg-12 col-md-6 mb-md-0 mb-4 contain">
+          <div class="card">
+            <div class="card-header pb-0">
+              <div class="row">
+                <h5 class="text-center">Bus List</h5>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Id</th>
+                        <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Map</th>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Bus No</th>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Route</th>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Count Per Day</th>
+                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for  a, b in mylist %}
+                      <tr>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ forloop.counter }}</h4>
+                        </div>
+                    </td>
+                          <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ b.0 }}" value="{{ b.0 }}">
+                        </div>
+                    </td>
+                      <td class="align-middle text-center text-sm">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ b.0 }}</h4>
+                        </div>
+                    </td>
+
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ b.1 }}  </span>
+                      </td>
+
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;"> {{ ad.ECPD }} </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;"> {{ a.Count }} </span>
+                      </td>
+
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 map-container" style="display:none;">
+        <div class="card" id="map" style="height: 400px;"></div>
+        </div>
+
+
+      </div>
+
+      <div class="row mt-4">
+
+
+        <div class="col-lg- col-md-6 mt-4 mb-4">
+          <div class="card z-index-2 ">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                <div class="chart">
+                  <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h6 class="mb-0 ">25/12/22 - 31/12/22</h6>
+              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg- col-md-6 mt-4 mb-4">
+          <div class="card z-index-2  ">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+                <div class="chart">
+                  <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h6 class="mb-0 ">25/12/22 - 31/12/22</h6>
+              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+            </div>
+          </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/map.js' %}"></script>
+    <script>
+    window.imageURL = "{% static 'img/logo.png' %}";
+    // Pass the URL to your JavaScript code
+</script>
+{% endblock js %}
