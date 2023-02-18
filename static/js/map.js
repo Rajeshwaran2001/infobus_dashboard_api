@@ -78,30 +78,25 @@ checkboxes.forEach(function(checkbox) {
 
 let markers = [];
 
-//  Fetch Api
 function fetchData() {
-  fetch('https://track.siliconharvest.net/get_status.php')
-    .then(function(response) {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Network response was not ok');
-      }
-    })
-    .then(function(data) {
-      // console.log(data);
-      // Filter out data with city: "Testing"
-      const filteredData = data.filter((item) => item.city !== "Testing");
-      // Filter out data that doesn't match the checkedValues
-      const newPositions = filteredData.filter((item) => checkedValues.includes(item.bus_no))
-                                .map((item) => {
-                                  const [latitude, longitude] = item.position.split(",");
-                                  return { bus_no: item.bus_no, latitude, longitude, route_name: item.route_name,
-      date_time: item.date_time };
-                                });
-      console.log(newPositions);
+  const urls = [
+    'https://track.siliconharvest.net/get_status.php',
+    'https://delta.busads.in/get_status.php',
+  ];
 
-      // Remove existing markers from the map
+  Promise.all(urls.map(url => fetch(url)))
+    .then(responses => Promise.all(responses.map(response => response.json())))
+    .then(data => {
+      const allData = data.flat();
+      const filteredData = allData.filter(item => item.city !== 'Testing');
+      const newPositions = filteredData.filter(item => checkedValues.includes(item.bus_no))
+        .map(item => {
+          const [latitude, longitude] = item.position.split(',');
+          return { bus_no: item.bus_no, latitude, longitude, route_name: item.route_name, date_time: item.date_time };
+        });
+      console.log(newPositions);
+      console.log(data)
+
       markers.forEach(marker => {
         if (marker instanceof google.maps.Marker) {
           marker.setMap(null);
@@ -110,58 +105,53 @@ function fetchData() {
       markers = [];
 
       if (newPositions.length > 0) {
-  for (const position of newPositions) {
-    const marker = new google.maps.Marker({
-      position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
-      map,
-      title: position.bus_no,
-      label: {text: position.bus_no, color:"red", fontSize: "10px"},
-      icon: {
-        url: window.imageURL,
-        scaledSize: new google.maps.Size(50, 50)
-    }
-    });
+        for (const position of newPositions) {
+          const marker = new google.maps.Marker({
+            position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
+            map,
+            title: position.bus_no,
+            label: { text: position.bus_no, color: 'red', fontSize: '10px' },
+            icon: {
+              url: window.imageURL,
+              scaledSize: new google.maps.Size(50, 50),
+            },
+          });
 
-    // Create the info window content
-    const infoWindowContent = `
-      <div class="info-window">
-        <h3> ${position.bus_no}</h3>
-        <p>${position.route_name}</p>
-        <p>${position.date_time}</p>
-      </div>
-    `;
+          const infoWindowContent = `
+            <div class="info-window">
+              <h3> ${position.bus_no}</h3>
+              <p>${position.route_name}</p>
+              <p>${position.date_time}</p>
+            </div>
+          `;
 
+          const infoWindow = new google.maps.InfoWindow({
+            content: infoWindowContent,
+          });
 
-    // Create the info window and attach it to the marker
-    const infoWindow = new google.maps.InfoWindow({
-      content: infoWindowContent,
-    });
+          marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+          });
 
-    marker.addListener('click', () => {
-      infoWindow.open(map, marker);
-    });
+          markers.push(marker);
+        }
 
-    markers.push(marker);
-  }
-
-        // Fit the map to the bounds of the markers, but only if there are multiple markers
         if (markers.length > 1) {
           const bounds = new google.maps.LatLngBounds();
           for (const marker of markers) {
             bounds.extend(marker.getPosition());
           }
           map.fitBounds(bounds);
-        } else {
-          // If there's only one marker, set the center and zoom level of the map based on that marker
+        } else if (markers.length === 1) {
           const position = markers[0].getPosition();
           map.setCenter(position);
           map.setZoom(15);
+        } else {
+          console.error('No positions found.');
         }
-      } else {
-        console.error("No positions found.");
       }
     })
-    .catch(function(error) {
+    .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
 }
