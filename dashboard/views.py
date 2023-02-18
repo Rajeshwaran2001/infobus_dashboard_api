@@ -36,14 +36,16 @@ def dash(request):
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         statuss = ad.day * ad.ECPD
         diff = abs(ad.myads_count - statuss)
-        if diff <= 200 and ad.myads_count >= statuss:
+        if ad.myads_count == 0:
+            ad.status = "crtical"
+        elif diff == 0:
+            ad.status = "up"
+        elif diff <= 200:
             ad.status = "up"
         elif diff > 200 and diff <= 400:
             ad.status = "down"
-        elif diff == 0:
+        elif ad.myads_count > statuss:
             ad.status = "up"
-        elif ad.myads_count == 0:
-            ad.status = "crtical"
         else:
             ad.status = "error"
 
