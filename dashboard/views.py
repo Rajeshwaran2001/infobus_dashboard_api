@@ -1,8 +1,10 @@
+import json
 import logging
 from json.decoder import JSONDecodeError
 import requests
 from django.contrib.auth.models import Group
 from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from api.District.models import District
@@ -51,7 +53,7 @@ def dash(request):
         else:
             ad.status = "error"
 
-       # print(ad.day, ad.ECPD, statuss, ad.status, diff)
+        # print(ad.day, ad.ECPD, statuss, ad.status, diff)
         if ad.myads_count is not None:  # To handle the total count is 0
             if ad.TotalCount:
                 # print(ad.AdName, ad.myads_count, ad.TotalCount)
@@ -74,14 +76,14 @@ def view_ad(request, ad_id):
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     day = timezone.now().date() - timedelta(days=1)
     yesterday = day.strftime("%#d/%#m/%Y")
-    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName,date_time__contains=yesterday).aggregate(Sum(
+    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum(
         'Count'))[
                                 'Count__sum'] or 0
     if not total_count_yesterday:
         total_count_yesterday = 0
     # print(myad)
     # print(bus_nos)
-    print(total_count_yesterday,yesterday)
+    print(total_count_yesterday, yesterday)
 
     if ad.myads_count is not None:  # To handle the total count is 0
         if ad.TotalCount:
@@ -93,7 +95,14 @@ def view_ad(request, ad_id):
         ad.percentage = 0
 
     mylist = zip(myad, bus_nos)
-    return render(request, 'Fdashboard/detail.html', {'ad': ad, 'mylist': mylist, 'yesterday':total_count_yesterday})
+    api_view(request)
+
+    context = {
+        'ad': ad,
+        'mylist': mylist,
+        'yesterday': total_count_yesterday
+    }
+    return render(request, 'Fdashboard/detail.html', context)
 
 
 def Franchise_signup_view(request):
@@ -199,3 +208,26 @@ def getupdate(request):
 
     #   print(len(data))
     return render(request, 'apitest/ff.html', {'ads': ads})
+
+
+def api_view(request):
+    # Fetch API data
+    api_data = requests.get('https://delta.busads.in/get_adcountv2.php?name=devdos&from=2023/2/19&length=1').json()
+    api_data2 = requests.get(
+        'https://track.siliconharvest.net/get_adcountv2.php?name=devdos&from=2023/2/19&length=1').json()
+
+    # Print API responses to console
+    print(api_data)
+    print(api_data2)
+
+    # Add the two API responses
+    result = int(api_data) + int(api_data2)
+
+    # Create a dictionary with the result
+    data = result
+
+    # Convert dictionary to JSON
+    json_data = json.dumps(data)
+
+    # Return JSON response
+    return JsonResponse(json_data, safe=False)

@@ -47,7 +47,7 @@
               </div>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">Today's Count</p>
-                <h4 class="mb-0">50</h4>
+                <h4 class="mb-0" id="sum">cd:</h4>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -245,7 +245,25 @@
 {% block js %}
 <script src="{% static 'js/map.js' %}"></script>
     <script>
+     function fetchApiData() {
+  // Fetch API data using AJAX
+  $.ajax({
+    url: '/dashboard/d', // Replace with the URL of your API view
+    type: 'GET',
+    success: function(data) {
+      // Update HTML element with API data
+      $('#sum').html(data);
+      console.log(data)
+    }
+  });
+}
+
+// Fetch API data every 20 seconds
+setInterval(fetchApiData, 20000);
+     // Pass the URL to your JavaScript code
     window.imageURL = "{% static 'img/logo.png' %}";
-    // Pass the URL to your JavaScript code
+
 </script>
+
+
 {% endblock js %}
