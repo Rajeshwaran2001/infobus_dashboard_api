@@ -64,6 +64,7 @@ def customer_view(request):
 
         # rest of the view logic
         myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
+        ad = Ads.objects.get(AdName=ad_name_upper)
         bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
