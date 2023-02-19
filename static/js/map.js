@@ -92,7 +92,7 @@ function fetchData() {
       const newPositions = filteredData.filter(item => checkedValues.includes(item.bus_no))
         .map(item => {
           const [latitude, longitude] = item.position.split(',');
-          return { bus_no: item.bus_no, latitude, longitude, route_name: item.route_name, date_time: item.date_time };
+          return { bus_no: item.bus_no, latitude, longitude, station: item.station, date_time: item.date_time };
         });
       console.log(newPositions);
       console.log(data)
@@ -120,7 +120,7 @@ function fetchData() {
           const infoWindowContent = `
             <div class="info-window">
               <h3> ${position.bus_no}</h3>
-              <p>${position.route_name}</p>
+              <p>${position.station}</p>
               <p>${position.date_time}</p>
             </div>
           `;
