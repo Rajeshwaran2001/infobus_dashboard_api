@@ -155,3 +155,29 @@ function fetchData() {
       console.error('There was a problem with the fetch operation:', error);
     });
 }
+
+ function fetchApiData() {
+  // Fetch API data using AJAX
+  $.ajax({
+    url: '/dashboard/d', // Replace with the URL of your API view
+    type: 'GET',
+      data: {
+        'ad_name': '{{ ad.AdName }}'
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log('Success!', data);
+    },
+    error: function (xhr, status, error) {
+        console.log('Error!', error);
+    },
+    success: function(data) {
+      // Update HTML element with API data
+      $('#sum').html(data);
+      console.log(data)
+    }
+  });
+}
+
+// Fetch API data every 60 seconds
+setInterval(fetchApiData, 10000);
