@@ -47,7 +47,7 @@
               </div>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">Today's Count</p>
-                <h4 class="mb-0" id="sum">cd:</h4>
+                <h4 class="mb-0" id="sum">{{ data }}</h4>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -250,6 +250,16 @@
   $.ajax({
     url: '/dashboard/d', // Replace with the URL of your API view
     type: 'GET',
+      data: {
+        'ad_name': '{{ ad.AdName }}'
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log('Success!', data);
+    },
+    error: function (xhr, status, error) {
+        console.log('Error!', error);
+    },
     success: function(data) {
       // Update HTML element with API data
       $('#sum').html(data);
@@ -258,8 +268,8 @@
   });
 }
 
-// Fetch API data every 20 seconds
-setInterval(fetchApiData, 20000);
+// Fetch API data every 60 seconds
+setInterval(fetchApiData, 60000);
      // Pass the URL to your JavaScript code
     window.imageURL = "{% static 'img/logo.png' %}";
 
