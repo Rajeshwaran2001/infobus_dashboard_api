@@ -179,7 +179,7 @@
                       </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;"> {{ ad.ECPD }} / {{ a.count }} </span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;"> {{ Pcount }} / {{ a.count }} </span>
                       </td>
 
 
@@ -239,7 +239,31 @@
 {% block js %}
 <script src="{% static 'js/map.js' %}"></script>
     <script>
+function fetchApiData() {
+  // Fetch API data using AJAX
+  $.ajax({
+    url: '/dashboard/d', // Replace with the URL of your API view
+    type: 'GET',
+      data: {
+        'ad_name': '{{ ad.AdName }}'
+    },
+    dataType: 'json',
+    success: function (data) {
+        console.log('Success!', data);
+    },
+    error: function (xhr, status, error) {
+        console.log('Error!', error);
+    },
+    success: function(data) {
+      // Update HTML element with API data
+      $('#sum').html(data);
+      console.log(data)
+    }
+  });
+}
 
+// Fetch API data every 60 seconds
+setInterval(fetchApiData, 10000);
      // Pass the URL to your JavaScript code
     window.imageURL = "{% static 'img/logo.png' %}";
 
