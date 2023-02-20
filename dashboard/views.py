@@ -72,14 +72,17 @@ def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
     bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
+    bus_nos1 = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct().count()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
     yesterday = day.strftime("%#d/%#m/%Y")
-    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum(
-        'Count'))[
-                                'Count__sum'] or 0
+    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
+    if bus_nos1 > 0:
+        Pcount = ad.ECPD / bus_nos1
+    else:
+        Pcount = 0
     if not total_count_yesterday:
         total_count_yesterday = 0
     # print(myad)
@@ -124,7 +127,8 @@ def view_ad(request, ad_id):
         'ad': ad,
         'mylist': mylist,
         'yesterday': total_count_yesterday,
-        'data': json_data
+        'data': json_data,
+        'Pcount': Pcount
     }
     return render(request, 'Fdashboard/detail.html', context)
 
