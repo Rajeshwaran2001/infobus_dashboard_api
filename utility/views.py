@@ -37,9 +37,7 @@ def fetch_and_store_data(url):
                                                            route_no=route_no, route_name=route_name, imei=imei,
                                                            station=station, position=position,
                                                            defaults={'imei': imei, 'route_name': route_name,
-                                                                     'bus_no': bus_no, 'depo': depo, 'city': city,
-                                                                     'depo': depo, 'route_no': route_no,
-                                                                     'station': station, 'position': position})
+                                                                     'bus_no': bus_no, 'depo': depo, 'city': city})
 
     #   print(len(data))
     return data
