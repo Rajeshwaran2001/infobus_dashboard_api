@@ -156,7 +156,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for  a, b in mylist %}
+                  {% for  a, b, c in mylist %}
                       <tr>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
@@ -179,7 +179,7 @@
                       </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;" data-bs-toggle="tooltip" title="E.count Per Day / Day count">  {{ Pcount|floatformat:0 }}/ {{ a.count }} </span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;" >   {{ c }} </span>
                       </td>
 
 

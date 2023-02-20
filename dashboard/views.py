@@ -13,7 +13,7 @@ from .models import MyAds
 from utility.models import bus_Detail
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 logger = logging.getLogger(__name__)
 
@@ -71,18 +71,13 @@ def dash(request):
 def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
-    bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
-    bus_nos1 = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct().count()
+    bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct().order_by()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
     yesterday = day.strftime("%#d/%#m/%Y")
     total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
-    if bus_nos1 > 0:
-        Pcount = ad.ECPD / bus_nos1
-    else:
-        Pcount = 0
     if not total_count_yesterday:
         total_count_yesterday = 0
     # print(myad)
@@ -98,7 +93,6 @@ def view_ad(request, ad_id):
     else:
         ad.percentage = 0
 
-    mylist = zip(myad, bus_nos)
     # Fetch API data and give inital data
     params = {
         'name': ad.AdName,
@@ -123,12 +117,62 @@ def view_ad(request, ad_id):
     # Convert dictionary to JSON
     json_data = json.dumps(data)
 
+    params2 = {
+        'name': ad.AdName,
+        'from': today.strftime("%Y-%m-%d"),
+        'length': 0,
+    }
+
+    # fetch count data from API
+    url1 = 'https://track.siliconharvest.net/get_adcountv2.php'
+    response1 = requests.get(url1, params2)
+    try:
+        data1 = response1.json()
+    except ValueError:
+        data1 = []
+
+    url2 = 'https://delta.busads.in/get_adcountv2.php'
+    response2 = requests.get(url2, params2)
+    try:
+        data2 = response2.json()
+    except ValueError:
+        data2 = []
+
+    # extract IMEI values from both API responses
+    imei_values = [obj['imei'] for obj in data1] + [obj['imei'] for obj in data2]
+
+    # match IMEI with bus_nos in Django model
+    bus_nosa = bus_Detail.objects.filter(imei__in=imei_values).values_list('bus_no', 'route_no').distinct()
+
+    # extract values for the matching date key for both API responses
+    values = []
+    date_format = '%d/%m/%Y'
+    for obj in data1 + data2:
+        for key in obj:
+            try:
+                date_value = datetime.strptime(key, date_format).date()
+                if date_value:
+                    values.append(obj[key])
+                    break
+            except ValueError:
+                pass
+
+    # if values is empty, set it to [0]
+    if not values:
+        values = [0]
+
+    # create dictionary of bus_no to values
+    bus_to_values = {}
+    for bus_no, route_no in bus_nos:
+        bus_to_values[bus_no] = values
+
+    mylist = zip(myad, bus_nos, values)
+
     context = {
         'ad': ad,
         'mylist': mylist,
         'yesterday': total_count_yesterday,
         'data': json_data,
-        'Pcount': Pcount
     }
     return render(request, 'Fdashboard/detail.html', context)
 

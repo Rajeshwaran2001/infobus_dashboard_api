@@ -66,8 +66,6 @@ def customer_view(request):
         myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
         ad = Ads.objects.get(AdName=ad_name_upper)
         bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct()
-        ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
-        ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         day = timezone.now().date() - timedelta(days=1)
         today = date.today()
         yesterday = day.strftime("%#d/%#m/%Y")
@@ -80,14 +78,6 @@ def customer_view(request):
         # print(bus_nos)
         # print(total_count_yesterday, yesterday)
 
-        if ad.myads_count is not None:  # To handle the total count is 0
-            if ad.TotalCount:
-                # print(ad.AdName, ad.myads_count, ad.TotalCount)
-                ad.percentage = (ad.myads_count / ad.TotalCount) * 100
-            else:
-                ad.percentage = 0
-        else:
-            ad.percentage = 0
 
         mylist = zip(myad, bus_nos)
         # Fetch API data and give inital data
