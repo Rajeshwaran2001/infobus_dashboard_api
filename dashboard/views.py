@@ -70,8 +70,6 @@ def dash(request):
 @user_passes_test(is_patner)
 def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
-    myad = MyAds.objects.filter(adname=ad.AdName).values_list('imei', flat=True).distinct()
-    bus_nos = bus_Detail.objects.filter(imei__in=myad).values_list('bus_no', 'route_no').distinct().order_by()
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     day = timezone.now().date() - timedelta(days=1)
@@ -153,11 +151,10 @@ def view_ad(request, ad_id):
                         'count': value,
                     }
                     result.append(d)
-    mylist = zip(myad, bus_nos, result)
 
     context = {
         'ad': ad,
-        'mylist': mylist,
+        'result': result,
         'yesterday': total_count_yesterday,
         'data': json_data,
     }

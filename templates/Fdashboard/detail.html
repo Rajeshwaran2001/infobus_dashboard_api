@@ -156,7 +156,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for  a, b, c in mylist %}
+                  {% for a in result %}
                       <tr>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
@@ -165,21 +165,21 @@
                     </td>
                           <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ c.bus_no }}" value="{{ c.bus_no }}">
+                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ a.bus_no }}" value="{{ a.bus_no }}">
                         </div>
                     </td>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ c.bus_no }}</h4>
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ a.bus_no }}</h4>
                         </div>
                     </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ c.route_no }}  </span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ a.route_no }}  </span>
                       </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;" > {{ c.count }}</span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;" > {{ a.count }}</span>
                       </td>
 
 
