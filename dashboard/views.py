@@ -138,35 +138,22 @@ def view_ad(request, ad_id):
     except ValueError:
         data2 = []
 
-    # extract IMEI values from both API responses
-    imei_values = [obj['imei'] for obj in data1] + [obj['imei'] for obj in data2]
-
-    # match IMEI with bus_nos in Django model
-    bus_nosa = bus_Detail.objects.filter(imei__in=imei_values).values_list('bus_no', 'route_no').distinct()
-
-    # extract values for the matching date key for both API responses
-    values = []
-    date_format = '%d/%m/%Y'
-    for obj in data1 + data2:
-        for key in obj:
-            try:
-                date_value = datetime.strptime(key, date_format).date()
-                if date_value:
-                    values.append(obj[key])
-                    break
-            except ValueError:
-                pass
-
-    # if values is empty, set it to [0]
-    if not values:
-        values = [0]
-
-    # create dictionary of bus_no to values
-    bus_to_values = {}
-    for bus_no, route_no in bus_nos:
-        bus_to_values[bus_no] = values
-
-    mylist = zip(myad, bus_nos, values)
+    # Extract required information from data1 and data2
+    result = []
+    for data in [data1, data2]:
+        for item in data:
+            for key, value in item.items():
+                if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':
+                    d = {
+                        'imei': item['imei'],
+                        'bus_no': item['bus_no'],
+                        'route_no': item['route_no'],
+                        'route_name': item['route_name'],
+                        'date': key,
+                        'count': value,
+                    }
+                    result.append(d)
+    mylist = zip(myad, bus_nos, result)
 
     context = {
         'ad': ad,
