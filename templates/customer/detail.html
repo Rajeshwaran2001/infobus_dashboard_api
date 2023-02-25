@@ -189,7 +189,7 @@ function fetchApiData() {
     },
     dataType: 'json',
     success: function (data) {
-        console.log('Success!', data);
+        //console.log('Success!', data);
     },
     error: function (xhr, status, error) {
         console.log('Error!', error);
@@ -197,7 +197,7 @@ function fetchApiData() {
     success: function(data) {
       // Update HTML element with API data
       $('#sum').html(data);
-      console.log(data)
+      //console.log(data)
     }
   });
 }
@@ -234,4 +234,5 @@ setInterval(fetchApiData, 40000);
   setInterval(fetchApiData2, 50000);
 </script>
 
+<script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
 {% endblock js %}

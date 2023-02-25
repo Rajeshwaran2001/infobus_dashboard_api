@@ -200,23 +200,21 @@
         <div class="col-lg- col-md-6 mt-4 mb-4">
           <div class="card z-index-2 ">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+              <div class="bg-gradient-info shadow-primary border-radius-lg py-3 pe-1">
                 <div class="chart">
                   <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
                 </div>
               </div>
             </div>
             <div class="card-body">
-              <h6 class="mb-0 ">25/12/22 - 31/12/22</h6>
-              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
-              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+              <h6 class="mb-0 ">Today</h6>
             </div>
           </div>
         </div>
         <div class="col-lg- col-md-6 mt-4 mb-4">
           <div class="card z-index-2  ">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+              <div class="bg-gradient-dark shadow-success border-radius-lg py-3 pe-1">
                 <div class="chart">
                   <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
                 </div>
@@ -224,7 +222,7 @@
             </div>
             <div class="card-body">
               <h6 class="mb-0 ">25/12/22 - 31/12/22</h6>
-              <input class="input input--date" name="date" type="date" placeholder="Date" required="">
+              <input class="input input--date" placeholder="Please select date" onfocus="focused(this)" onfocusout="defocused(this)"  type="date">
               <input class="input input--date" name="date" type="date" placeholder="Date" required="">
             </div>
           </div>
@@ -257,7 +255,7 @@ function fetchApiData() {
     success: function(data) {
       // Update HTML element with API data
       $('#sum').html(data);
-      console.log(data)
+      //console.log(data)
     }
   });
 }
@@ -269,7 +267,7 @@ setInterval(fetchApiData, 40000);
 
 </script>
 <script>
-  function fetchApiData2() {
+    function fetchApiData2() {
       $.ajax({
         url: '/dashboard/bus_count',
         type: 'GET',
@@ -284,14 +282,16 @@ setInterval(fetchApiData, 40000);
             if (countCell.length > 0) {
               // Update the count value in the table cell
               countCell.text(bus.count);
-               console.log(bus.count)
+               //console.log(bus.count)
             }
           });
         }
       });
     };
-  // Fetch API data every 50 seconds
-  setInterval(fetchApiData2, 50000);
+
+// Fetch API data every 40 seconds
+setInterval(fetchApiData2, 40000);
 </script>
 
+<script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
 {% endblock js %}
