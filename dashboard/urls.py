@@ -11,5 +11,6 @@ urlpatterns = [
     path('', LoginView.as_view(template_name='common/login.html'), name='Flogin'),
     path('update', views.getupdate, name='update'),
     path('Fsignup', views.Franchise_signup_view, name='Fsignup'),
-    path('d', views.api_view, name='update')
+    path('today_count', views.update_today_count, name='update_today_count'),
+    path('bus_count', views.update_bus_count, name='update_bus_count')
 ]

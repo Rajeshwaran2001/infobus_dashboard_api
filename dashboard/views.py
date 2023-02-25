@@ -266,7 +266,7 @@ def getupdate(request):
     return render(request, 'apitest/ff.html', {'ads': ads})
 
 
-def api_view(request):
+def update_today_count(request):
     today = date.today()
     ad_name = request.GET.get('ad_name')
     params = {
@@ -297,3 +297,43 @@ def api_view(request):
 
     # Return JSON response
     return JsonResponse(json_data, safe=False)
+
+def update_bus_count(request):
+    today = date.today()
+    ad_name = request.GET.get('ad_name')
+    params = {
+        'name': ad_name,
+        'from': today.strftime("%Y-%m-%d"),
+        'length': 0,
+    }
+
+    # fetch count data from API
+    url1 = 'https://track.siliconharvest.net/get_adcountv2.php'
+    response1 = requests.get(url1, params)
+    try:
+        data1 = response1.json()
+    except ValueError:
+        data1 = []
+
+    url2 = 'https://delta.busads.in/get_adcountv2.php'
+    response2 = requests.get(url2, params)
+    try:
+        data2 = response2.json()
+    except ValueError:
+        data2 = []
+
+    # Extract required information from data1 and data2
+    result = []
+    for data in [data1, data2]:
+        for item in data:
+            for key, value in item.items():
+                if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':
+                    d = {
+                        'bus_no': item['bus_no'],
+                        'route_no': item['route_no'],
+                        'route_name': item['route_name'],
+                        'date': key,
+                        'count': value,
+                    }
+                    result.append(d)
+    return JsonResponse(result, safe=False)

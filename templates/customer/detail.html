@@ -113,10 +113,7 @@
       <div class="row mt-4">
 
       </div>
-
-
-
-      <div class="row mb-6">
+        <div class="row mb-6">
         <div class="col-lg-12 col-md-6 mb-md-0 mb-4 contain">
           <div class="card">
             <div class="card-header pb-0">
@@ -137,7 +134,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for  a in result %}
+                  {% for bus in result %}
                       <tr>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
@@ -146,21 +143,21 @@
                     </td>
                           <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ a.bus_no }}" value="{{ a.bus_no }}">
+                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ bus.bus_no }}" value="{{ bus.bus_no }}">
                         </div>
                     </td>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">
-                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ a.bus_no }}</h4>
+                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ bus.bus_no }}</h4>
                         </div>
                     </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ a.route_no }} </span>
+                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ bus.route_no }}</span>
                       </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ a.count }}</span>
+                        <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}" style="font-size: 16px;" >{{ bus.count }}</span>
                       </td>
 
 
@@ -172,7 +169,7 @@
             </div>
           </div>
         </div>
-      <div class="col-lg-6 col-md-6 map-container" style="display:none;">
+       <div class="col-lg-6 col-md-6 map-container" style="display:none;">
         <div class="card" id="map" style="height: 400px;"></div>
         </div>
       </div>
@@ -181,11 +178,11 @@
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/map.js' %}"></script>
-       <script>
+     <script>
 function fetchApiData() {
   // Fetch API data using AJAX
   $.ajax({
-    url: '/dashboard/d', // Replace with the URL of your API view
+    url: '/dashboard/today_count', // Replace with the URL of your API view
     type: 'GET',
       data: {
         'ad_name': '{{ ad.AdName }}'
@@ -205,12 +202,36 @@ function fetchApiData() {
   });
 }
 
-// Fetch API data every 60 seconds
-setInterval(fetchApiData, 10000);
+// Fetch API data every 40 seconds
+setInterval(fetchApiData, 40000);
      // Pass the URL to your JavaScript code
     window.imageURL = "{% static 'img/logo.png' %}";
 
 </script>
-
+<script>
+  function fetchApiData2() {
+      $.ajax({
+        url: '/dashboard/bus_count',
+        type: 'GET',
+        data: {
+        'ad_name': '{{ ad.AdName }}'
+        },
+        success: function(result) {
+          // Iterate over the bus objects in the result
+          $.each(result, function(index, bus) {
+            // Find the table cell with the count for this bus
+            var countCell = $('#count-' + bus.bus_no);
+            if (countCell.length > 0) {
+              // Update the count value in the table cell
+              countCell.text(bus.count);
+               console.log(bus.count)
+            }
+          });
+        }
+      });
+    };
+  // Fetch API data every 50 seconds
+  setInterval(fetchApiData2, 50000);
+</script>
 
 {% endblock js %}
