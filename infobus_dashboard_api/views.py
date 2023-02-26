@@ -69,8 +69,7 @@ def customer_view(request):
         day = timezone.now().date() - timedelta(days=1)
         today = date.today()
         yesterday = day.strftime("%d/%m/%Y")
-        total_count_yesterday = \
-        MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
+        total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
         if not total_count_yesterday:
             total_count_yesterday = 0
         # print(myad)
