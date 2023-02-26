@@ -357,6 +357,7 @@ def get_data(request):
             data2.append(item['count'])
             # Create a dictionary with labels2 and data2
         chart_data = {'labels': labels2, 'data': data2}
+        #print(chart_data)
 
         # Return the chart_data as a JSON response
         return JsonResponse(chart_data)

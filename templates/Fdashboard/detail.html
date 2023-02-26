@@ -501,7 +501,7 @@ var ctx2 = document.getElementById("chart-line").getContext("2d");
     })
       .then((response) => response.json())
   .then((data) => {
-    const hasData = data.has_data;
+    const hasData = data;
     if (hasData) {
       const labels = data.labels;
       const chartData = data.data;
