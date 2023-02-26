@@ -151,12 +151,18 @@ def view_ad(request, ad_id):
                         'count': value,
                     }
                     result.append(d)
-
+    labels = []
+    data = []
+    for item in result:
+        labels.append(item['bus_no'])
+        data.append(item['count'])
     context = {
         'ad': ad,
         'result': result,
         'yesterday': total_count_yesterday,
-        'data': json_data,
+        'json_data': json_data,
+        'labels': labels,
+        'data': data,
     }
     return render(request, 'Fdashboard/detail.html', context)
 
