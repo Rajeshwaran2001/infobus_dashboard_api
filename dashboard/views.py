@@ -10,7 +10,7 @@ from api.ads.models import Ads
 from api.District.models import District
 from dashboard.forms import FranchiseForm, FranchiseUserForm
 from .models import MyAds
-from utility.models import bus_Detail
+import datetime as dt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from datetime import timedelta, date, datetime
@@ -74,7 +74,8 @@ def view_ad(request, ad_id):
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
-    yesterday = day.strftime("%#d/%#m/%Y")
+    yesterday = day.strftime("%d/%m/%Y")
+    print('yes', yesterday)
     total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
     if not total_count_yesterday:
         total_count_yesterday = 0
@@ -191,84 +192,42 @@ def Franchise_signup_view(request):
 
 def getupdate(request):
     ads = Ads.objects.all()
-    for ad in ads:  # Loop ads
-        # print(ad.AdName)
-        # Prepare the data
+    for ad in ads:
         params = {
             'name': ad.AdName,
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        url = 'https://delta.busads.in/get_adcountv2.php'  # Request url
-        response = requests.get(url, params=params)
-        if response.status_code != 200:
-            # Log the error message for debugging purposes
-            print(f"Error response received with status code {response.status_code}")
-            continue
-        try:
-            data = response.json()
-        except JSONDecodeError:
-            # Log the error message for debugging purposes
-            print(f"Error decoding JSON: {response.text}")
-            continue
-        data = response.json()
-        if data is None:  # To handle if the data is not present
-            print("API returned None")
-            continue
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php']
+        for url in urls:
+            response = requests.get(url, params=params)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                continue
+            try:
+                data = response.json()
+            except JSONDecodeError:
+                print(f"Error decoding JSON: {response.text}")
+                continue
+            if data is None:
+                print("API returned None")
+                continue
+            for item in data:
+                imei = item.get('imei')
+                AdName = ad.AdName
+                bus_no = item.get('bus_no')
+                route_no = item.get('route_no')
+                route_name = item.get('route_name')
+                for key, value in item.items():
+                    if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                        continue
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    count = value
+                    try:
+                        obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day, bus_no=bus_no, route_no=route_no, route_name=route_name, defaults={'Count': count})
+                    except Exception as e:
+                        print("Error creating or updating MyAds object: %s", e)
 
-        #  print(data)  # For Testing Purpose
-
-        for item in data:  # Loop to store data in db
-            imei = item.get('imei')
-            AdName = ad.AdName
-            for key, value in item.items():
-                if key == 'imei':
-                    continue
-                day = key
-                #  date_time = dt.datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
-                count = value
-                try:
-                    obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
-                                                                  defaults={'Count': count})
-                except Exception as e:
-                    logger.error("Error creating or updating MyAds object: %s", e)
-
-        # Make another API call
-        url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
-        response2 = requests.get(url2, params=params)
-        if response2.status_code != 200:
-            # Log the error message for debugging purposes
-            print(f"Error response received with status code {response2.status_code}")
-            continue
-        try:
-            data2 = response2.json()
-        except JSONDecodeError:
-            # Log the error message for debugging purposes
-            print(f"Error decoding JSON: {response2.text}")
-            continue
-        data2 = response2.json()
-        if data2 is None:  # To handle if the data is not present
-            print("API returned None")
-            continue
-
-        #  print(data2)  # For Testing Purpose
-
-        for item2 in data2:  # Loop to store data in db
-            imei = item2.get('imei')
-            AdName = ad.AdName
-            for key, value in item2.items():
-                if key == 'imei':
-                    continue
-                day = key
-                #  date_time = dt.datetime.strptime(day, "%Y-%m-%d").strftime("%d/%m/%Y")
-                count = value
-                try:
-                    obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
-                                                                  defaults={'Count': count})
-                except Exception as e:
-                    logger.error("Error creating or updating MyAds object: %s", e)
-
-    #   print(len(data))
     return render(request, 'apitest/ff.html', {'ads': ads})
 
 
