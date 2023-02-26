@@ -75,8 +75,26 @@ def view_ad(request, ad_id):
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
     yesterday = day.strftime("%d/%m/%Y")
-    print('yes', yesterday)
-    total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
+    # To get last 7 days data by default
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=7)
+
+    end_date_str = end_date.strftime("%d/%m/%Y")
+    start_date_str = start_date.strftime("%d/%m/%Y")
+
+    print(end_date_str)
+    print(start_date_str)
+    # Query the MyAds model to get the required data
+    last_7_day = MyAds.objects.filter(adname=ad.AdName, date_time__range=(start_date_str, end_date_str)).values(
+        'date_time').annotate(count=Sum('Count'))
+    ad_counts_array = []
+    for ad_count in last_7_day:
+        ad_counts_array.append({'count': ad_count['count'], 'date': ad_count['date_time']})
+
+    # print(ad_counts_array)
+    # To get total count for yesterday
+    total_count_yesterday = \
+    MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
     if not total_count_yesterday:
         total_count_yesterday = 0
     # print(myad)
@@ -111,10 +129,10 @@ def view_ad(request, ad_id):
     result = int(api_data) + int(api_data2)
 
     # Create a dictionary with the result
-    data = result
+    today_count = result
 
     # Convert dictionary to JSON
-    json_data = json.dumps(data)
+    json_data = json.dumps(today_count)
 
     params2 = {
         'name': ad.AdName,
@@ -139,8 +157,8 @@ def view_ad(request, ad_id):
 
     # Extract required information from data1 and data2
     result = []
-    for data in [data1, data2]:
-        for item in data:
+    for api__data in [data1, data2]:
+        for item in api__data:
             for key, value in item.items():
                 if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':
                     d = {
@@ -152,18 +170,27 @@ def view_ad(request, ad_id):
                         'count': value,
                     }
                     result.append(d)
-    labels = []
-    data = []
+    labels1 = []
+    data1 = []
     for item in result:
-        labels.append(item['bus_no'])
-        data.append(item['count'])
+        labels1.append(item['bus_no'])
+        data1.append(item['count'])
+    labels2 = []
+    data2 = []
+    for item in ad_counts_array:
+        labels2.append(item['date'])
+        data2.append(item['count'])
     context = {
         'ad': ad,
         'result': result,
         'yesterday': total_count_yesterday,
         'json_data': json_data,
-        'labels': labels,
-        'data': data,
+        'labels': labels1,
+        'data': data1,
+        'labelsc': labels2,
+        'datac': data2,
+        'start_date_str': start_date_str,
+        'end_date_str': end_date_str,
     }
     return render(request, 'Fdashboard/detail.html', context)
 
@@ -302,3 +329,34 @@ def update_bus_count(request):
                     }
                     result.append(d)
     return JsonResponse(result, safe=False)
+
+def get_data(request):
+    if request.method == "POST":
+        # Get the request data as bytes
+        request_body = request.body
+
+        # Parse the JSON data into a dictionary
+        data = json.loads(request_body)
+
+        # Access the start_date, end_date, and ad_name values
+        start_date = data["start_date"]
+        end_date = data["end_date"]
+        ad_name = data["ad_name"]
+        print(start_date,end_date,ad_name)
+
+        data = MyAds.objects.filter(adname=ad_name, date_time__range=(start_date, end_date)).values(
+            'date_time').annotate(count=Sum('Count'))
+        data_array = []
+        for ad_count in data:
+            data_array.append({'count': ad_count['count'], 'date': ad_count['date_time']})
+
+        labels2 = []
+        data2 = []
+        for item in data_array:
+            labels2.append(item['date'])
+            data2.append(item['count'])
+            # Create a dictionary with labels2 and data2
+        chart_data = {'labels': labels2, 'data': data2}
+
+        # Return the chart_data as a JSON response
+        return JsonResponse(chart_data)

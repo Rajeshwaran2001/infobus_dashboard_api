@@ -12,5 +12,6 @@ urlpatterns = [
     path('update', views.getupdate, name='update'),
     path('Fsignup', views.Franchise_signup_view, name='Fsignup'),
     path('today_count', views.update_today_count, name='update_today_count'),
-    path('bus_count', views.update_bus_count, name='update_bus_count')
+    path('bus_count', views.update_bus_count, name='update_bus_count'),
+    path('get_chart_data', views.get_data, name='get_chart_data')
 ]
