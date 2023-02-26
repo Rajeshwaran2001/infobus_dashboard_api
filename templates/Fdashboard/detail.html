@@ -234,6 +234,9 @@
 
                  <button class="btn btn-outline-info btn-sm mb-0" type="button" id="submit-button">Submit</button>
                 </form>
+                <div class="d-flex">
+                <p class="mb-0 text-sm text-danger" id="error-container" style="display: none;"> No data available for selected dates. </p>
+              </div>
             </div>
           </div>
         </div>
@@ -471,13 +474,11 @@ var ctx2 = document.getElementById("chart-line").getContext("2d");
    flatpickr("#start-date", {
     dateFormat: "d/m/Y",
     defaultDate: "{{ start_date }}",
-    position: "below",
     maxDate: new Date(),
   });
   flatpickr("#end-date", {
     dateFormat: "d/m/Y",
     defaultDate: "{{ end_date }}",
-    position: "below",
     maxDate: new Date(),
   });
   const submitButton = document.getElementById("submit-button");
@@ -498,20 +499,25 @@ var ctx2 = document.getElementById("chart-line").getContext("2d");
       },
       body: JSON.stringify({ start_date: startDate, end_date: endDate, ad_name: adName }),
     })
-     .then((response) => response.json())
-.then((data) => {
-  const labels = data.labels;
- const chartData = data.data;
-  const chart = Chart.getChart(ctx2);
-  chart.data.labels = labels;
-chart.data.datasets.find(d => d.id === 'chart-data').data = chartData;
-
-  console.log(data.labelsc,data.datac)
-  chart.update();
-})
-.catch((error) => {
-  console.error(error);
-});
-});
+      .then((response) => response.json())
+  .then((data) => {
+    const hasData = data.has_data;
+    if (hasData) {
+      const labels = data.labels;
+      const chartData = data.data;
+      const chart = Chart.getChart(ctx2);
+      chart.data.labels = labels;
+      chart.data.datasets.find((d) => d.id === "chart-data").data = chartData;
+      chart.update();
+    } else {
+      const errorContainer = document.getElementById("error-container");
+      errorContainer.innerHTML = "No data available for selected dates.";
+      errorContainer.style.display = "block";
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+  });
 </script>
 {% endblock js %}
