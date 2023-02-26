@@ -8,6 +8,9 @@ class MyAds(models.Model):
     imei = models.CharField(max_length=50, null=True, blank=True)
     Count = models.PositiveIntegerField(null=True, blank=True)
     adname = models.CharField(max_length=50, null=True, blank=True)
+    bus_no = models.CharField(max_length=50, null=True, blank=True)
+    route_no = models.CharField(max_length=50, null=True, blank=True)
+    route_name = models.CharField(max_length=50, null=True, blank=True)
     date_time = models.CharField(max_length=150, null=True, blank=True)
 
 
