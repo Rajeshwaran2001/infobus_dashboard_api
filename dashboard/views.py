@@ -31,7 +31,7 @@ def dash(request):
     franchise = Franchise.objects.get(user=request.user)
     districts = franchise.district.all()  # get all associated districts
     ads = Ads.objects.filter(District__in=districts).distinct()
-    print(ads)
+    # print(districts, ads)
     ten_days = []
     five_days = []
     for ad in ads:
@@ -200,7 +200,10 @@ def Franchise_signup_view(request):
             Franchise = FranchiseUser.save(commit=False)
             Franchise.user = user
             Franchise.photo = FranchiseUser.cleaned_data.get('photo')
+            # get the selected districts and add them to the FranchiseUser object
+            selected_districts = FranchiseUser.cleaned_data.get('district')
             Franchise.save()
+            Franchise.district.add(*selected_districts)
             my_group = Group.objects.get_or_create(name='Franchise')
             my_group[0].user_set.add(user)
         return redirect('FDashboard:Flogin')

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Franchise
 from django.contrib.auth.models import User
-
+from api.District.models import District
 
 class FranchiseForm(forms.ModelForm):
     class Meta:
@@ -10,6 +10,8 @@ class FranchiseForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput()
         }
+        district = forms.ModelMultipleChoiceField(queryset=District.objects.all(), required=True,
+                                                  widget=forms.CheckboxSelectMultiple)
 
 
 class FranchiseUserForm(forms.ModelForm):

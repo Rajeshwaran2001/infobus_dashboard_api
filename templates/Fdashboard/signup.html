@@ -47,13 +47,13 @@
                       <input class="form-control" type="file" name="photo" accept="image/*" id="id_photo">
                     </div>
                       <div class="mb-3">
-                                <select class="form-select" name="district" required id="id_district" aria-label="Select district">
-                                    <option  value=""  selected>Select district</option>
-                                    {% for d in dist %}
-                                        <option value="{{ d.id }}">{{ d }}</option>
-                                    {% endfor %}
-                                </select>
-                                    </div>
+                      <label for="exampleFormControlSelect2" class="ms-0">select Districts</label>
+                           <select multiple="" class="form-control pb-4" name="district" required id="id_district" aria-label="Select district">
+                               {% for d in dist %}
+                             <option value="{{ d.id }}">{{ d }}</option>
+                               {% endfor %}
+                           </select>
+                      </div>
 
                     <div class="text-center">
                       <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign Up</button>
