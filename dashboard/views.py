@@ -215,7 +215,11 @@ def getupdate(request):
     unique_cities = bus_Detail.objects.values_list('city', flat=True).distinct()
     print(unique_cities)
     for city in unique_cities:
-        district = District.objects.create(District=city)
+        district, created = District.objects.get_or_create(District=city)
+        if not created:
+            print(f"District '{city}' already exists")
+        else:
+            print(f"District '{city}' created")
     for ad in ads:
         params = {
             'name': ad.AdName,
