@@ -92,14 +92,6 @@ def view_ad(request, ad_id):
         ad_counts_array.append({'count': ad_count['count'], 'date': ad_count['date_time']})
 
     # print(ad_counts_array)
-    # To get total count for yesterday
-    total_count_yesterday = \
-    MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
-    if not total_count_yesterday:
-        total_count_yesterday = 0
-    # print(myad)
-    # print(bus_nos)
-    # print(total_count_yesterday, yesterday)
 
     if ad.myads_count is not None:  # To handle the total count is 0
         if ad.TotalCount:
@@ -170,25 +162,18 @@ def view_ad(request, ad_id):
                         'count': value,
                     }
                     result.append(d)
-    labels1 = []
-    data1 = []
-    for item in result:
-        labels1.append(item['bus_no'])
-        data1.append(item['count'])
-    labels2 = []
-    data2 = []
+
+    labels = []
+    data = []
     for item in ad_counts_array:
-        labels2.append(item['date'])
-        data2.append(item['count'])
+        labels.append(item['date'])
+        data.append(item['count'])
     context = {
         'ad': ad,
         'result': result,
-        'yesterday': total_count_yesterday,
         'json_data': json_data,
-        'labels': labels1,
-        'data': data1,
-        'labelsc': labels2,
-        'datac': data2,
+        'labels': labels,
+        'data': data,
         'start_date_str': start_date_str,
         'end_date_str': end_date_str,
     }
