@@ -21,7 +21,7 @@ class Franchise(models.Model):
     mobile_no_1 = models.CharField(max_length=10, null=False, blank=False)
     mobile_no_2 = models.CharField(max_length=10, null=True, blank=True)
     Date_of_joining = models.DateField(null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    district = models.ManyToManyField(District, null=True, blank=True)
     is_Active = models.BooleanField(default=True)
 
     @property

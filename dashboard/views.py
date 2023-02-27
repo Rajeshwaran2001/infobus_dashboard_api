@@ -9,11 +9,12 @@ from django.shortcuts import render, redirect
 from api.ads.models import Ads
 from api.District.models import District
 from dashboard.forms import FranchiseForm, FranchiseUserForm
-from .models import MyAds
+from .models import MyAds, Franchise
 import datetime as dt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from datetime import timedelta, date, datetime
+from utility.models import bus_Detail
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,11 @@ def is_patner(user):
 @login_required()
 @user_passes_test(is_patner)
 def dash(request):
-    ads = Ads.objects.all()
+    # Get the current user's franchise and district
+    franchise = Franchise.objects.get(user=request.user)
+    districts = franchise.district.all()  # get all associated districts
+    ads = Ads.objects.filter(District__in=districts).distinct()
+    print(ads)
     ten_days = []
     five_days = []
     for ad in ads:
@@ -204,6 +209,10 @@ def Franchise_signup_view(request):
 
 def getupdate(request):
     ads = Ads.objects.all()
+    unique_cities = bus_Detail.objects.values_list('city', flat=True).distinct()
+    print(unique_cities)
+    for city in unique_cities:
+        district = District.objects.create(District=city)
     for ad in ads:
         params = {
             'name': ad.AdName,

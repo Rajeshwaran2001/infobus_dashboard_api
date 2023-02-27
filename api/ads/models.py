@@ -1,5 +1,6 @@
 from django.db import models
 import datetime as dt
+from api.District.models import District
 
 
 # Create your models here.
@@ -13,7 +14,7 @@ class Ads(models.Model):
     ECPD = models.IntegerField(null=True, blank=False)
     ECPM = models.IntegerField(null=True, blank=False)
     BusCount = models.IntegerField(null=True, blank=True)
-    District = models.CharField(max_length=50, null=True, blank=True)
+    District = models.ManyToManyField(District, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Ads"
