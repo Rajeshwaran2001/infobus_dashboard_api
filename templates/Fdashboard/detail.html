@@ -363,11 +363,13 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
 </script>
     <!-- Initialize the date range picker -->
 <script>
+const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
    flatpickr("#start-date", {
     dateFormat: "d/m/Y",
     defaultDate: "{{ start_date }}",
+    minDate: minDate,
     maxDate: new Date(),
-  });
+   });
   flatpickr("#end-date", {
     dateFormat: "d/m/Y",
     defaultDate: "{{ end_date }}",
@@ -412,4 +414,5 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
   });
   });
 </script>
+
 {% endblock js %}

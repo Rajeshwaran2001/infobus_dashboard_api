@@ -27060,7 +27060,7 @@ span.flatpickr-weekday {
 .flatpickr-calendar .flatpickr-day.selected,
 .flatpickr-calendar .flatpickr-day.startRange,
 .flatpickr-calendar .flatpickr-day.endRange {
-  background: #e91e63 !important;
+  background: #03a9f4 !important;
   color: #fff;
   border: none;
 }
