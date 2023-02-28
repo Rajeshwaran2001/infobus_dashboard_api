@@ -9,6 +9,7 @@ urlpatterns = [
     path('dash', views.dash, name='dashboard'),
     path('ad_detail/<int:ad_id>', views.view_ad, name='ad_detail'),
     path('', LoginView.as_view(template_name='common/login.html'), name='Flogin'),
+    path('route', views.route_summary, name="route_summary"),
     path('update', views.getupdate, name='update'),
     path('Fsignup', views.Franchise_signup_view, name='Fsignup'),
     path('today_count', views.update_today_count, name='update_today_count'),

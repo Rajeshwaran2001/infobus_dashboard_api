@@ -15,6 +15,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from datetime import timedelta, date, datetime
 from utility.models import bus_Detail
+import os
+import pandas as pd
+
 
 logger = logging.getLogger(__name__)
 
@@ -184,6 +187,15 @@ def view_ad(request, ad_id):
     }
     return render(request, 'Fdashboard/detail.html', context)
 
+@login_required()
+@user_passes_test(is_patner)
+def route_summary(request):
+    csv_path = os.path.join(os.getcwd(), 'static', 'book.xls')
+    sheets = pd.read_excel(csv_path, sheet_name=None)
+    context = {
+        'sheets': sheets,
+    }
+    return render(request, 'Fdashboard/route.html', context)
 
 def Franchise_signup_view(request):
     userForm = FranchiseForm()
