@@ -192,6 +192,8 @@ def view_ad(request, ad_id):
 def route_summary(request):
     csv_path = os.path.join(os.getcwd(), 'static', 'book.xls')
     sheets = pd.read_excel(csv_path, sheet_name=None)
+    # Replace NaN with empty strings
+    sheets = {sheet_name: sheet_data.fillna('') for sheet_name, sheet_data in sheets.items()}
     context = {
         'sheets': sheets,
     }

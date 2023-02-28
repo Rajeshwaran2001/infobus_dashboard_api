@@ -49,17 +49,17 @@
                   <thead>
                     <tr>
                     {% for col_name in sheet_data.columns %}
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{ col_name }}</th>
+                      <th class="text-uppercase text-dark text-xs font-weight-bolder">{{ col_name }}</th>
                   {% endfor %}
                     </tr>
                   </thead>
                   <tbody>
                   {% for row in sheet_data.values %}
-                    <tr>
+                    <tr class="">
                      {% for cell in row %}
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ cell }}</p>
-                      </td>
+                          <td >
+                      <span class="text-xs text-dark font-weight-bold">{{ cell }}</span>
+                    </td>
                   {% endfor %}
                     </tr>
                   {% endfor %}
