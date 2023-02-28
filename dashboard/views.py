@@ -18,7 +18,6 @@ from utility.models import bus_Detail
 import os
 import pandas as pd
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -187,17 +186,49 @@ def view_ad(request, ad_id):
     }
     return render(request, 'Fdashboard/detail.html', context)
 
+
 @login_required()
 @user_passes_test(is_patner)
 def route_summary(request):
-    csv_path = os.path.join(os.getcwd(), 'static', 'book.xls')
-    sheets = pd.read_excel(csv_path, sheet_name=None)
-    # Replace NaN with empty strings
-    sheets = {sheet_name: sheet_data.fillna('') for sheet_name, sheet_data in sheets.items()}
+    # Get the current user's franchise and district
+    franchise = Franchise.objects.get(user=request.user)
+    districts = franchise.district.all()  # get all associated districts
+
+    # Construct the path to the Excel file based on the districts
+    csv_path = os.path.join(os.getcwd(), 'static', 'excel')
+    sheets = None  # initialize sheets to None
+
+    for district in districts:
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}.xls"
+        file_path = os.path.join(csv_path, file_name)
+
+        try:
+            sheets_district = pd.read_excel(file_path, sheet_name=None)
+            # Replace NaN with empty strings
+            sheets_district = {sheet_name: sheet_data.fillna('') for sheet_name, sheet_data in sheets_district.items()}
+            # Merge the sheets for all districts
+            if sheets is None:
+                sheets = sheets_district
+            else:
+                sheets.update(sheets_district)
+        except:
+            # handle the case where no Excel file is found for the district
+            pass
+
+    selected_sheet = request.GET.get('sheet_name')
+    sheet_data = None
+    if selected_sheet and sheets and selected_sheet in sheets:
+        sheet_data = sheets[selected_sheet]
+
     context = {
         'sheets': sheets,
+        'selected_sheet': selected_sheet,
+        'sheet_data': sheet_data,
     }
+
     return render(request, 'Fdashboard/route.html', context)
+
 
 def Franchise_signup_view(request):
     userForm = FranchiseForm()
@@ -266,7 +297,9 @@ def getupdate(request):
                     day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
                     count = value
                     try:
-                        obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day, bus_no=bus_no, route_no=route_no, route_name=route_name, defaults={'Count': count})
+                        obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
+                                                                      bus_no=bus_no, route_no=route_no,
+                                                                      route_name=route_name, defaults={'Count': count})
                     except Exception as e:
                         print("Error creating or updating MyAds object: %s", e)
 
@@ -304,6 +337,7 @@ def update_today_count(request):
 
     # Return JSON response
     return JsonResponse(json_data, safe=False)
+
 
 def update_bus_count(request):
     today = date.today()
@@ -345,6 +379,7 @@ def update_bus_count(request):
                     result.append(d)
     return JsonResponse(result, safe=False)
 
+
 def get_data(request):
     if request.method == "POST":
         # Get the request data as bytes
@@ -357,7 +392,7 @@ def get_data(request):
         start_date = data["start_date"]
         end_date = data["end_date"]
         ad_name = data["ad_name"]
-        print(start_date,end_date,ad_name)
+        print(start_date, end_date, ad_name)
 
         data = MyAds.objects.filter(adname=ad_name, date_time__range=(start_date, end_date)).values(
             'date_time').annotate(count=Sum('Count'))
@@ -372,7 +407,7 @@ def get_data(request):
             data2.append(item['count'])
             # Create a dictionary with labels2 and data2
         chart_data = {'labels': labels2, 'data': data2}
-        #print(chart_data)
+        # print(chart_data)
 
         # Return the chart_data as a JSON response
         return JsonResponse(chart_data)
