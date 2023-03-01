@@ -1,3 +1,4 @@
+import csv
 import json
 import logging
 from json.decoder import JSONDecodeError
@@ -261,6 +262,50 @@ def route_summary(request):
 
     return render(request, 'Fdashboard/route.html', context)
 
+@login_required()
+@user_passes_test(is_patner)
+def route_summary_filled(request):
+    # Get the current user's franchise and district
+    franchise = Franchise.objects.get(user=request.user)
+    districts = franchise.district.all()  # get all associated districts
+
+    # Construct the path to the Excel file based on the districts
+    csv_path = os.path.join(os.getcwd(), 'static', 'route_summary')
+    sheets = None  # initialize sheets to None
+
+    for district in districts:
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}.csv"
+        file_path = os.path.join(csv_path, file_name)
+        data = []
+
+        with open(file_path, 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader)  # skip the header row
+            for row in reader:
+                data.append(row)
+
+    # Construct the path to the Excel file based on the districts
+    csv_path = os.path.join(os.getcwd(), 'static', 'bus_summary')
+    sheets = None  # initialize sheets to None
+
+    for district in districts:
+            # Assuming that each district's Excel file is named after the district's name
+            file_name = f"{district.District}.csv"
+            file_path = os.path.join(csv_path, file_name)
+            data2 = []
+
+            with open(file_path, 'r') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)  # skip the header row
+                for row in reader:
+                    data2.append(row)
+    context = {
+        'data': data,
+        'data2': data2
+    }
+
+    return render(request, 'Fdashboard/route_filed.html', context)
 
 def Franchise_signup_view(request):
     userForm = FranchiseForm()
