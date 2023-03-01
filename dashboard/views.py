@@ -33,7 +33,37 @@ def dash(request):
     franchise = Franchise.objects.get(user=request.user)
     districts = franchise.district.all()  # get all associated districts
     ads = Ads.objects.filter(District__in=districts).distinct()
+
+    csv_path = os.path.join(os.getcwd(), 'static', 'route_summary')
+    total_spots = 0  # initialize total to zero
+    filled_spots = 0  # initialize total to zero
+    last_modified = None  # initialize last modified time to None
+
+    for district in districts:
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}.csv"
+        file_path = os.path.join(csv_path, file_name)
+        df = pd.read_csv(file_path, nrows=1)
+        # Split column names by colon and extract parts
+        total_col = df.columns[0]  # get the first column name
+        total_spots += int(total_col.split(':')[1])  # extract and add total spots
+        filled_col = df.columns[1]  # get the second column name
+        filled_spots += int(filled_col.split(':')[1])  # extract and add filled spots
+        # Get the last modified time of the file
+        mod_time = os.path.getmtime(file_path)
+        if last_modified is None or mod_time > last_modified:
+            last_modified = mod_time
+
+    # Convert the last modified time to a human-readable format
+    ast_modified_str = None
+    if last_modified is not None:
+         last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
+
     # print(districts, ads)
+    # print(last_modified)
+    free = total_spots - filled_spots
+    percentage = (filled_spots/total_spots)*100
+    # print(percentage)
     ten_days = []
     five_days = []
     for ad in ads:
@@ -70,7 +100,9 @@ def dash(request):
         else:
             ad.percentage = 0
     # getupdate(request)
-    return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days})
+    return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days,
+                                                         'total': total_spots, 'filled': filled_spots, 'free': free,
+                                                         'percentage': percentage, 'last': last_modified_str })
 
 
 @login_required()
@@ -195,7 +227,7 @@ def route_summary(request):
     districts = franchise.district.all()  # get all associated districts
 
     # Construct the path to the Excel file based on the districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'excel')
+    csv_path = os.path.join(os.getcwd(), 'static', 'route_excel')
     sheets = None  # initialize sheets to None
 
     for district in districts:

@@ -41,12 +41,11 @@
             </div>
             <div class="text-end pt-1">
               <p class="text-xl mb-0 text-capitalize text-dark">Availalbe Ad slot</p>
-              <h5 class="mb-0">5000</h5>
+              <h5 class="mb-0">{{ total }}</h5>
             </div>
           </div>
-          <hr class="dark horizontal my-0">
+          <hr class="horizontal my-0">
           <div class="card-footer p-3">
-            <p class="mb-0">Last updated at 3/2/23</p>
           </div>
         </div>
       </div>
@@ -58,12 +57,12 @@
             </div>
             <div class="text-end pt-1">
               <p class="text-xl mb-0 text-capitalize text-dark">Total Filled Ad slot</p>
-              <h5 class="mb-0">2,300</h5>
+              <h5 class="mb-0">{{ filled }}</h5>
             </div>
           </div>
           <hr class="dark horizontal my-0">
           <div class="card-footer p-3">
-            <p class="mb-0">Last updated at 3/2/23</p>
+            <p class="mb-0">Last updated at {{last}}</p>
           </div>
         </div>
       </div>
@@ -75,12 +74,11 @@
             </div>
             <div class="text-end pt-1">
               <p class="text-xl mb-0 text-capitalize text-dark">Total Free Ad slot</p>
-              <h5 class="mb-0">3,462</h5>
+              <h5 class="mb-0">{{ free }}</h5>
             </div>
           </div>
-          <hr class="dark horizontal my-0">
+          <hr class="horizontal my-0">
           <div class="card-footer p-3">
-            <p class="mb-0">Last updated at 3/2/23</p>
           </div>
         </div>
       </div>
@@ -92,12 +90,12 @@
             </div>
             <div class="text-end pt-1">
               <p class="text-xl mb-0 text-capitalize text-dark">Total Filled slots in %</p>
-              <h5 class="mb-0">45%</h5>
+              <h5 class="mb-0">{{ percentage|floatformat }}%</h5>
             </div>
           </div>
           <hr class="dark horizontal my-0">
           <div class="card-footer p-3">
-            <p class="mb-0">Last updated at 3/2/23</p>
+            <p class="mb-0">Last updated at {{ last}}</p>
           </div>
         </div>
       </div>
