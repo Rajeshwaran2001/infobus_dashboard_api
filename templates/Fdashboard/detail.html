@@ -7,22 +7,27 @@
 {% endblock css %}
 {% block content %}
  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
-      <div class="container-fluid py-1 px-3">
+  <!-- Navbar -->
+  <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+    <div class="container-fluid py-1 px-3">
+      <nav aria-label="breadcrumb">
 
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-
-          </div>
-          <ul class="navbar-nav  justify-content-end">
-
+        <h6 class="font-weight-bolder mb-0">{{ ad.AdName }}</h6>
+      </nav>
+      <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+        <div class="ms-md-auto pe-md-3 d-flex align-items-center"></div>
+        <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
-              <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">{{ user.username }}</span>
-              </a>
+                <span class="d-sm-inline d-none text-success">Last Updated: {{ last }}</span>
             </li>
+            &nbsp;
+            &nbsp;
+          <li class="nav-item d-flex align-items-center">
+            <a href="" class="nav-link text-body font-weight-bold px-0">
+              <i class="fa fa-user me-sm-1"></i>
+              <span class="d-sm-inline d-none">{{ user.username }}</span>
+            </a>
+          </li>
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                 <div class="sidenav-toggler-inner">
@@ -51,9 +56,8 @@
                 <h4 class="mb-0" id="sum">{{ json_data }}</h4>
               </div>
             </div>
-            <hr class="dark horizontal my-0">
+            <hr class="horizontal my-0">
             <div class="card-footer p-3">
-
             </div>
           </div>
         </div>
@@ -68,9 +72,8 @@
                 <h5 class="mb-0" data-bs-toggle="tooltip" title="Recorded count / Total count">{{ ad.myads_count}} / {{ ad.TotalCount}}</h5>
               </div>
             </div>
-            <hr class="dark horizontal my-0">
+            <hr class="horizontal my-0">
             <div class="card-footer p-3">
-
             </div>
           </div>
 
@@ -87,9 +90,8 @@
                 <h5 class="mb-0">{{ ad.EndDate|date:"d/m/Y"}}</h5>
               </div>
             </div>
-            <hr class="dark horizontal my-0">
+            <hr class="horizontal my-0">
             <div class="card-footer p-3">
-
             </div>
           </div>
 
@@ -105,9 +107,8 @@
                 <h5 class="mb-0">{{ ad.percentage|floatformat}}%</h5>
               </div>
             </div>
-            <hr class="dark horizontal my-0">
+            <hr class="horizontal my-0">
             <div class="card-footer p-3">
-
             </div>
           </div>
 
@@ -365,13 +366,13 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
 <script>
 const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
    flatpickr("#start-date", {
-    dateFormat: "d/m/Y",
+    dateFormat: "y-m-d",
     defaultDate: "{{ start_date }}",
     minDate: minDate,
     maxDate: new Date(),
    });
   flatpickr("#end-date", {
-    dateFormat: "d/m/Y",
+    dateFormat: "y-m-d",
     defaultDate: "{{ end_date }}",
     maxDate: new Date(),
   });

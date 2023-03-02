@@ -21,6 +21,7 @@ import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -122,19 +123,39 @@ def view_ad(request, ad_id):
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=7)
 
-    end_date_str = end_date.strftime("%d/%m/%Y")
-    start_date_str = start_date.strftime("%d/%m/%Y")
-
-    print(end_date_str)
-    print(start_date_str)
+    param = {
+        'name': ad.AdName,
+        'from': start_date.strftime("%Y-%m-%d"),
+        'to': end_date.strftime("%Y-%m-%d"),
+    }
     # Query the MyAds model to get the required data
-    last_7_day = MyAds.objects.filter(adname=ad.AdName, date_time__range=(start_date_str, end_date_str)).values(
-        'date_time').annotate(count=Sum('Count'))
-    ad_counts_array = []
-    for ad_count in last_7_day:
-        ad_counts_array.append({'count': ad_count['count'], 'date': ad_count['date_time']})
+    urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
+            'https://tvl.busads.in/get_adcountv2.php']
+    for url in urls:
+        response = requests.get(url, params=param)
+        if response.status_code != 200:
+            print(f"Error response received with status code {response.status_code}")
+            continue
+        try:
+            data = response.json()
+        except JSONDecodeError:
+            print(f"Error decoding JSON: {response.text}")
+            continue
+        if data is None:
+            print("API returned None")
+            continue
+        day_counts = defaultdict(int)
+        for item in data:
+            for key, value in item.items():
+                if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                    continue
+                day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                count = int(value)
+                day_counts[day] += count
 
-    # print(ad_counts_array)
+        date_count_array = [{'date': date, 'count': count} for date, count in day_counts.items()]
+
+    # print(date_count_array)
 
     if ad.myads_count is not None:  # To handle the total count is 0
         if ad.TotalCount:
@@ -217,7 +238,7 @@ def view_ad(request, ad_id):
 
     labels = []
     data = []
-    for item in ad_counts_array:
+    for item in date_count_array:
         labels.append(item['date'])
         data.append(item['count'])
     context = {
@@ -226,8 +247,6 @@ def view_ad(request, ad_id):
         'json_data': json_data,
         'labels': labels,
         'data': data,
-        'start_date_str': start_date_str,
-        'end_date_str': end_date_str,
     }
     return render(request, 'Fdashboard/detail.html', context)
 
@@ -511,15 +530,41 @@ def get_data(request):
         ad_name = data["ad_name"]
         print(start_date, end_date, ad_name)
 
-        data = MyAds.objects.filter(adname=ad_name, date_time__range=(start_date, end_date)).values(
-            'date_time').annotate(count=Sum('Count'))
-        data_array = []
-        for ad_count in data:
-            data_array.append({'count': ad_count['count'], 'date': ad_count['date_time']})
+        param = {
+            'name': ad_name,
+            'from': start_date,
+            'to': end_date,
+        }
+        # Query the MyAds model to get the required data
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
+                'https://tvl.busads.in/get_adcountv2.php']
+        for url in urls:
+            response = requests.get(url, params=param)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                continue
+            try:
+                data = response.json()
+            except JSONDecodeError:
+                print(f"Error decoding JSON: {response.text}")
+                continue
+            if data is None:
+                print("API returned None")
+                continue
+            day_counts = defaultdict(int)
+            for item in data:
+                for key, value in item.items():
+                    if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                        continue
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    count = int(value)
+                    day_counts[day] += count
+
+            date_count_array = [{'date': date, 'count': count} for date, count in day_counts.items()]
 
         labels2 = []
         data2 = []
-        for item in data_array:
+        for item in date_count_array:
             labels2.append(item['date'])
             data2.append(item['count'])
             # Create a dictionary with labels2 and data2
