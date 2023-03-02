@@ -13,6 +13,7 @@ urlpatterns = [
     path('route_summary', views.route_summary_filled, name="route_summary_filled"),
     path('update', views.getupdate, name='update'),
     path('Fsignup', views.Franchise_signup_view, name='Fsignup'),
+    path('change', views.change_password, name="change"),
     path('today_count', views.update_today_count, name='update_today_count'),
     path('bus_count', views.update_bus_count, name='update_bus_count'),
     path('get_chart_data', views.get_data, name='get_chart_data')

@@ -18,6 +18,9 @@ from datetime import timedelta, date, datetime
 from utility.models import bus_Detail
 import os
 import pandas as pd
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 logger = logging.getLogger(__name__)
 
@@ -306,6 +309,25 @@ def route_summary_filled(request):
     }
 
     return render(request, 'Fdashboard/route_filed.html', context)
+
+
+@login_required()
+@user_passes_test(is_patner)
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to maintain user session
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('FDashboard:dashboard')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    context = {'form': form}
+    return render(request, 'change_password.html', context)
+
 
 def Franchise_signup_view(request):
     userForm = FranchiseForm()
