@@ -32,3 +32,5 @@ urlpatterns = [
                   path('customer-view/', views.customer_view, name='customer-view')
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
