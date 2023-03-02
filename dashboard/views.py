@@ -155,13 +155,15 @@ def view_ad(request, ad_id):
     api_data = requests.get(url1, params=params).json()
     url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
     api_data2 = requests.get(url2, params=params).json()
+    url3 = 'https://delta.busads.in/get_adcountv2.php'
+    api_data3 = requests.get(url3, params=params).json()
 
     # Print API responses to console
     # print(api_data)
     # print(api_data2)
 
     # Add the two API responses
-    result = int(api_data) + int(api_data2)
+    result = int(api_data) + int(api_data2) + int(api_data3)
 
     # Create a dictionary with the result
     today_count = result
@@ -190,9 +192,16 @@ def view_ad(request, ad_id):
     except ValueError:
         data2 = []
 
+    url3 = 'https://tvl.busads.in/get_adcountv2.php'
+    response2 = requests.get(url3, params2)
+    try:
+        data3 = response2.json()
+    except ValueError:
+        data3 = []
+
     # Extract required information from data1 and data2
     result = []
-    for api__data in [data1, data2]:
+    for api__data in [data1, data2, data3]:
         for item in api__data:
             for key, value in item.items():
                 if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':
@@ -370,7 +379,7 @@ def getupdate(request):
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php']
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php', 'https://tvl.busads.in/get_adcountv2.php']
         for url in urls:
             response = requests.get(url, params=params)
             if response.status_code != 200:
@@ -419,14 +428,16 @@ def update_today_count(request):
     api_data1 = requests.get(url1, params=params).json()
     url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
     api_data2 = requests.get(url2, params=params).json()
-    print(api_data1, api_data2)
+    url3 = 'https://tvl.busads.in/get_adcountv2.php'
+    api_data3 = requests.get(url3, params=params).json()
+    # print(api_data1, api_data2)
 
     # Print API responses to console
     # print(api_data)
     # print(api_data2)
 
     # Add the two API responses
-    result = int(api_data1) + int(api_data2)
+    result = int(api_data1) + int(api_data2) + int(api_data3)
 
     # Create a dictionary with the result
     data = result
@@ -462,9 +473,16 @@ def update_bus_count(request):
     except ValueError:
         data2 = []
 
+    url3 = 'https://tvl.busads.in/get_adcountv2.php'
+    response2 = requests.get(url3, params)
+    try:
+        data3 = response2.json()
+    except ValueError:
+        data3 = []
+
     # Extract required information from data1 and data2
     result = []
-    for data in [data1, data2]:
+    for data in [data1, data2, data3]:
         for item in data:
             for key, value in item.items():
                 if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':

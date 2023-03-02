@@ -140,7 +140,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                  {% for bus in result %}
+                  {% for bus in result|dictsort:"bus_no" %}
                       <tr>
                       <td class="align-middle text-center text-sm">
                         <div class="d-flex flex-column justify-content-center">

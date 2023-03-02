@@ -43,11 +43,11 @@
           </div>
           <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">
-                <table class="table align-items-center text-center mb-0">
+                <table class="table align-items-center text-center mb-0" id="my-table">
                   <thead>
                     <tr>
                       <th class="text-uppercase text-dark text-xs font-weight-bolder">S.No</th>
-                      <th class="text-uppercase text-dark text-xs font-weight-bolder">Route</th>
+                        <th class="text-uppercase text-dark text-xs font-weight-bolder">Route &nbsp;<a href="#" onclick="sortTable(2, 'asc')"><i class="fa fa-sort" id="sortButton"></i></a></th>
                       <th class="text-uppercase text-dark text-xs font-weight-bolder">Available slot</th>
                       <th class="text-uppercase text-dark text-xs font-weight-bolder">Filled slot</th>
                       <th class="text-uppercase text-dark text-xs font-weight-bolder">Free slot</th>
@@ -138,5 +138,64 @@
 
 {% endblock %}
 {% block js %}
+    <script>
+function sortTable(columnIndex, sortOrder) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("my-table");
+  switching = true;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("td")[columnIndex];
+      y = rows[i + 1].getElementsByTagName("td")[columnIndex];
 
+      if (sortOrder === "asc") {
+        if (isNumber(x.innerHTML) && isNumber(y.innerHTML)) {
+          if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (isString(x.innerHTML) && isString(y.innerHTML)) {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (isNumber(x.innerHTML) && isString(y.innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      } else if (sortOrder === "desc") {
+        if (isNumber(x.innerHTML) && isNumber(y.innerHTML)) {
+          if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (isString(x.innerHTML) && isString(y.innerHTML)) {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            shouldSwitch = true;
+            break;
+          }
+        } else if (isString(x.innerHTML) && isNumber(y.innerHTML)) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+
+function isNumber(value) {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+function isString(value) {
+  return isNaN(parseFloat(value));
+}
+    </script>
 {% endblock %}

@@ -60,4 +60,12 @@ def getstatus(request):
         # Data was successfully stored, do something with it
         print(f"Data retrieved from {url2} and stored in the database")
 
+    url3 = 'https://tvl.busads.in/get_status.php'
+    data3 = fetch_and_store_data(url3)
+    if isinstance(data3, str):  # Check if an error message was returned
+        print(data3)  # Log the error message for debugging purposes
+    else:
+        # Data was successfully stored, do something with it
+        print(f"Data retrieved from {url3} and stored in the database")
+
     return render(request, 'apitest/ff.html')
