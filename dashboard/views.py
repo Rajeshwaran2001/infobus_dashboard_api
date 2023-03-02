@@ -265,12 +265,12 @@ def route_summary(request):
     districts = franchise.district.all()  # get all associated districts
 
     # Construct the path to the Excel file based on the districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'route_excel')
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
     sheets = None  # initialize sheets to None
 
     for district in districts:
         # Assuming that each district's Excel file is named after the district's name
-        file_name = f"{district.District}.xls"
+        file_name = f"{district.District}_filllist.xls"
         file_path = os.path.join(csv_path, file_name)
 
         try:
@@ -308,12 +308,12 @@ def route_summary_filled(request):
     districts = franchise.district.all()  # get all associated districts
 
     # Construct the path to the Excel file based on the districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'route_summary')
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
     sheets = None  # initialize sheets to None
 
     for district in districts:
         # Assuming that each district's Excel file is named after the district's name
-        file_name = f"{district.District}.csv"
+        file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
         data = []
 
@@ -324,7 +324,7 @@ def route_summary_filled(request):
                 data.append(row)
 
     # Construct the path to the Excel file based on the districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'bus_summary')
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
     sheets = None  # initialize sheets to None
 
     for district in districts:
