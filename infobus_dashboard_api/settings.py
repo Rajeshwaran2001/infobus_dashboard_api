@@ -157,3 +157,27 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(hours=1),
     },
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': './file.log', # Relative path to the file
+        },
+    },
+    'loggers': {
+        'myapp': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'myapp1': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}

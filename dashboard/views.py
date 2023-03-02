@@ -135,14 +135,17 @@ def view_ad(request, ad_id):
         response = requests.get(url, params=param)
         if response.status_code != 200:
             print(f"Error response received with status code {response.status_code}")
+            logger.error(f"Error response received with status code {response.status_code}")
             continue
         try:
             data = response.json()
         except JSONDecodeError:
             print(f"Error decoding JSON: {response.text}")
+            logger.warning(f"Error decoding JSON: {response.text}")
             continue
         if data is None:
             print("API returned None")
+            logger.warning('API returned None')
             continue
         day_counts = defaultdict(int)
         for item in data:
@@ -205,6 +208,7 @@ def view_ad(request, ad_id):
         data1 = response1.json()
     except ValueError:
         data1 = []
+        logger.warning('Value error')
 
     url2 = 'https://delta.busads.in/get_adcountv2.php'
     response2 = requests.get(url2, params2)
@@ -212,6 +216,7 @@ def view_ad(request, ad_id):
         data2 = response2.json()
     except ValueError:
         data2 = []
+        logger.warning('Value error')
 
     url3 = 'https://tvl.busads.in/get_adcountv2.php'
     response2 = requests.get(url3, params2)
@@ -219,6 +224,7 @@ def view_ad(request, ad_id):
         data3 = response2.json()
     except ValueError:
         data3 = []
+        logger.warning('Value error')
 
     # Extract required information from data1 and data2
     result = []
@@ -278,6 +284,7 @@ def route_summary(request):
                 sheets.update(sheets_district)
         except:
             # handle the case where no Excel file is found for the district
+            logger.warning('Sheet Not Found')
             pass
 
     selected_sheet = request.GET.get('sheet_name')
@@ -403,6 +410,7 @@ def getupdate(request):
             response = requests.get(url, params=params)
             if response.status_code != 200:
                 print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
                 continue
             try:
                 data = response.json()
@@ -429,6 +437,7 @@ def getupdate(request):
                                                                       route_name=route_name, defaults={'Count': count})
                     except Exception as e:
                         print("Error creating or updating MyAds object: %s", e)
+                        logger.error("Error creating or updating MyAds object: %s", e)
 
     return render(request, 'apitest/ff.html', {'ads': ads})
 
@@ -484,6 +493,7 @@ def update_bus_count(request):
         data1 = response1.json()
     except ValueError:
         data1 = []
+        logger.warning('Value error')
 
     url2 = 'https://delta.busads.in/get_adcountv2.php'
     response2 = requests.get(url2, params)
@@ -491,6 +501,7 @@ def update_bus_count(request):
         data2 = response2.json()
     except ValueError:
         data2 = []
+        logger.warning('Value error')
 
     url3 = 'https://tvl.busads.in/get_adcountv2.php'
     response2 = requests.get(url3, params)
@@ -498,6 +509,7 @@ def update_bus_count(request):
         data3 = response2.json()
     except ValueError:
         data3 = []
+        logger.warning('Value error')
 
     # Extract required information from data1 and data2
     result = []
@@ -542,6 +554,7 @@ def get_data(request):
             response = requests.get(url, params=param)
             if response.status_code != 200:
                 print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
                 continue
             try:
                 data = response.json()
