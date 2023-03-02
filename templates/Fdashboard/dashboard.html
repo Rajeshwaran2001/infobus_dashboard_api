@@ -106,20 +106,16 @@
       </div>
     </div>
     <div class="row mt-4"></div>
-    <div class="row mb-4">
-      <div class="col-lg-10 col-md-6 mb-md-0 mb-4 scroll">
-        <div class="card">
+    <div class="row">
+      <div class="col-lg-10 col-md-10 mb-md-0 mb-4 scroll">
+        <div class="card h-100">
           <div class="card-header pb-0">
-            <div class="row">
-              <div class="text-center">
-                <h5>AD List</h5>
-              </div>
-            </div>
+                <h5 class="text-center">AD List</h5>
           </div>
           <div class="card-body px-0 pb-2">
-            <div class="table-responsive">
-              <table class="table align-items-center text-center mb-0">
-                <thead>
+              <div class="table-responsive p-0">
+                <table class="table align-items-center text-center mb-0">
+                  <thead>
                   <tr>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">ID</th>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder ps-2">Ad Name</th>
@@ -131,16 +127,15 @@
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">No Day</th>
                   </tr>
                 </thead>
-                <tbody> {% for a in ads %}
+                <tbody>
+                {% for a in ads %}
                     <tr>
-                    <td>
-                        <div>
-                          <h6 class="mb-0 text-sm">{{ forloop.counter }}</h6>
-                        </div>
+                    <td class="align-middle text-center text-sm">
+                      <span class="text-xs text-dark font-weight-bold">{{ forloop.counter }}</span>
                     </td>
                     <td class="align-middle text-center text-sm">
-                      <a class="font-weight-bold" href="{% url 'FDashboard:ad_detail' a.id %}">
-                        <p class="text-xs text-dark font-weight-bold"> {{ a.AdName }} </p>
+                       <a class="font-weight-bold" href="{% url 'FDashboard:ad_detail' a.id %}">
+                        <span class="text-xs text-dark font-weight-bold"> {{ a.AdName }} </span>
                       </a>
                     </td>
                     <td class="align-middle text-center text-sm">
