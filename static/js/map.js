@@ -18,6 +18,12 @@ function initMap() {
     center: { lat: 9.939093, lng: 78.121719 }
   });
 }
+  window.onload = function() {
+  // Load the Google Maps API
+  var script = document.createElement('script');
+  script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap';
+  document.body.appendChild(script);
+};
 
 // Get the element whose class needs to be changed
 const elementToChange = document.querySelector('.contain');
@@ -80,6 +86,7 @@ async function fetchData() {
   const urls = [
     'https://track.siliconharvest.net/get_status.php',
     'https://delta.busads.in/get_status.php',
+    'https://tvl.busads.in/get_status.php',
   ];
 
   try {
@@ -142,8 +149,10 @@ async function fetchData() {
         map.fitBounds(bounds);
       } else if (markers.length === 1) {
         const position = markers[0].getPosition();
-        map.setCenter(position);
-        map.setZoom(15);
+        if (map) {
+          map.setCenter(position);
+          map.setZoom(15);
+        }
       } else {
         console.error('No positions found.');
       }
