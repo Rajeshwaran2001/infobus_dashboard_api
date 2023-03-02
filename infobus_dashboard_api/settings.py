@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -142,9 +143,17 @@ CORS_ALLOW_ALL_ORIGINS = True
 # fCOOKIES FOR FRONTEND
 CORS_ALLOW_CREDENTIALS = True
 
+# Redis config
+BROKER_URL = 'redis+socket:///home/busadsi1/.redis/redis.sock'
+CELERY_RESULT_BACKEND = 'redis+socket:///home/busadsi1/.redis/redis.sock'
+
 CELERY_BEAT_SCHEDULE = {
-    'send-data-to-api-task': {
-        'task': 'send_data_to_api',
-        'schedule': crontab(minute='*/60'),  # run every 5 minutes
+    'getupdate-task': {
+        'task': 'dashboard.tasks.getupdate',
+        'schedule': timedelta(minutes=30),
+    },
+    'getstatus-task': {
+        'task': 'dashboard.tasks.getstatus',
+        'schedule': timedelta(hours=1),
     },
 }

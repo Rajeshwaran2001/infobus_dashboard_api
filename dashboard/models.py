@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from api.District.models import District
+
+
 # Create your models here.
 
 
@@ -21,12 +23,12 @@ class Franchise(models.Model):
     mobile_no_1 = models.CharField(max_length=10, null=False, blank=False)
     mobile_no_2 = models.CharField(max_length=10, null=True, blank=True)
     Date_of_joining = models.DateField(null=True, blank=True)
-    district = models.ManyToManyField(District, null=True, blank=True)
+    district = models.ManyToManyField(District, blank=True)
     is_Active = models.BooleanField(default=True)
 
     @property
     def get_name(self):
-        return self.user.first_name+" "+self.user.last_name
+        return self.user.first_name + " " + self.user.last_name
 
     @property
     def get_instance(self):
@@ -34,3 +36,13 @@ class Franchise(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class TaskResult(models.Model):
+    timestamp = models.DateTimeField()
+    name = models.CharField(max_length=255)
+    status = models.CharField(max_length=10)
+    result = models.TextField()
+
+    def __str__(self):
+        return f'{self.name} - {self.status} - {self.timestamp}'

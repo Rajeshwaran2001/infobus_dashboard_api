@@ -14,7 +14,7 @@ class Ads(models.Model):
     ECPD = models.IntegerField(null=True, blank=False)
     ECPM = models.IntegerField(null=True, blank=False)
     BusCount = models.IntegerField(null=True, blank=True)
-    District = models.ManyToManyField(District, null=True, blank=True)
+    District = models.ManyToManyField(District, blank=True)
 
     class Meta:
         verbose_name_plural = "Ads"
