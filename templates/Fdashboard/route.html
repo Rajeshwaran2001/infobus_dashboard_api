@@ -46,6 +46,7 @@
                     <div class="input-group input-group-outline my-3">
                       <select class="form-control" id="sheet-select" name="sheet_name">
                 <option value="">Select a sheet</option>
+                 <option value="All">All</option>
                 {% for sheet_name in sheets.keys %}
                   <option value="{{ sheet_name }}">{{ sheet_name }}</option>
                 {% endfor %}
@@ -60,16 +61,26 @@
                     </div>
                </div>
               </form>
-              <div class="text-center">
-               {% if selected_sheet %}
-                <h5>Route: {{ selected_sheet}}</h5>
-               {% endif %}
-              </div>
             {% else %}
                 <h1>Contact admin to update data.</h1>
             {% endif %}
           </div>
-          <div class="card-body px-0 pb-2">
+        </div>
+      </div>
+      </div>
+    <div class="row mt-4"></div>
+    {% if selected_sheet %}
+    {% if selected_sheet == "All" %}
+    {% for sheet_name, sheet_data in sheets.items %}
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
+                <h4 class="text-white text-center text-capitalize ps-3">Route: {{ sheet_name }}</h4>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center text-center mb-0">
                   <thead>
@@ -83,9 +94,9 @@
                   {% for row in sheet_data.values %}
                     <tr>
                      {% for cell in row %}
-                    <td>
-                      <span class="text-xs text-dark font-weight-bold">{{ cell }}</span>
-                    </td>
+                      <td>
+                        <p class="text-xs text-dark font-weight-bold mb-1">{{ cell }}</p>
+                      </td>
                   {% endfor %}
                     </tr>
                   {% endfor %}
@@ -93,9 +104,48 @@
                 </table>
               </div>
             </div>
+          </div>
         </div>
       </div>
+     {% endfor %}
+        {% else %}
+        <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
+                <h4 class="text-white text-center text-capitalize ps-3">Route: {{ selected_sheet}}</h4>
+              </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center text-center mb-0">
+                  <thead>
+                    <tr>
+                    {% for col_name in sheet_data.columns %}
+                      <th class="text-uppercase text-dark text-xs font-weight-bolder">{{ col_name }}</th>
+                  {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for row in sheet_data.values %}
+                    <tr>
+                     {% for cell in row %}
+                      <td>
+                        <p class="text-xs text-dark font-weight-bold mb-1">{{ cell }}</p>
+                      </td>
+                  {% endfor %}
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    {% endif %}
+{% endif %}
     </div>
   </main>
 
