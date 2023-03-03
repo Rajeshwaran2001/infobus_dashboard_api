@@ -17,11 +17,11 @@ from django.utils import timezone
 from datetime import timedelta, date, datetime
 from utility.models import bus_Detail
 import os
-import pandas as pd
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from collections import defaultdict
+import xlrd
 
 logger = logging.getLogger(__name__)
 
@@ -39,30 +39,34 @@ def dash(request):
     districts = franchise.district.all()  # get all associated districts
     ads = Ads.objects.filter(District__in=districts).distinct()
 
-    csv_path = os.path.join(os.getcwd(), 'static', 'route_summary')
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
     total_spots = 0  # initialize total to zero
     filled_spots = 0  # initialize total to zero
     last_modified = None  # initialize last modified time to None
 
     for district in districts:
         # Assuming that each district's Excel file is named after the district's name
-        file_name = f"{district.District}.csv"
+        file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
-        df = pd.read_csv(file_path, nrows=1)
-        # Split column names by colon and extract parts
-        total_col = df.columns[0]  # get the first column name
-        total_spots += int(total_col.split(':')[1])  # extract and add total spots
-        filled_col = df.columns[1]  # get the second column name
-        filled_spots += int(filled_col.split(':')[1])  # extract and add filled spots
+
+        with open(file_path, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            row = next(reader)
+            # Split column names by colon and extract parts
+            total_col = row[0]  # get the first column name
+            total_spots += int(total_col.split(':')[1])  # extract and add total spots
+            filled_col = row[1]  # get the second column name
+            filled_spots += int(filled_col.split(':')[1])  # extract and add filled spots
+
         # Get the last modified time of the file
         mod_time = os.path.getmtime(file_path)
         if last_modified is None or mod_time > last_modified:
             last_modified = mod_time
 
     # Convert the last modified time to a human-readable format
-    ast_modified_str = None
+    last_modified_str = None
     if last_modified is not None:
-         last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
+        last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
 
     # print(districts, ads)
     # print(last_modified)
@@ -116,6 +120,29 @@ def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
+    # Get the current user's franchise and district
+    franchise = Franchise.objects.get(user=request.user)
+    districts = franchise.district.all()  # get all associated districts
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
+    total_spots = 0  # initialize total to zero
+    filled_spots = 0  # initialize total to zero
+    last_modified = None  # initialize last modified time to None
+
+    for district in districts:
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}_summary.csv"
+        file_path = os.path.join(csv_path, file_name)
+
+
+        # Get the last modified time of the file
+        mod_time = os.path.getmtime(file_path)
+        if last_modified is None or mod_time > last_modified:
+            last_modified = mod_time
+
+    # Convert the last modified time to a human-readable format
+    last_modified_str = None
+    if last_modified is not None:
+        last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
     yesterday = day.strftime("%d/%m/%Y")
@@ -253,6 +280,7 @@ def view_ad(request, ad_id):
         'json_data': json_data,
         'labels': labels,
         'data': data,
+        'last': last_modified_str
     }
     return render(request, 'Fdashboard/detail.html', context)
 
@@ -266,7 +294,7 @@ def route_summary(request):
 
     # Construct the path to the Excel file based on the districts
     csv_path = os.path.join(os.getcwd(), 'static', 'data')
-    sheets = None  # initialize sheets to None
+    sheets = {}  # initialize sheets as a dictionary
 
     for district in districts:
         # Assuming that each district's Excel file is named after the district's name
@@ -274,14 +302,25 @@ def route_summary(request):
         file_path = os.path.join(csv_path, file_name)
 
         try:
-            sheets_district = pd.read_excel(file_path, sheet_name=None)
+            # Open the Excel file using xlrd
+            workbook = xlrd.open_workbook(file_path)
             # Replace NaN with empty strings
-            sheets_district = {sheet_name: sheet_data.fillna('') for sheet_name, sheet_data in sheets_district.items()}
+            sheets_district = {}
+            for sheet_name in workbook.sheet_names():
+                sheet = workbook.sheet_by_name(sheet_name)
+                header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
+                sheet_data = []
+                for row in range(1, sheet.nrows):
+                    row_data = [sheet.cell(row, col).value for col in range(sheet.ncols)]
+                    sheet_data.append(row_data)
+                sheets_district[sheet_name] = {'header': header, 'data': sheet_data}
+
             # Merge the sheets for all districts
-            if sheets is None:
-                sheets = sheets_district
-            else:
-                sheets.update(sheets_district)
+            for sheet_name, sheet_data in sheets_district.items():
+                if sheet_name in sheets:
+                    sheets[sheet_name]['data'].extend(sheet_data['data'])
+                else:
+                    sheets[sheet_name] = sheet_data
         except:
             # handle the case where no Excel file is found for the district
             logger.warning('Sheet Not Found')
@@ -289,7 +328,7 @@ def route_summary(request):
 
     selected_sheet = request.GET.get('sheet_name')
     sheet_data = None
-    if selected_sheet and sheets and selected_sheet in sheets:
+    if selected_sheet and selected_sheet in sheets:
         sheet_data = sheets[selected_sheet]
 
     context = {
