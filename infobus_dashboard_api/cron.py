@@ -2,14 +2,20 @@ from json import JSONDecodeError
 import datetime as dt
 import datetime
 import requests
-from celery.app import shared_task
 from api.District.models import District
 from api.ads.models import Ads
 from dashboard.models import MyAds, TaskResult
 from utility.models import bus_Detail
+import sqlite3
 
+# Create a connection to the database
+conn = sqlite3.connect('db.sqlite3')
 
-@shared_task
+# Create a table for storing task results
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS task_result
+             (task_name TEXT, timestamp TEXT, result TEXT)''')
+
 def getupdate():
     try:
         ads = Ads.objects.all()
@@ -56,17 +62,18 @@ def getupdate():
                         try:
                             obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
                                                                           bus_no=bus_no, route_no=route_no,
-                                                                          route_name=route_name, defaults={'Count': count})
+                                                                          route_name=route_name,
+                                                                          defaults={'Count': count})
                         except Exception as e:
                             print("Error creating or updating MyAds object: %s", e)
-        store_task_result('getupdate', 'success')
+        store_task_result('getupdate', 'success', conn)
+        print('succes')
         return "getupdate Task completed successfully"
     except Exception as e:
         store_task_result('getupdate', 'failed', str(e))
         raise
 
 
-@shared_task()
 def getstatus(request):
     urls = ['https://delta.busads.in/get_status.php',
             'https://track.siliconharvest.net/get_status.php',
@@ -82,10 +89,10 @@ def getstatus(request):
             data = response.json()
         except JSONDecodeError:
             # Log the error message for debugging purposes
-            error_messages.append(f"Error decoding JSON from {url}: {response.text}")
+            error_messages.append(f"Error decoding JSON from getstatus: {response.text}")
             continue
         if data is None:  # To handle if the data is not present
-            error_messages.append(f"API returned None from {url}")
+            error_messages.append(f"API returned None getstatus from  {url}")
             continue
         for item in data:  # Loop to store data in db
             bus_no = item.get('bus_no')
@@ -112,9 +119,12 @@ def getstatus(request):
         return "Data retrieved from URLs and stored in the database"
 
 
-
-def store_task_result(task_result):
+def store_task_result(task_name, result, conn):
+    c = conn.cursor()
     timestamp = datetime.now()
-    result = task_result
-    task_result = TaskResult(timestamp=timestamp, result=result)
-    task_result.save()
+    c.execute("INSERT INTO task_result (task_name, timestamp, result) VALUES (?, ?, ?)", (task_name, timestamp, result))
+    conn.commit()
+
+
+# Close the database connection
+conn.close()

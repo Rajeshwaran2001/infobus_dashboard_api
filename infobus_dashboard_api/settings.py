@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,7 +45,7 @@ INSTALLED_APPS = [
     'api.District',
     'dashboard.apps.DashboardConfig',
     'utility.apps.UtilityConfig',
-    'django_celery_beat'
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -145,20 +144,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 # fCOOKIES FOR FRONTEND
 CORS_ALLOW_CREDENTIALS = True
 
-# Redis config
-BROKER_URL = 'redis+socket:///home/busadsi1/.redis/redis.sock'
-CELERY_RESULT_BACKEND = 'redis+socket:///home/busadsi1/.redis/redis.sock'
-
-CELERY_BEAT_SCHEDULE = {
-    'getupdate-task': {
-        'task': 'dashboard.tasks.getupdate',
-        'schedule': timedelta(minutes=30),
-    },
-    'getstatus-task': {
-        'task': 'dashboard.tasks.getstatus',
-        'schedule': timedelta(hours=1),
-    },
-}
+CRONJOBS = [
+    ('*/30 * * * *', 'infobus_dashboard_api.cron.getupdate', f'>>{os.path.join(BASE_DIR, "tast1.log")}'),
+    ('*/60 * * * *', 'infobus_dashboard_api.cron.getstatus', f'>>{os.path.join(BASE_DIR, "tast2.log")}'),
+]
 
 LOGGING = {
     'version': 1,
