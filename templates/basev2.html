@@ -18,10 +18,13 @@
      {% block css %}{% endblock css %}
 </head>
 <body class="g-sidenav-show  bg-gray-200">
-
+<main class="main-content  mt-0">
 {% block content %}
 
 {% endblock %}
+
+{% include 'include/footer.html' %}
+</main>
 </body>
  <!--   Core JS Files   -->
   <script src="{% static 'js/core/popper.min.js' %}"></script>

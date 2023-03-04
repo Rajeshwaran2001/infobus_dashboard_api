@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
       <div class="container-fluid py-1 px-3">
@@ -12,13 +11,17 @@
 
           </div>
           <ul class="navbar-nav  justify-content-end">
-
-            <li class="nav-item d-flex align-items-center">
-              <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">{{ user.username }}</span>
-              </a>
+            <li class="nav-item d-flex align-items-center text-dark">
+                  <span class="d-sm-inline d-none"><span class="text-success">Welcome!</span>&nbsp;{{ user.username }}</span>
             </li>
+              &nbsp; &nbsp;
+               <li class="nav-item d-flex align-items-center">
+              <a class="btn btn-outline-danger btn-sm mb-0 me-3" target="_blank" href="{% url 'Logout' %}">LogOut</a>
+            </li>
+               <li class="nav-item d-flex align-items-center">
+              <a class="btn btn-outline-warning btn-sm mb-0 me-3" target="_blank" href="{% url 'FDashboard:change' %}">Change Password</a>
+            </li>
+
             <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                 <div class="sidenav-toggler-inner">
@@ -147,7 +150,6 @@
     {% endif %}
 {% endif %}
     </div>
-  </main>
 
 {% endblock %}
 {% block js %}

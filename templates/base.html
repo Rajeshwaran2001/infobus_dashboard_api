@@ -22,9 +22,13 @@
 </head>
 <body class="g-sidenav-show  bg-gray-200">
 {% include 'include/Navbar.html' %}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 {% block content %}
 
 {% endblock %}
+{% include 'include/footer.html' %}
+
+</main>
 </body>
  <!--   Core JS Files   -->
   <script src="{% static 'js/core/popper.min.js' %}"></script>
