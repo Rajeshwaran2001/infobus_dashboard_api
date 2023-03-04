@@ -193,7 +193,7 @@
               </div>
             </div>
             <div class="card-body">
-              <h6 class="mb-0 ">From - {{ start_date_str }} To - {{ end_date_str }}</h6>
+                <h6 class="mb-0 ">From - <span id="start-date-text">{{ start_date }}</span> To - <span id="end-date-text">{{ end_date }}</span></h6>
               <!-- Create a form with date range inputs and a submit button -->
                 <form id="date-range-form">
                     <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdName }}">
@@ -380,6 +380,8 @@ const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
   const startDateInput = document.getElementById("start-date");
   const endDateInput = document.getElementById("end-date");
   const adNameInput = document.getElementById("ad-name");
+  const startDateText = document.getElementById("start-date-text");
+const endDateText = document.getElementById("end-date-text");
 
   submitButton.addEventListener("click", () => {
     const startDate = startDateInput.value;
@@ -404,6 +406,9 @@ const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
       chart.data.labels = labels;
       chart.data.datasets.find((d) => d.id === "chart-data").data = chartData;
       chart.update();
+      // Update date range text
+      startDateText.textContent = startDate;
+      endDateText.textContent = endDate;
     } else {
       const errorContainer = document.getElementById("error-container");
       errorContainer.innerHTML = "No data available for selected dates.";

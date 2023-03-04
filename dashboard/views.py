@@ -149,6 +149,8 @@ def view_ad(request, ad_id):
     # To get last 7 days data by default
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=7)
+    start_str = start_date.strftime('%d/%m/%y')
+    end_str = end_date.strftime('%d/%m/%y')
 
     param = {
         'name': ad.AdName,
@@ -280,7 +282,9 @@ def view_ad(request, ad_id):
         'json_data': json_data,
         'labels': labels,
         'data': data,
-        'last': last_modified_str
+        'last': last_modified_str,
+        'start_date': start_str,
+        'end_date': end_str
     }
     return render(request, 'Fdashboard/detail.html', context)
 
