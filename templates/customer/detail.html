@@ -165,6 +165,7 @@
       </div>
     </div>
   </main>
+    <div id="district-data" data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/map.js' %}"></script>

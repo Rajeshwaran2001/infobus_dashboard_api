@@ -1,4 +1,6 @@
-
+const districtDataElement = document.getElementById('district-data');
+const districts = districtDataElement.getAttribute('data-districts').split(',');
+//console.log(districts);
 
  // Declare a variable to store the interval ID
 let updateInterval;
@@ -42,7 +44,7 @@ checkboxes.forEach(checkbox => {
       checkedValues.push(checkbox.value);
       console.log(checkedValues);
 
-      fetchData();
+      fetchData(districts);
 
       // Show the map container
       document.querySelector('.map-container').style.display = 'block';
@@ -82,7 +84,7 @@ checkboxes.forEach(checkbox => {
 
 let markers = [];
 
-async function fetchData() {
+async function fetchData(districts) {
   const urls = [
     'https://track.siliconharvest.net/get_status.php',
     'https://delta.busads.in/get_status.php',
@@ -93,14 +95,17 @@ async function fetchData() {
     const responses = await Promise.all(urls.map(url => fetch(url)));
     const data = await Promise.all(responses.map(response => response.json()));
     const allData = data.flat();
-    const filteredData = allData.filter(item => item.city !== 'Testing');
+    //console.log('Districts:', districts);
+const filteredData = allData.filter(item => item.city !== 'Testing' &&
+    (Array.isArray(districts) ? districts.includes(item.city) : false));
+//console.log('Filtered Data:', filteredData);
     const newPositions = filteredData.filter(item => checkedValues.includes(item.bus_no))
       .map(item => {
         const [latitude, longitude] = item.position.split(',');
         return { bus_no: item.bus_no, latitude, longitude, station: item.station, date_time: item.date_time };
       });
     console.log(newPositions);
-    console.log(data)
+    //console.log(data)
 
     markers.forEach(marker => {
       if (marker instanceof google.maps.Marker) {
