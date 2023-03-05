@@ -324,10 +324,11 @@ def route_summary(request):
                 sheet = workbook.sheet_by_name(sheet_name)
                 header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
                 sheet_data = []
-                for row in range(sheet.nrows):
+                for row in range(1,sheet.nrows):
                     row_data = [sheet.cell(row, col).value for col in range(sheet.ncols)]
                     sheet_data.append(row_data)
                 sheets_district[sheet_name] = {'header': header, 'data': sheet_data}
+                print(sheet_data)
 
             # Merge the sheets for all districts
             for sheet_name, sheet_data in sheets_district.items():
