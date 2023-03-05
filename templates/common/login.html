@@ -37,3 +37,42 @@
 
     </div>
 {% endblock %}
+{% block js %}
+ <script>
+    $('form').submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: '{% url 'Login' %}',
+        type: 'POST',
+        data: $('form').serialize(),
+        success: function(response) {
+            if (response.success) {
+                // Display success message using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then(function() {
+                    // Redirect to the afterlogin page
+                    window.location.href = '{% url "afterlogin" %}';
+                });
+            } else {
+                // Display error message using SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+});
+  </script>
+{% endblock %}

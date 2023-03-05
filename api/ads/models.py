@@ -6,7 +6,7 @@ from api.District.models import District
 # Create your models here.
 class Ads(models.Model):
     AdName = models.CharField(max_length=30, null=False, blank=False)
-    AdNameTamil = models.CharField(max_length=30, null=True, blank=False)
+    AdNameTamil = models.CharField(max_length=30, null=True, blank=True)
     StartDate = models.DateField()
     EndDate = models.DateField()
     TotalCount = models.IntegerField(null=True, blank=True)
@@ -15,6 +15,7 @@ class Ads(models.Model):
     ECPM = models.IntegerField(null=True, blank=False)
     BusCount = models.IntegerField(null=True, blank=True)
     District = models.ManyToManyField(District, blank=True)
+    display = models.BooleanField(default=True, help_text="check this to display the ads")
 
     class Meta:
         verbose_name_plural = "Ads"

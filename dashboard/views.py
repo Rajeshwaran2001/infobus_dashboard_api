@@ -73,7 +73,7 @@ def dash(request):
     # print(districts, ads)
     # print(last_modified)
     free = total_spots - filled_spots
-    percentage = (filled_spots/total_spots)*100
+    percentage = (filled_spots / total_spots) * 100
     # print(percentage)
     ten_days = []
     five_days = []
@@ -112,7 +112,7 @@ def dash(request):
             ad.percentage = 0
     # getupdate(request)
 
-    context ={
+    context = {
         'ads': ads,
         'ten_days': ten_days,
         'five_days': five_days,
@@ -143,7 +143,6 @@ def view_ad(request, ad_id):
         # Assuming that each district's Excel file is named after the district's name
         file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
-
 
         # Get the last modified time of the file
         mod_time = os.path.getmtime(file_path)
@@ -394,6 +393,7 @@ def route_summary(request):
 
     return render(request, 'Fdashboard/route.html', context)
 
+
 @login_required()
 @user_passes_test(is_patner)
 def route_summary_filled(request):
@@ -422,16 +422,16 @@ def route_summary_filled(request):
     sheets = None  # initialize sheets to None
 
     for district in districts:
-            # Assuming that each district's Excel file is named after the district's name
-            file_name = f"{district.District}.csv"
-            file_path = os.path.join(csv_path, file_name)
-            data2 = []
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}.csv"
+        file_path = os.path.join(csv_path, file_name)
+        data2 = []
 
-            with open(file_path, 'r') as csv_file:
-                reader = csv.reader(csv_file)
-                next(reader)  # skip the header row
-                for row in reader:
-                    data2.append(row)
+        with open(file_path, 'r') as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader)  # skip the header row
+            for row in reader:
+                data2.append(row)
     context = {
         'data': data,
         'data2': data2
@@ -499,7 +499,8 @@ def getupdate(request):
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php', 'https://tvl.busads.in/get_adcountv2.php']
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
+                'https://tvl.busads.in/get_adcountv2.php']
         for url in urls:
             response = requests.get(url, params=params)
             if response.status_code != 200:

@@ -6,4 +6,4 @@ class AdSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Ads
         fields = ['id', 'AdName', 'AdNameTamil', 'StartDate', 'EndDate', 'TotalCount', 'No_of_Days', 'ECPD', 'ECPM',
-                  'BusCount', 'District']
+                  'BusCount', 'District', 'display']

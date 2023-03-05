@@ -1,4 +1,5 @@
 import requests
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -43,10 +44,11 @@ def login_user(request):
 
         if user is not None:
             login(request, user)
-            return redirect('afterlogin')
+            # Return a JSON response with a success message
+            return JsonResponse({'success': True, 'message': 'Logged in successfully'})
         else:
-            messages.error(request, "Username Or Password is incorrect!!",
-                           extra_tags='alert alert-warning alert-dismissible fade show')
+            # Return a JSON response with an error message
+            return JsonResponse({'success': False, 'message': 'Username or password is incorrect'})
 
     return render(request, 'common/login.html')
 
@@ -58,7 +60,7 @@ def customer_view(request):
         try:
             ad = Ads.objects.get(AdName=ad_name_upper)
         except Ads.DoesNotExist:
-            messages.error(request, f"Ad with name {ad_name_upper} does not exist.", extra_tags='alert alert-warning fade show')
+            messages.error(request, f"Ad with name {ad_name_upper} does not exist.")
             print('not fount')
             return redirect('customer-view')
 
