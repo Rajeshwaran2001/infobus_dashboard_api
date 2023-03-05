@@ -375,7 +375,6 @@ const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
    });
   flatpickr("#end-date", {
     dateFormat: "y-m-d",
-    defaultDate: "{{ end_date }}",
     maxDate: new Date(),
   });
   const submitButton = document.getElementById("submit-button");
