@@ -225,5 +225,17 @@ setInterval(fetchApiData, 40000);
   // Fetch API data every 50 seconds
   setInterval(fetchApiData2, 50000);
 </script>
+<script>
+if (/Mobi/.test(navigator.userAgent)) {
+  // the browsing device is mobile
+  // add your code to modify the DOM element here
+    document.getElementById('map').classList.remove('h-100');
+} else {
+  // the browsing device is not mobile
+  // add your code to modify the DOM element here
+     document.getElementById('map').classList.add('h-100');
+}
+
+</script>
 
 {% endblock js %}

@@ -191,23 +191,23 @@
 
                       <td class="align-middle text-center text-sm">
                         <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ bus.route_no }}</span>
-                      </td>
+                       </td>
 
                       <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}" style="font-size: 16px;" >{{ bus.count }}</span>
-                      </td>
-                    </tr>
+                         <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}" style="font-size: 16px;" >{{ bus.count }}</span>
+                       </td>
+                     </tr>
                     {% endfor %}
                   </tbody>
                 </table>
               </div>
-            </div>
+             </div>
           </div>
         </div>
-       <div class="col-lg-6 col-md-6 map-container" style="display:none;">
-        <div class="card h-100" id="map" style="height: 400px;"></div>
-        </div>
-      </div>
+           <div class="col-lg-6 col-md-6 map-container" style="display:none;">
+            <div class="card h-100" id="map" style="height: 400px;"></div>
+            </div>
+          </div>
 
       <div class="row mt-4">
 
@@ -247,7 +247,7 @@
 {% endblock %}
 {% block js %}
 <script src="{% static 'js/mapv2.js' %}"></script>
-     <script>
+<script>
 function fetchApiData() {
   // Fetch API data using AJAX
   $.ajax({
@@ -303,23 +303,18 @@ setInterval(fetchApiData, 40000);
 // Fetch API data every 40 seconds
 setInterval(fetchApiData2, 40000);
 
-// define the media query
-  const mq = window.matchMedia('(max-width: 767px)');
+</script>
+<script>
+if (/Mobi/.test(navigator.userAgent)) {
+  // the browsing device is mobile
+  // add your code to modify the DOM element here
+    document.getElementById('map').classList.remove('h-100');
+} else {
+  // the browsing device is not mobile
+  // add your code to modify the DOM element here
+     document.getElementById('map').classList.add('h-100');
+}
 
-  // function to handle the media query change
-  function handleMediaQuery(mq) {
-    if (mq.matches) {
-      // if screen width is less than 768px
-      document.getElementById('map').classList.remove('h-100');
-    } else {
-      // if screen width is 768px or more
-      document.getElementById('map').classList.add('h-100');
-    }
-  }
-
-  // call the function on load and on media query change
-  handleMediaQuery(mq);
-  mq.addListener(handleMediaQuery);
 </script>
 
 <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
