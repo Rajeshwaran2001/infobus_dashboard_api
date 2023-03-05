@@ -22,6 +22,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from collections import defaultdict
 import xlrd
+import xlwt
+from django.http import HttpResponse
 
 logger = logging.getLogger(__name__)
 
@@ -109,9 +111,18 @@ def dash(request):
         else:
             ad.percentage = 0
     # getupdate(request)
-    return render(request, 'Fdashboard/dashboard.html', {'ads': ads, 'ten_days': ten_days, 'five_days': five_days,
-                                                         'total': total_spots, 'filled': filled_spots, 'free': free,
-                                                         'percentage': percentage, 'last': last_modified_str })
+
+    context ={
+        'ads': ads,
+        'ten_days': ten_days,
+        'five_days': five_days,
+        'total': total_spots,
+        'filled': filled_spots,
+        'free': free,
+        'percentage': percentage,
+        'last': last_modified_str
+    }
+    return render(request, 'Fdashboard/dashboard.html', context)
 
 
 @login_required()
@@ -314,7 +325,7 @@ def route_summary(request):
                 sheet = workbook.sheet_by_name(sheet_name)
                 header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
                 sheet_data = []
-                for row in range(1, sheet.nrows):
+                for row in range(sheet.nrows):
                     row_data = [sheet.cell(row, col).value for col in range(sheet.ncols)]
                     sheet_data.append(row_data)
                 sheets_district[sheet_name] = {'header': header, 'data': sheet_data}
@@ -334,6 +345,46 @@ def route_summary(request):
     sheet_data = None
     if selected_sheet and selected_sheet in sheets:
         sheet_data = sheets[selected_sheet]
+
+    select = request.GET.get('select')
+    sheet_data1 = None
+    if select in sheets or select == 'All':
+        if select == 'All':
+            # Export all sheets to Excel including headers
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="fill_list.xls"'
+            wb = xlwt.Workbook(encoding='utf-8')
+
+            # Write each sheet to a separate Excel sheet
+            for sheet_name, sheet_data in sheets.items():
+                ws = wb.add_sheet(sheet_name)
+                row_num = 0
+
+                # Write data to Excel sheet
+                for row in sheet_data['data']:
+                    row_num += 1
+                    for col_num, cell_value in enumerate(row):
+                        ws.write(row_num, col_num, cell_value)
+
+            wb.save(response)
+            return response
+        else:
+            # Export selected sheet to Excel including headers
+            sheet_data = sheets[select]
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = f'attachment; filename="{select}.xls"'
+            wb = xlwt.Workbook(encoding='utf-8')
+            ws = wb.add_sheet(select)
+            row_num = 0
+
+            # Write data to Excel sheet
+            for row in sheet_data['data']:
+                row_num += 1
+                for col_num, cell_value in enumerate(row):
+                    ws.write(row_num, col_num, cell_value)
+
+            wb.save(response)
+            return response
 
     context = {
         'sheets': sheets,

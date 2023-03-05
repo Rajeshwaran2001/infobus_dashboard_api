@@ -44,26 +44,22 @@
           <div class="card-header pb-0">
             {% if sheets %}
              <form id="sheet-form">
-                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-
-                    <div class="input-group input-group-outline my-3">
-                      <select class="form-control" id="sheet-select" name="route">
+    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+        <div class="input-group input-group-outline my-3">
+            <select class="form-control" id="sheet-select" name="route">
                 <option value="">Select a Route</option>
-                 <option value="All">All</option>
+                <option value="All">All</option>
                 {% for r in sheets.keys %}
-                  <option value="{{ r }}">{{ r }}</option>
+                    <option value="{{ r }}">{{ r }}</option>
                 {% endfor %}
-              </select>
-                    </div>
-                    <div class="input-group input-group-outline my-3 p-2">
-                      <button class="btn btn-outline-info btn-sm mb-0" type="submit" id="submit-button">Submit</button>
-                    </div>
-                    <div class="input-group input-group-outline my-3 p-0">
+            </select>
+        </div>
+        <div class="input-group input-group-outline my-3 p-3">
+            <a class="btn btn-outline-success btn-sm mb-0" href="{% url 'FDashboard:route_summary' %}?select={{selected_sheet}}" type="button" id="export-excel">Export to Excel</a>
+        </div>
+    </div>
+</form>
 
-                      <button class="btn btn-outline-success btn-sm mb-0" type="button" id="submit-button">Export to Excel</button>
-                    </div>
-               </div>
-              </form>
             {% else %}
                 <h1>Contact admin to update data.</h1>
             {% endif %}
@@ -153,5 +149,19 @@
 
 {% endblock %}
 {% block js %}
+    <script type="text/javascript">
+
+    // Submit form on selecting route
+    $('#sheet-select').change(function() {
+        $('#sheet-form').submit();
+    });
+
+    // Trigger download on clicking Excel export button
+    $('#excel-export').click(function(e) {
+        e.preventDefault();
+        window.location.href = $(this).attr('href');
+    });
+
+</script>
 
 {% endblock %}
