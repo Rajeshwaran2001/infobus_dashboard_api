@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block css %}
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+<script src="{% static 'js/mapv2.js' %}"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 {% endblock css %}
@@ -246,7 +247,6 @@
     <div id="district-data" data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
 {% endblock %}
 {% block js %}
-<script src="{% static 'js/mapv2.js' %}"></script>
 <script>
 function fetchApiData() {
   // Fetch API data using AJAX

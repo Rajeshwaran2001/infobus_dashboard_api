@@ -1,8 +1,8 @@
 {% extends 'basev2.html' %}
 {% load static %}
 {% block css %}
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
-
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+<script src="{% static 'js/mapv2.js' %}"></script>
 {% endblock css %}
 {% block content %}
     <!-- Navbar -->
@@ -169,8 +169,7 @@
     <div id="district-data" data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
 {% endblock %}
 {% block js %}
-<script src="{% static 'js/mapv2.js' %}"></script>
-     <script>
+<script>
 function fetchApiData() {
   // Fetch API data using AJAX
   $.ajax({
