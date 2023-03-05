@@ -22,14 +22,42 @@
             &nbsp;
             &nbsp;
           <li class="nav-item d-flex align-items-center text-dark">
-               <span class="d-sm-inline d-none"><span class="text-success">Welcome!</span>&nbsp;{{ user.username }}</span>
+               <span class="d-sm-inline d-none text-xl"><span class="text-success">Welcome!</span>&nbsp;{{ user.username }}</span>
           </li>
-            &nbsp;&nbsp;
-            <li class="nav-item d-flex align-items-center">
-              <a class="btn btn-outline-danger btn-sm mb-0 me-3" href="{% url 'Logout' %}">LogOut</a>
-            </li>
-               <li class="nav-item d-flex align-items-center">
-              <a class="btn btn-outline-warning btn-sm mb-0 me-3" target="_blank" href="{% url 'FDashboard:change' %}">Change Password</a>
+            &nbsp;&nbsp;<li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-cog cursor-pointer"></i>
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                  <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="{% url 'FDashboard:change' %}">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold text-warning">Change Password</span>
+                        </h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="{% url 'Logout' %}">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold text-danger">LogOut</span>
+                        </h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
             </li>
           <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -168,8 +196,6 @@
                       <td class="align-middle text-center text-sm">
                         <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}" style="font-size: 16px;" >{{ bus.count }}</span>
                       </td>
-
-
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -179,7 +205,7 @@
           </div>
         </div>
        <div class="col-lg-6 col-md-6 map-container" style="display:none;">
-        <div class="card" id="map" style="height: 400px;"></div>
+        <div class="card h-100" id="map" style="height: 400px;"></div>
         </div>
       </div>
 
@@ -276,6 +302,24 @@ setInterval(fetchApiData, 40000);
 
 // Fetch API data every 40 seconds
 setInterval(fetchApiData2, 40000);
+
+// define the media query
+  const mq = window.matchMedia('(max-width: 767px)');
+
+  // function to handle the media query change
+  function handleMediaQuery(mq) {
+    if (mq.matches) {
+      // if screen width is less than 768px
+      document.getElementById('map').classList.remove('h-100');
+    } else {
+      // if screen width is 768px or more
+      document.getElementById('map').classList.add('h-100');
+    }
+  }
+
+  // call the function on load and on media query change
+  handleMediaQuery(mq);
+  mq.addListener(handleMediaQuery);
 </script>
 
 <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
