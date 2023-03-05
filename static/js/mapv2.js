@@ -96,13 +96,13 @@ async function fetchData() {
     const data = await Promise.all(responses.map(response => response.json()));
     const allData = data.flat();
     //console.log('Districts:', districts);
-    const filteredData = allData.filter(item => item.city !== 'Testing' &&
-        (Array.isArray(districts) ? districts.includes(item.city) : false));
-    //console.log('Filtered Data:', filteredData);
+  const filteredData = allData.filter(item => item.city !== 'Testing' &&
+      (Array.isArray(districts) ? districts.includes(item.city) : false));
+  //console.log('Filtered Data:', filteredData);
     const newPositions = filteredData.filter(item => checkedValues.includes(item.bus_no))
       .map(item => {
         const [latitude, longitude] = item.position.split(',');
-        return { bus_no: item.bus_no, latitude, longitude, station: item.station, date_time: item.date_time };
+        return { bus_no: item.bus_no, latitude, longitude, station: item.station, date_time: item.date_time, route: item.route_no };
       });
     console.log(newPositions);
     //console.log(data)
@@ -129,7 +129,7 @@ async function fetchData() {
 
         const infoWindowContent = `
           <div class="info-window">
-            <h3> ${position.bus_no}</h3>
+            <h3> ${position.bus_no},${position.route}</h3>
             <p>${position.station}</p>
             <p>${position.date_time}</p>
           </div>
@@ -139,7 +139,7 @@ async function fetchData() {
           content: infoWindowContent,
         });
 
-        marker.addListener('click', () => {
+        google.maps.event.addListener(marker, 'click', () => {
           infoWindow.open(map, marker);
         });
 
