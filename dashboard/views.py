@@ -330,7 +330,7 @@ def route_summary(request):
             logger.warning('Sheet Not Found')
             pass
 
-    selected_sheet = request.GET.get('sheet_name')
+    selected_sheet = request.GET.get('route')
     sheet_data = None
     if selected_sheet and selected_sheet in sheets:
         sheet_data = sheets[selected_sheet]

@@ -47,11 +47,11 @@
                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
 
                     <div class="input-group input-group-outline my-3">
-                      <select class="form-control" id="sheet-select" name="sheet_name">
+                      <select class="form-control" id="sheet-select" name="route">
                 <option value="">Select a Route</option>
                  <option value="All">All</option>
-                {% for sheet_name in sheets.keys %}
-                  <option value="{{ sheet_name }}">{{ sheet_name }}</option>
+                {% for r in sheets.keys %}
+                  <option value="{{ r }}">{{ r }}</option>
                 {% endfor %}
               </select>
                     </div>
