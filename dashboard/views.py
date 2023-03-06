@@ -39,7 +39,7 @@ def dash(request):
     # Get the current user's franchise and district
     franchise = Franchise.objects.get(user=request.user)
     districts = franchise.district.all()  # get all associated districts
-    ads = Ads.objects.filter(District__in=districts).distinct()
+    ads = Ads.objects.filter(District__in=districts).distinct().filter(display=True)
 
     csv_path = os.path.join(os.getcwd(), 'static', 'data')
     total_spots = 0  # initialize total to zero
