@@ -10,6 +10,7 @@ urlpatterns = [
     path('ad_detail/<int:ad_id>', views.view_ad, name='ad_detail'),
     path('', LoginView.as_view(template_name='common/login.html'), name='Flogin'),
     path('route', views.route_summary, name="route_summary"),
+    path('spot', views.spot, name="spot_ad"),
     path('route_summary', views.route_summary_filled, name="route_summary_filled"),
     path('update', views.getupdate, name='update'),
     path('Fsignup', views.Franchise_signup_view, name='Fsignup'),

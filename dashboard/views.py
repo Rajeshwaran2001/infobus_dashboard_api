@@ -324,11 +324,11 @@ def route_summary(request):
                 sheet = workbook.sheet_by_name(sheet_name)
                 header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
                 sheet_data = []
-                for row in range(1,sheet.nrows):
+                for row in range(1, sheet.nrows):
                     row_data = [sheet.cell(row, col).value for col in range(sheet.ncols)]
                     sheet_data.append(row_data)
                 sheets_district[sheet_name] = {'header': header, 'data': sheet_data}
-                print(sheet_data)
+                # print(sheet_data)
 
             # Merge the sheets for all districts
             for sheet_name, sheet_data in sheets_district.items():
@@ -394,6 +394,101 @@ def route_summary(request):
 
     return render(request, 'Fdashboard/route.html', context)
 
+
+@login_required()
+@user_passes_test(is_patner)
+def spot(request):
+    # Get the current user's franchise and district
+    franchise = Franchise.objects.get(user=request.user)
+    districts = franchise.district.all()  # get all associated districts
+
+    # Construct the path to the Excel file based on the districts
+    csv_path = os.path.join(os.getcwd(), 'static', 'data')
+    sheets = {}  # initialize sheets as a dictionary
+
+    for district in districts:
+        # Assuming that each district's Excel file is named after the district's name
+        file_name = f"{district.District}_spot.xls"
+        file_path = os.path.join(csv_path, file_name)
+
+        try:
+            # Open the Excel file using xlrd
+            workbook = xlrd.open_workbook(file_path)
+            # Replace NaN with empty strings
+            sheets_district = {}
+            for sheet_name in workbook.sheet_names():
+                sheet = workbook.sheet_by_name(sheet_name)
+                header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
+                sheet_data = []
+                for row in range(1, sheet.nrows):
+                    row_data = [str(sheet.cell(row, col).value).split('.')[0] for col in range(sheet.ncols)]
+                    sheet_data.append(row_data)
+                sheets_district[sheet_name] = {'header': header, 'data': sheet_data}
+                # print(sheet_data)
+
+            # Merge the sheets for all districts
+            for sheet_name, sheet_data in sheets_district.items():
+                if sheet_name in sheets:
+                    sheets[sheet_name]['data'].extend(sheet_data['data'])
+                else:
+                    sheets[sheet_name] = sheet_data
+        except:
+            # handle the case where no Excel file is found for the district
+            logger.warning('Sheet Not Found')
+            pass
+
+    selected_sheet = request.GET.get('ad')
+    sheet_data = None
+    if selected_sheet and selected_sheet in sheets:
+        sheet_data = sheets[selected_sheet]
+
+    select = request.GET.get('select')
+    sheet_data1 = None
+    if select in sheets or select == 'All':
+        if select == 'All':
+            # Export all sheets to Excel including headers
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="fill_list.xls"'
+            wb = xlwt.Workbook(encoding='utf-8')
+
+            # Write each sheet to a separate Excel sheet
+            for sheet_name, sheet_data in sheets.items():
+                ws = wb.add_sheet(sheet_name)
+                row_num = 0
+
+                # Write data to Excel sheet
+                for row in sheet_data['data']:
+                    row_num += 1
+                    for col_num, cell_value in enumerate(row):
+                        ws.write(row_num, col_num, cell_value)
+
+            wb.save(response)
+            return response
+        else:
+            # Export selected sheet to Excel including headers
+            sheet_data = sheets[select]
+            response = HttpResponse(content_type='application/ms-excel')
+            response['Content-Disposition'] = f'attachment; filename="{select}.xls"'
+            wb = xlwt.Workbook(encoding='utf-8')
+            ws = wb.add_sheet(select)
+            row_num = 0
+
+            # Write data to Excel sheet
+            for row in sheet_data['data']:
+                row_num += 1
+                for col_num, cell_value in enumerate(row):
+                    ws.write(row_num, col_num, cell_value)
+
+            wb.save(response)
+            return response
+
+    context = {
+        'sheets': sheets,
+        'selected_sheet': selected_sheet,
+        'sheet_data': sheet_data,
+    }
+
+    return render(request, 'Fdashboard/spotadd.html', context)
 
 @login_required()
 @user_passes_test(is_patner)
