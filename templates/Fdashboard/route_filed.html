@@ -75,8 +75,8 @@
                 <select class="form-control" id="sheet-select" name="routes[]" style="max-width: 300px; margin: 0 auto;" aria-label="select route" multiple>
                     <option value="">Select a Route</option>
                     <option value="All">All</option>
-                    {% for r in data %}
-                        <option value="{{ r.0 }}">{{ r.0 }}</option>
+                    {% for r in all %}
+                        <option value="{{ r }}">{{ r }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -99,6 +99,9 @@
         <div class="card h-100">
           <div class="card-header pb-0">
              <h6 class="text-center">Route wise</h6>
+              <div class="input-group input-group-outline my-3 p-3">
+            <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?route_select={{route|join:','}}" id="excel-export">export</a>
+        </div>
           </div>
           <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">
@@ -144,6 +147,9 @@
         <div class="card h-100">
           <div class="card-header pb-0">
              <h6 class="text-center">Bus wise</h6>
+               <div class="input-group input-group-outline my-3 p-3">
+            <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?bus_select={{route|join:','}}" id="excel-export2">export</a>
+        </div>
           </div>
           <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">
@@ -198,9 +204,12 @@
 {% block js %}
 <script type="text/javascript">
 
-
     // Trigger download on clicking Excel export button
     $('#excel-export').click(function(e) {
+        e.preventDefault();
+        window.location.href = $(this).attr('href');
+    });
+    $('#excel-export2').click(function(e) {
         e.preventDefault();
         window.location.href = $(this).attr('href');
     });

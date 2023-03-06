@@ -509,23 +509,32 @@ def route_summary_filled(request):
         file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
 
-        with open(file_path, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)  # skip the header row
-            for row in reader:
-                data.append(row)
+        try:
+            with open(file_path, 'r') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)  # skip the header row
+                for row in reader:
+                    data.append(row)
+        except FileNotFoundError:
+            messages.warning(request, f"File not found for district {district.District}")
 
         file_name = f"{district.District}.csv"
         file_path = os.path.join(csv_path, file_name)
 
-        with open(file_path, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            next(reader)  # skip the header row
-            for row in reader:
-                data2.append(row)
+        try:
+            with open(file_path, 'r') as csv_file:
+                reader = csv.reader(csv_file)
+                next(reader)  # skip the header row
+                for row in reader:
+                    data2.append(row)
+        except FileNotFoundError:
+            messages.warning(request, f"File not found for district {district.District}")
+    # Get all unique values of row.0 in data
+    all_routes = sorted(set(row[0] for row in data))
 
     # Filter the data and data2 based on the user's selection from the dropdown
     routes = request.GET.getlist('routes[]')  # get the selected values from the dropdown as a list
+    print(routes)
 
     if routes:
         if '' in routes or 'All' in routes:
@@ -535,9 +544,85 @@ def route_summary_filled(request):
             data = [row for row in data if row[0] in routes]
             data2 = [row for row in data2 if row[1] in routes]
 
+    # Sort the data based on row.0
+    data = sorted(data, key=lambda row: row[0])
+    # Sort the data2 based on row.0
+    data2 = sorted(data2, key=lambda row: row[0])
+
+    select = request.GET.get('route_select')
+    if select:
+        if select == 'All':
+            # Export all data
+            selected_routes = [row[0] for row in data]
+        else:
+            selected_routes = select.split(',')  # parse comma-separated values
+
+        # filter data based on selected_routes
+        data = [row for row in data if row[0] in selected_routes]
+        if not data:
+            messages.warning(request, f"No data found for '{select}'")
+        else:
+            response = HttpResponse(content_type='application/ms-excel')
+            if select == 'All':
+                filename = 'all_routes'
+            else:
+                filename = select
+
+            header = ['Route', 'Available slot', 'Filled slot', 'Free slot']
+            sheet_name = 'Route Summary'
+
+            response['Content-Disposition'] = f'attachment; filename="{filename}_route_summary.xls"'
+            wb = xlwt.Workbook(encoding='utf-8')
+            ws = wb.add_sheet(sheet_name)
+
+            # Write header to Excel sheet
+            for col_num, cell_value in enumerate(header):
+                ws.write(0, col_num, cell_value)
+
+            # Write data to Excel sheet
+            for row_num, row in enumerate(data):
+                for col_num, cell_value in enumerate(row):
+                    ws.write(row_num + 1, col_num, cell_value)
+
+            wb.save(response)
+            return response
+    bus_select = request.GET.get('bus_select')
+    if bus_select:
+        if bus_select == 'All':
+            # Export all data
+            data = data2
+            filename = 'bus_routes'
+        else:
+            selected_routes = bus_select.split(',')  # parse comma-separated values
+            # filter data based on selected_routes
+            data = [row for row in data2 if row[1] in selected_routes]
+            filename = bus_select
+
+        header = ['Bus no', 'Route', 'Available slot', 'Filled slot', 'Free slot']
+        sheet_name = 'Bus Summary'
+
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = f'attachment; filename="{filename}_bus_summary.xls"'
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet(sheet_name)
+
+        # Write header to Excel sheet
+        for col_num, cell_value in enumerate(header):
+            ws.write(0, col_num, cell_value)
+
+        # Write data to Excel sheet
+        for row_num, row in enumerate(data):
+            for col_num, cell_value in enumerate(row):
+                ws.write(row_num + 1, col_num, cell_value)
+
+        wb.save(response)
+        return response
+
     context = {
         'data': data,
-        'data2': data2
+        'data2': data2,
+        'route': routes,
+        'all': all_routes
     }
 
     return render(request, 'Fdashboard/route_filed.html', context)
