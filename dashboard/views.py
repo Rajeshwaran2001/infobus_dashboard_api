@@ -499,13 +499,15 @@ def route_summary_filled(request):
 
     # Construct the path to the Excel file based on the districts
     csv_path = os.path.join(os.getcwd(), 'static', 'data')
-    sheets = None  # initialize sheets to None
 
+    data = []  # initialize data to an empty list
+    data2 = []  # initialize data2 to an empty list
+
+    # Loop through the districts and read the data from the corresponding CSV files
     for district in districts:
         # Assuming that each district's Excel file is named after the district's name
         file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
-        data = []
 
         with open(file_path, 'r') as csv_file:
             reader = csv.reader(csv_file)
@@ -513,21 +515,26 @@ def route_summary_filled(request):
             for row in reader:
                 data.append(row)
 
-    # Construct the path to the Excel file based on the districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'data')
-    sheets = None  # initialize sheets to None
-
-    for district in districts:
-        # Assuming that each district's Excel file is named after the district's name
         file_name = f"{district.District}.csv"
         file_path = os.path.join(csv_path, file_name)
-        data2 = []
 
         with open(file_path, 'r') as csv_file:
             reader = csv.reader(csv_file)
             next(reader)  # skip the header row
             for row in reader:
                 data2.append(row)
+
+    # Filter the data and data2 based on the user's selection from the dropdown
+    routes = request.GET.getlist('routes[]')  # get the selected values from the dropdown as a list
+
+    if routes:
+        if '' in routes or 'All' in routes:
+            # Include all rows in data and data2
+            pass
+        else:
+            data = [row for row in data if row[0] in routes]
+            data2 = [row for row in data2 if row[1] in routes]
+
     context = {
         'data': data,
         'data2': data2
