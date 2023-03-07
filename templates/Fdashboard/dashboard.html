@@ -152,7 +152,7 @@
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Recorded Count</th>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Completion</th>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Ends By</th>
-                    <th class="text-uppercase text-dark text-xs font-weight-bolder">Day Left</th>
+                    <th class="text-uppercase text-dark text-xs font-weight-bolder">Day's Left</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -207,7 +207,7 @@
                       <span class="text-xs text-dark font-weight-bold"> {{ a.EndDate}} </span>
                     </td>
                     <td class="align-middle text-center text-sm">
-                      <span class="text-xs text-dark font-weight-bold" data-bs-toggle="tooltip" title="Total days / no of days to end"> {{ a.diff  }} </span>
+                      <span class="text-xs text-dark font-weight-bold" data-bs-toggle="tooltip" title="No of days to end"> {{ a.diff  }} </span>
                     </td>
                   </tr> {% endfor %} </tbody>
               </table>

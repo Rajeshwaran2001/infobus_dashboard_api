@@ -17,7 +17,7 @@ class Ads(models.Model):
     BusCount = models.IntegerField(null=True, blank=False)
     District = models.ManyToManyField(District, blank=False)
     display = models.BooleanField(default=True, help_text="check this to display the ads")
-    agent = models.ManyToManyField(User, blank=True, null=True)
+    agent = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.AdName
