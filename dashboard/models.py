@@ -15,6 +15,12 @@ class MyAds(models.Model):
     route_name = models.CharField(max_length=50, null=True, blank=True)
     date_time = models.CharField(max_length=150, null=True, blank=True)
 
+    def __str__(self):
+        return self.adname + ' - ' + self.bus_no
+
+    class Meta:
+        verbose_name_plural = "MyAds"
+
 
 class Franchise(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
