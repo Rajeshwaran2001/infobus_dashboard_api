@@ -42,8 +42,8 @@ def dash(request):
     ads = Ads.objects.filter(District__in=districts).distinct().filter(display=True)
 
     csv_path = os.path.join(os.getcwd(), 'static', 'data')
-    total_spots = 0  # initialize total to zero
-    filled_spots = 0  # initialize total to zero
+    total_spots = None  # initialize total to None
+    filled_spots = None  # initialize filled to None
     last_modified = None  # initialize last modified time to None
 
     for district in districts:
@@ -51,29 +51,39 @@ def dash(request):
         file_name = f"{district.District}_summary.csv"
         file_path = os.path.join(csv_path, file_name)
 
-        with open(file_path, newline='') as csvfile:
-            reader = csv.reader(csvfile)
-            row = next(reader)
-            # Split column names by colon and extract parts
-            total_col = row[0]  # get the first column name
-            total_spots += int(total_col.split(':')[1])  # extract and add total spots
-            filled_col = row[1]  # get the second column name
-            filled_spots += int(filled_col.split(':')[1])  # extract and add filled spots
+        try:
+            with open(file_path, newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                row = next(reader)
+                # Split column names by colon and extract parts
+                total_col = row[0]  # get the first column name
+                total_spots = (total_spots or 0) + int(total_col.split(':')[1])  # extract and add total spots
+                filled_col = row[1]  # get the second column name
+                filled_spots = (filled_spots or 0) + int(filled_col.split(':')[1])  # extract and add filled spots
 
-        # Get the last modified time of the file
-        mod_time = os.path.getmtime(file_path)
-        if last_modified is None or mod_time > last_modified:
-            last_modified = mod_time
+            # Get the last modified time of the file
+            mod_time = os.path.getmtime(file_path)
+            if last_modified is None or mod_time > last_modified:
+                last_modified = mod_time
+
+        except FileNotFoundError:
+            print(f"File {file_name} not found for district {district.District}")
+        except Exception as e:
+            print(f"Error processing file {file_name} for district {district.District}: {str(e)}")
 
     # Convert the last modified time to a human-readable format
     last_modified_str = None
     if last_modified is not None:
         last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
 
-    # print(districts, ads)
-    # print(last_modified)
-    free = total_spots - filled_spots
-    percentage = (filled_spots / total_spots) * 100
+    # Check if any files were processed
+    if total_spots is None or filled_spots is None:
+        # No files were processed, set values to None or any other default value you want
+        total_spots = filled_spots = percentage = free = "No data"
+    else:
+        # Calculate percentage and free spots
+        free = total_spots - filled_spots
+        percentage = "{:.2f}".format((filled_spots / total_spots) * 100)
     # print(percentage)
     ten_days = []
     five_days = []
@@ -131,28 +141,7 @@ def view_ad(request, ad_id):
     ad = Ads.objects.get(id=ad_id)
     ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
     ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
-    # Get the current user's franchise and district
-    franchise = Franchise.objects.get(user=request.user)
-    districts = franchise.district.all()  # get all associated districts
-    csv_path = os.path.join(os.getcwd(), 'static', 'data')
-    total_spots = 0  # initialize total to zero
-    filled_spots = 0  # initialize total to zero
-    last_modified = None  # initialize last modified time to None
 
-    for district in districts:
-        # Assuming that each district's Excel file is named after the district's name
-        file_name = f"{district.District}_summary.csv"
-        file_path = os.path.join(csv_path, file_name)
-
-        # Get the last modified time of the file
-        mod_time = os.path.getmtime(file_path)
-        if last_modified is None or mod_time > last_modified:
-            last_modified = mod_time
-
-    # Convert the last modified time to a human-readable format
-    last_modified_str = None
-    if last_modified is not None:
-        last_modified_str = datetime.fromtimestamp(last_modified).strftime('%d/%m/%y')
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
     yesterday = day.strftime("%d/%m/%Y")
@@ -292,7 +281,6 @@ def view_ad(request, ad_id):
         'json_data': json_data,
         'labels': labels,
         'data': data,
-        'last': last_modified_str,
         'start_date': start_str,
         'end_date': end_str
     }

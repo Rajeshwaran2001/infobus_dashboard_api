@@ -127,7 +127,7 @@
             </div>
             <div class="text-end pt-1">
               <p class="text-xl mb-0 text-capitalize text-dark">Total Filled slots in %</p>
-              <h5 class="mb-0">{{ percentage|floatformat }}%</h5>
+              <h5 class="mb-0">{{ percentage }}%</h5>
             </div>
           </div>
           <hr class="horizontal my-0">
@@ -155,7 +155,7 @@
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Recorded Count</th>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Completion</th>
                     <th class="text-uppercase text-dark text-xs font-weight-bolder">Ends By</th>
-                    <th class="text-uppercase text-dark text-xs font-weight-bolder">No Day</th>
+                    <th class="text-uppercase text-dark text-xs font-weight-bolder">Day Left</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -210,7 +210,7 @@
                       <span class="text-xs text-dark font-weight-bold"> {{ a.EndDate}} </span>
                     </td>
                     <td class="align-middle text-center text-sm">
-                      <span class="text-xs text-dark font-weight-bold" data-bs-toggle="tooltip" title="Total days / no of days to end"> {{ a.current }}/{{ a.diff  }} </span>
+                      <span class="text-xs text-dark font-weight-bold" data-bs-toggle="tooltip" title="Total days / no of days to end"> {{ a.diff  }} </span>
                     </td>
                   </tr> {% endfor %} </tbody>
               </table>

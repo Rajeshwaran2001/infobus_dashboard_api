@@ -4,6 +4,18 @@
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+ <style>
+ .spinner-border {
+  animation: spin 1s infinite linear;
+  width: 40px;
+  height: 40px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+    </style>
 {% endblock css %}
 {% block content %}
   <!-- Navbar -->
@@ -217,6 +229,9 @@
               <div class="bg-gradient-info shadow-success border-radius-lg py-3 pe-1">
                 <div class="chart">
                   <canvas id="chart-bar" class="chart-canvas" height="170"></canvas>
+                    <div id="chart-spinner" class="spinner-border text-light" role="status" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
               </div>
             </div>
@@ -349,7 +364,10 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
         plugins: {
           legend: {
             display: false,
-          }
+          },
+            barLabel: {
+      // options for the plugin
+        },
         },
         interaction: {
           intersect: false,
@@ -402,6 +420,28 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
         },
       },
     });
+
+    Chart.register({
+  id: "barLabel",
+  beforeDraw: function (chart) {
+    var ctx = chart.ctx;
+    chart.data.datasets.forEach(function (dataset, i) {
+      var meta = chart.getDatasetMeta(i);
+      if (!meta.hidden) {
+        meta.data.forEach(function (element, index) {
+          // Draw the text at the top of the bar
+          var label = dataset.data[index];
+          ctx.save();
+          ctx.font = Chart.helpers.fontString(14, "bold", "Roboto");
+          ctx.fillStyle = "#fff";
+          ctx.textAlign = "center";
+          ctx.fillText(label, element.x, element.y - 10);
+          ctx.restore();
+        });
+      }
+    });
+  },
+});
 </script>
     <!-- Initialize the date range picker -->
 <script>
@@ -422,8 +462,10 @@ const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
   const adNameInput = document.getElementById("ad-name");
   const startDateText = document.getElementById("start-date-text");
 const endDateText = document.getElementById("end-date-text");
+const chartSpinner = document.getElementById("chart-spinner");
 
   submitButton.addEventListener("click", () => {
+    chartSpinner.style.display = "block";
     const startDate = startDateInput.value;
     const endDate = endDateInput.value;
     const adName = adNameInput.value;
@@ -438,6 +480,8 @@ const endDateText = document.getElementById("end-date-text");
     })
       .then((response) => response.json())
   .then((data) => {
+      // Hide the spinner
+      chartSpinner.style.display = "none";
     const hasData = data;
     if (hasData) {
       const labels = data.labels;
@@ -457,6 +501,8 @@ const endDateText = document.getElementById("end-date-text");
   })
   .catch((error) => {
     console.error(error);
+     // Hide the spinner
+      chartSpinner.style.display = "none";
   });
   });
 </script>
