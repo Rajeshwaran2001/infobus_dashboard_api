@@ -98,11 +98,16 @@
         <div class="col-lg-6 col-md-6">
         <div class="card h-100">
           <div class="card-header pb-0">
-             <h6 class="text-center">Route wise</h6>
-              <div class="input-group input-group-outline my-3 p-3">
-            <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?route_select={{route|join:','}}" id="excel-export">export</a>
+             <div class="row text-md-center">
+                <div class="col-lg-6 col-7">
+                  <h6>Route Wise</h6>
+                  </p>
+                </div>
+                <div class="col-lg-6 col-5 my-auto text-end">
+                    <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?route_select={{route|join:','}}" id="excel-export">export</a>
+                </div>
+              </div>
         </div>
-          </div>
           <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">
                 <table class="table align-items-center text-center mb-0" id="my-table">
@@ -146,10 +151,15 @@
       <div class="col-lg-6 col-md-6">
         <div class="card h-100">
           <div class="card-header pb-0">
-             <h6 class="text-center">Bus wise</h6>
-               <div class="input-group input-group-outline my-3 p-3">
-            <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?bus_select={{route|join:','}}" id="excel-export2">export</a>
-        </div>
+             <div class="row text-md-center">
+                <div class="col-lg-6 col-7">
+                  <h6>Bus Wise</h6>
+                  </p>
+                </div>
+                <div class="col-lg-6 col-5 my-auto text-end">
+                    <a class="btn btn-outline-success" href="{% url 'FDashboard:route_summary_filled' %}?route_select={{route|join:','}}" id="excel-export">export</a>
+                </div>
+              </div>
           </div>
           <div class="card-body px-0 pb-2">
               <div class="table-responsive p-0">

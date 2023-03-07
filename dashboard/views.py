@@ -308,7 +308,7 @@ def route_summary(request):
             workbook = xlrd.open_workbook(file_path)
             # Replace NaN with empty strings
             sheets_district = {}
-            for sheet_name in workbook.sheet_names():
+            for sheet_name in workbook.sheet_names()[3:]:
                 sheet = workbook.sheet_by_name(sheet_name)
                 header = [str(sheet.cell(0, col).value).split('.')[0] for col in range(sheet.ncols)]
                 sheet_data = []
@@ -328,6 +328,8 @@ def route_summary(request):
             # handle the case where no Excel file is found for the district
             logger.warning('Sheet Not Found')
             pass
+
+    sorted_sheets = sorted(sheets.keys()) # sort the keys
 
     selected_sheet = request.GET.get('route')
     sheet_data = None
@@ -378,6 +380,7 @@ def route_summary(request):
         'sheets': sheets,
         'selected_sheet': selected_sheet,
         'sheet_data': sheet_data,
+        'list': sorted_sheets
     }
 
     return render(request, 'Fdashboard/route.html', context)

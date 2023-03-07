@@ -75,7 +75,7 @@
             <select class="form-control" id="sheet-select" name="route">
                 <option value="">Select a Route</option>
                 <option value="All">All</option>
-                {% for r in sheets.keys %}
+                {% for r in list %}
                     <option value="{{ r }}">{{ r }}</option>
                 {% endfor %}
             </select>
