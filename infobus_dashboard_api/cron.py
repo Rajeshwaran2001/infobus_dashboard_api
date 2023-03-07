@@ -1,6 +1,6 @@
 from json import JSONDecodeError
 import datetime as dt
-import datetime
+import logging
 import requests
 from requests import Timeout
 from api.District.models import District
@@ -9,6 +9,7 @@ from dashboard.models import MyAds
 from utility.models import bus_Detail
 
 timeout = 100
+logger = logging.getLogger(__name__)
 
 
 def getupdate():
@@ -107,4 +108,3 @@ def getstatus(request):
         return ", ".join(error_messages)
     else:
         return "Data retrieved from URLs and stored in the database"
-
