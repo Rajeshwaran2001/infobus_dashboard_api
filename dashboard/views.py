@@ -24,8 +24,11 @@ from collections import defaultdict
 import xlrd
 import xlwt
 from django.http import HttpResponse
+from requests.exceptions import Timeout
 
 logger = logging.getLogger(__name__)
+# Set the timeout value to 5 seconds
+timeout = 100
 
 
 # Create your views here.
@@ -94,7 +97,9 @@ def dash(request):
         elif ad.diff <= 5:
             five_days.append(ad)
             # print(five_days)
-        ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
+
+        ad.myads_count = MyAds.objects.filter(adname=ad.AdName, date_time__range=[ad.StartDate, ad.EndDate]).aggregate(Sum('Count'))['Count__sum']
+
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         statuss = ad.day * ad.ECPD
         diff = abs(ad.myads_count - statuss)
@@ -160,7 +165,7 @@ def view_ad(request, ad_id):
     urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
             'https://tvl.busads.in/get_adcountv2.php']
     for url in urls:
-        response = requests.get(url, params=param)
+        response = requests.get(url, params=param, timeout=timeout)
         if response.status_code != 200:
             print(f"Error response received with status code {response.status_code}")
             logger.error(f"Error response received with status code {response.status_code}")
@@ -171,11 +176,17 @@ def view_ad(request, ad_id):
             print(f"Error decoding JSON: {response.text}")
             logger.warning(f"Error decoding JSON: {response.text}")
             continue
+        except Timeout:
+            print("Request TimeOut")
+            logger.error(f"Timeout Error: {url}")
+            continue
         if data is None:
             print("API returned None")
             logger.warning('API returned None')
             continue
+
         day_counts = defaultdict(int)
+
         for item in data:
             for key, value in item.items():
                 if key in ['imei', 'bus_no', 'route_no', 'route_name']:
@@ -198,27 +209,36 @@ def view_ad(request, ad_id):
         ad.percentage = 0
 
     # Fetch API data and give inital data
-    params = {
+    params1 = {
         'name': ad.AdName,
         'from': today.strftime("%Y-%m-%d"),
         'length': 1,
     }
-    url1 = 'https://delta.busads.in/get_adcountv2.php'
-    api_data = requests.get(url1, params=params).json()
-    url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
-    api_data2 = requests.get(url2, params=params).json()
-    url3 = 'https://delta.busads.in/get_adcountv2.php'
-    api_data3 = requests.get(url3, params=params).json()
+    urls = [
+        'https://delta.busads.in/get_adcountv3.php',
+        'https://track.siliconharvest.net/get_adcountv3.php',
+        'https://tvl.busads.in/get_adcountv3.php']
+    api_data = 0
 
-    # Print API responses to console
-    # print(api_data)
-    # print(api_data2)
-
-    # Add the two API responses
-    result = int(api_data) + int(api_data2) + int(api_data3)
+    for url in urls:
+        try:
+            response = requests.get(url, params=params1, timeout=timeout)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
+                continue
+            api_data += int(response.json())
+        except Timeout:
+            print(f"Timeout error while making request to {url}")
+            logger.error(f"Timeout error while making request to {url}")
+            continue
+        except Exception as e:
+            print(f"Error while making request to {url}: {e}")
+            logger.error(f"Error while making request to {url}: {e}")
+            continue
 
     # Create a dictionary with the result
-    today_count = result
+    today_count = api_data
 
     # Convert dictionary to JSON
     json_data = json.dumps(today_count)
@@ -231,28 +251,34 @@ def view_ad(request, ad_id):
 
     # fetch count data from API
     url1 = 'https://track.siliconharvest.net/get_adcountv2.php'
-    response1 = requests.get(url1, params2)
+    response1 = requests.get(url1, params2, timeout=timeout)
     try:
         data1 = response1.json()
     except ValueError:
         data1 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url1))
 
     url2 = 'https://delta.busads.in/get_adcountv2.php'
-    response2 = requests.get(url2, params2)
+    response2 = requests.get(url2, params2, timeout=timeout)
     try:
         data2 = response2.json()
     except ValueError:
         data2 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url2))
 
     url3 = 'https://tvl.busads.in/get_adcountv2.php'
-    response2 = requests.get(url3, params2)
+    response2 = requests.get(url3, params2, timeout=timeout)
     try:
         data3 = response2.json()
     except ValueError:
         data3 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url3))
 
     # Extract required information from data1 and data2
     result = []
@@ -329,7 +355,7 @@ def route_summary(request):
             logger.warning('Sheet Not Found')
             pass
 
-    sorted_sheets = sorted(sheets.keys()) # sort the keys
+    sorted_sheets = sorted(sheets.keys())  # sort the keys
 
     selected_sheet = request.GET.get('route')
     sheet_data = None
@@ -480,6 +506,7 @@ def spot(request):
     }
 
     return render(request, 'Fdashboard/spotadd.html', context)
+
 
 @login_required()
 @user_passes_test(is_patner)
@@ -678,10 +705,10 @@ def getupdate(request):
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }
-        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
-                'https://tvl.busads.in/get_adcountv2.php']
+        urls = ['https://delta.busads.in/get_adcountv3.php', 'https://track.siliconharvest.net/get_adcountv3.php',
+                'https://tvl.busads.in/get_adcountv3.php']
         for url in urls:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=timeout)
             if response.status_code != 200:
                 print(f"Error response received with status code {response.status_code}")
                 logger.error(f"Error response received with status code {response.status_code}")
@@ -691,6 +718,9 @@ def getupdate(request):
             except JSONDecodeError:
                 print(f"Error decoding JSON: {response.text}")
                 continue
+            except Timeout:
+                print("Request TimeOut")
+                logger.error(f"Timeout Error: {url}")
             if data is None:
                 print("API returned None")
                 continue
@@ -698,17 +728,14 @@ def getupdate(request):
                 imei = item.get('imei')
                 AdName = ad.AdName
                 bus_no = item.get('bus_no')
-                route_no = item.get('route_no')
-                route_name = item.get('route_name')
                 for key, value in item.items():
-                    if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                    if key in ['imei', 'bus_no']:
                         continue
-                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%Y-%m-%d")
                     count = value
                     try:
                         obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
-                                                                      bus_no=bus_no, route_no=route_no,
-                                                                      route_name=route_name, defaults={'Count': count})
+                                                                      bus_no=bus_no, defaults={'Count': count})
                     except Exception as e:
                         print("Error creating or updating MyAds object: %s", e)
                         logger.error("Error creating or updating MyAds object: %s", e)
@@ -725,24 +752,29 @@ def update_today_count(request):
         'length': 1,
     }
 
-    # Fetch API data
-    url1 = 'https://delta.busads.in/get_adcountv2.php'
-    api_data1 = requests.get(url1, params=params).json()
-    url2 = 'https://track.siliconharvest.net/get_adcountv2.php'
-    api_data2 = requests.get(url2, params=params).json()
-    url3 = 'https://tvl.busads.in/get_adcountv2.php'
-    api_data3 = requests.get(url3, params=params).json()
-    # print(api_data1, api_data2)
+    urls = ['https://delta.busads.in/get_adcountv3.php', 'https://track.siliconharvest.net/get_adcountv3.php',
+            'https://tvl.busads.in/get_adcountv3.php']
+    api_data = 0
 
-    # Print API responses to console
-    # print(api_data)
-    # print(api_data2)
-
-    # Add the two API responses
-    result = int(api_data1) + int(api_data2) + int(api_data3)
+    for url in urls:
+        try:
+            response = requests.get(url, params=params, timeout=timeout)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
+                continue
+            api_data += int(response.json())
+        except Timeout:
+            print(f"Timeout error while making request to {url}")
+            logger.error(f"Timeout error while making request to {url}")
+            continue
+        except Exception as e:
+            print(f"Error while making request to {url}: {e}")
+            logger.error(f"Error while making request to {url}: {e}")
+            continue
 
     # Create a dictionary with the result
-    data = result
+    data = api_data
 
     # Convert dictionary to JSON
     json_data = json.dumps(data)
@@ -761,40 +793,44 @@ def update_bus_count(request):
     }
 
     # fetch count data from API
-    url1 = 'https://track.siliconharvest.net/get_adcountv2.php'
-    response1 = requests.get(url1, params)
+    url1 = 'https://track.siliconharvest.net/get_adcountv3.php'
+    response1 = requests.get(url1, params, timeout=timeout)
     try:
         data1 = response1.json()
     except ValueError:
         data1 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url1))
 
-    url2 = 'https://delta.busads.in/get_adcountv2.php'
-    response2 = requests.get(url2, params)
+    url2 = 'https://delta.busads.in/get_adcountv3.php'
+    response2 = requests.get(url2, params, timeout=timeout)
     try:
         data2 = response2.json()
     except ValueError:
         data2 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url2))
 
-    url3 = 'https://tvl.busads.in/get_adcountv2.php'
-    response2 = requests.get(url3, params)
+    url3 = 'https://tvl.busads.in/get_adcountv3.php'
+    response2 = requests.get(url3, params, timeout=timeout)
     try:
         data3 = response2.json()
     except ValueError:
         data3 = []
         logger.warning('Value error')
+    except requests.exceptions.Timeout:
+        logger.warning('Timeout error for {}'.format(url3))
 
     # Extract required information from data1 and data2
     result = []
     for data in [data1, data2, data3]:
         for item in data:
             for key, value in item.items():
-                if key != 'imei' and key != 'bus_no' and key != 'route_no' and key != 'route_name':
+                if key != 'imei' and key != 'bus_no' :
                     d = {
                         'bus_no': item['bus_no'],
-                        'route_no': item['route_no'],
-                        'route_name': item['route_name'],
                         'date': key,
                         'count': value,
                     }
@@ -822,10 +858,10 @@ def get_data(request):
             'to': end_date,
         }
         # Query the MyAds model to get the required data
-        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
-                'https://tvl.busads.in/get_adcountv2.php']
+        urls = ['https://delta.busads.in/get_adcountv3.php', 'https://track.siliconharvest.net/get_adcountv3.php',
+                'https://tvl.busads.in/get_adcountv3.php']
         for url in urls:
-            response = requests.get(url, params=param)
+            response = requests.get(url, params=param, timeout=timeout)
             if response.status_code != 200:
                 print(f"Error response received with status code {response.status_code}")
                 logger.error(f"Error response received with status code {response.status_code}")
@@ -835,6 +871,8 @@ def get_data(request):
             except JSONDecodeError:
                 print(f"Error decoding JSON: {response.text}")
                 continue
+            except Timeout:
+                print(f"Error Timeout: {url}")
             if data is None:
                 print("API returned None")
                 continue

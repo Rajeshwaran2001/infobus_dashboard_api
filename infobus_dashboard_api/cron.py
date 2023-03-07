@@ -2,19 +2,14 @@ from json import JSONDecodeError
 import datetime as dt
 import datetime
 import requests
+from requests import Timeout
 from api.District.models import District
 from api.ads.models import Ads
-from dashboard.models import MyAds, TaskResult
+from dashboard.models import MyAds
 from utility.models import bus_Detail
-import sqlite3
 
-# Create a connection to the database
-conn = sqlite3.connect('db.sqlite3')
+timeout = 100
 
-# Create a table for storing task results
-c = conn.cursor()
-c.execute('''CREATE TABLE IF NOT EXISTS task_result
-             (task_name TEXT, timestamp TEXT, result TEXT)''')
 
 def getupdate():
     try:
@@ -33,10 +28,10 @@ def getupdate():
                 'from': ad.StartDate.strftime("%Y-%m-%d"),
                 'to': ad.EndDate.strftime("%Y-%m-%d"),
             }
-            urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
-                    'https://tvl.busads.in/get_adcountv2.php']
+            urls = ['https://delta.busads.in/get_adcountv3.php', 'https://track.siliconharvest.net/get_adcountv3.php',
+                    'https://tvl.busads.in/get_adcountv3.php']
             for url in urls:
-                response = requests.get(url, params=params)
+                response = requests.get(url, params=params, timeout=timeout)
                 if response.status_code != 200:
                     print(f"Error response received with status code {response.status_code}")
                     continue
@@ -45,6 +40,9 @@ def getupdate():
                 except JSONDecodeError:
                     print(f"Error decoding JSON: {response.text}")
                     continue
+                except Timeout:
+                    print("Request TimeOut")
+                    logger.error(f"Timeout Error: {url}")
                 if data is None:
                     print("API returned None")
                     continue
@@ -52,25 +50,19 @@ def getupdate():
                     imei = item.get('imei')
                     AdName = ad.AdName
                     bus_no = item.get('bus_no')
-                    route_no = item.get('route_no')
-                    route_name = item.get('route_name')
                     for key, value in item.items():
-                        if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                        if key in ['imei', 'bus_no']:
                             continue
-                        day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                        day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%Y-%m-%d")
                         count = value
                         try:
                             obj, created = MyAds.objects.update_or_create(adname=AdName, imei=imei, date_time=day,
-                                                                          bus_no=bus_no, route_no=route_no,
-                                                                          route_name=route_name,
-                                                                          defaults={'Count': count})
+                                                                          bus_no=bus_no, defaults={'Count': count})
                         except Exception as e:
                             print("Error creating or updating MyAds object: %s", e)
-        store_task_result('getupdate', 'success', conn)
         print('succes')
         return "getupdate Task completed successfully"
     except Exception as e:
-        store_task_result('getupdate', 'failed', str(e))
         raise
 
 
@@ -112,19 +104,7 @@ def getstatus(request):
         print(f"Data retrieved from {url} and stored in the database")
 
     if error_messages:
-        store_task_result('getstatus', 'failed', ', '.join(error_messages))
         return ", ".join(error_messages)
     else:
-        store_task_result('getstatus', 'success', "Data retrieved from URLs and stored in the database")
         return "Data retrieved from URLs and stored in the database"
 
-
-def store_task_result(task_name, result, conn):
-    c = conn.cursor()
-    timestamp = datetime.now()
-    c.execute("INSERT INTO task_result (task_name, timestamp, result) VALUES (?, ?, ?)", (task_name, timestamp, result))
-    conn.commit()
-
-
-# Close the database connection
-conn.close()

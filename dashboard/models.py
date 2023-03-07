@@ -36,13 +36,3 @@ class Franchise(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-class TaskResult(models.Model):
-    timestamp = models.DateTimeField()
-    name = models.CharField(max_length=255)
-    status = models.CharField(max_length=10)
-    result = models.TextField()
-
-    def __str__(self):
-        return f'{self.name} - {self.status} - {self.timestamp}'
