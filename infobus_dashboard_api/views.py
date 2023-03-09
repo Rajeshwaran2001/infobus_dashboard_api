@@ -1,12 +1,11 @@
 import requests
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Sum
 from api.ads.models import Ads
 from dashboard.models import MyAds
-from utility.models import bus_Detail
 from django.utils import timezone
 from datetime import timedelta, date
 import json
@@ -58,19 +57,19 @@ def customer_view(request):
         ad_name = request.POST.get('ad_name')
         ad_name_upper = ad_name.upper()  # Convert ad_name to uppercase
         try:
-            ad = Ads.objects.get(AdName=ad_name_upper)
+            ad = Ads.objects.get(AdNameUsername=ad_name_upper)
         except Ads.DoesNotExist:
             messages.error(request, f"Ad with name {ad_name_upper} does not exist.")
             print('not fount')
             return redirect('customer-view')
 
         # rest of the view logic
-        ad = Ads.objects.get(AdName=ad_name_upper)
+        ad = Ads.objects.get(AdNameUsername=ad_name_upper)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         day = timezone.now().date() - timedelta(days=1)
         today = date.today()
-        yesterday = day.strftime("%d/%m/%Y")
+        yesterday = day.strftime("%Y-%m-%d")
         total_count_yesterday = MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
         if not total_count_yesterday:
             total_count_yesterday = 0

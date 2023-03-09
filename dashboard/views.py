@@ -162,7 +162,7 @@ def view_ad(request, ad_id):
     end_str = end_date.strftime('%d/%m/%y')
 
     param = {
-        'name': ad.AdName,
+        'name': ad.AdNameUsername,
         'from': start_date.strftime("%Y-%m-%d"),
         'to': end_date.strftime("%Y-%m-%d"),
     }
@@ -215,7 +215,7 @@ def view_ad(request, ad_id):
 
     # Fetch API data and give inital data
     params1 = {
-        'name': ad.AdName,
+        'name': ad.AdNameUsername,
         'from': today.strftime("%Y-%m-%d"),
         'length': 1,
     }
@@ -249,7 +249,7 @@ def view_ad(request, ad_id):
     json_data = json.dumps(today_count)
 
     params2 = {
-        'name': ad.AdName,
+        'name': ad.AdNameUsername,
         'from': today.strftime("%Y-%m-%d"),
         'length': 0,
     }
@@ -706,7 +706,7 @@ def getupdate(request):
             print(f"District '{city}' created")
     for ad in ads:
         params = {
-            'name': ad.AdName,
+            'name': ad.AdNameUsername,
             'from': ad.StartDate.strftime("%Y-%m-%d"),
             'to': ad.EndDate.strftime("%Y-%m-%d"),
         }

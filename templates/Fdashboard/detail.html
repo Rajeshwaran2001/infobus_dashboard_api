@@ -239,7 +239,7 @@
                 <h6 class="mb-0 ">From - <span id="start-date-text">{{ start_date }}</span> To - <span id="end-date-text">{{ end_date }}</span></h6>
               <!-- Create a form with date range inputs and a submit button -->
                 <form id="date-range-form">
-                    <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdName }}">
+                    <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdNameUsername }}">
                    <label class="text-sm " for="start-date">Start date:</label>
                   <input type="text" id="start-date" name="start_date">
 
@@ -281,7 +281,7 @@ function fetchApiData() {
     url: '/dashboard/today_count', // Replace with the URL of your API view
     type: 'GET',
       data: {
-        'ad_name': '{{ ad.AdName }}'
+        'ad_name': '{{ ad.AdNameUsername }}'
     },
     dataType: 'json',
     success: function (json_data) {
@@ -310,7 +310,7 @@ setInterval(fetchApiData, 40000);
         url: '/dashboard/bus_count',
         type: 'GET',
         data: {
-        'ad_name': '{{ ad.AdName }}'
+        'ad_name': '{{ ad.AdNameUsername }}'
         },
         success: function(result) {
           // Iterate over the bus objects in the result
@@ -448,7 +448,6 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
 const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
    flatpickr("#start-date", {
     dateFormat: "y-m-d",
-    defaultDate: "{{ start_date }}",
     minDate: minDate,
     maxDate: new Date(),
    });

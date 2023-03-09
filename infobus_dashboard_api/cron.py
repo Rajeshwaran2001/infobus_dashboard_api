@@ -25,7 +25,7 @@ def getupdate():
                 print(f"District '{city}' created")
         for ad in ads:
             params = {
-                'name': ad.AdName,
+                'name': ad.AdNameUsername,
                 'from': ad.StartDate.strftime("%Y-%m-%d"),
                 'to': ad.EndDate.strftime("%Y-%m-%d"),
             }

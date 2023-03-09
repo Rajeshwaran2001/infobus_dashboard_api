@@ -187,7 +187,7 @@ function fetchApiData() {
     url: '/dashboard/today_count', // Replace with the URL of your API view
     type: 'GET',
       data: {
-        'ad_name': '{{ ad.AdName }}'
+        'ad_name': '{{ ad.AdNameUsername }}'
     },
     dataType: 'json',
     success: function (data) {
@@ -216,7 +216,7 @@ setInterval(fetchApiData, 40000);
         url: '/dashboard/bus_count',
         type: 'GET',
         data: {
-        'ad_name': '{{ ad.AdName }}'
+        'ad_name': '{{ ad.AdNameUsername }}'
         },
         success: function(result) {
           // Iterate over the bus objects in the result
