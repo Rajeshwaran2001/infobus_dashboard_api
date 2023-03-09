@@ -46,7 +46,7 @@ def dash(request):
     today = timezone.now().date()
     five_days_ago = today - timezone.timedelta(days=5)
 
-    ads = ads.exclude(EndDate__lt=today)  # Exclude ads that have ended in the past
+    # ads = ads.exclude(EndDate__lt=today)  # Exclude ads that have ended in the past
     ads = ads.exclude(EndDate__lte=five_days_ago)  # Exclude ads that have ended more than 5 days ago
 
     csv_path = os.path.join(os.getcwd(), 'static', 'data')
