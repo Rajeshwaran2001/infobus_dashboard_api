@@ -695,7 +695,8 @@ def Franchise_signup_view(request):
 
 def getupdate(request):
     ads = Ads.objects.all()
-    unique_cities = bus_Detail.objects.values_list('city', flat=True).distinct()
+    city_names = bus_Detail.objects.values_list('city', flat=True)
+    unique_cities = set(city_names)
     print(unique_cities)
     for city in unique_cities:
         district, created = District.objects.get_or_create(District=city)

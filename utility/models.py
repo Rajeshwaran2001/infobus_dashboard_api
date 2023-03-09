@@ -74,3 +74,10 @@ class MyAds(models.Model):
 
     class Meta:
         verbose_name_plural = "MyAds"
+
+
+class Slot(models.Model):
+    Total_spots = models.PositiveIntegerField(null=True, blank=False)
+    Filled = models.PositiveIntegerField(null=True, blank=False)
+    Empty = models.PositiveIntegerField(null=True, blank=False)
+    district = models.OneToOneField(District, null=True, on_delete=models.CASCADE)

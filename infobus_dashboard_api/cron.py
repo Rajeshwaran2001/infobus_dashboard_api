@@ -3,9 +3,7 @@ import datetime as dt
 import logging
 import requests
 from requests import Timeout
-from api.District.models import District
-from api.ads.models import Ads
-from dashboard.models import MyAds
+from utility.models import District, Ads, MyAds
 from utility.models import bus_Detail
 
 timeout = 100
@@ -15,7 +13,8 @@ logger = logging.getLogger(__name__)
 def getupdate():
     try:
         ads = Ads.objects.all()
-        unique_cities = bus_Detail.objects.values_list('city', flat=True).distinct()
+        city_names = bus_Detail.objects.values_list('city', flat=True)
+        unique_cities = set(city_names)
         print(unique_cities)
         for city in unique_cities:
             district, created = District.objects.get_or_create(District=city)
