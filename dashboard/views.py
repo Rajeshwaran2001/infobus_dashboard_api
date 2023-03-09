@@ -695,15 +695,14 @@ def Franchise_signup_view(request):
 
 def getupdate(request):
     ads = Ads.objects.all()
-    city_names = bus_Detail.objects.values_list('city', flat=True)
-    unique_cities = set(city_names)
-    print(unique_cities)
+    unique_cities = bus_Detail.objects.values_list('city', flat=True).distinct()
     for city in unique_cities:
-        district, created = District.objects.get_or_create(District=city)
-        if not created:
-            print(f"District '{city}' already exists")
+        districts = District.objects.filter(District=city)
+        if districts.exists():
+            print(f"{districts.count()} districts already exist for '{city}'")
         else:
-            print(f"District '{city}' created")
+            district = District.objects.create(District=city)
+            print(f"District '{district}' created")
     for ad in ads:
         params = {
             'name': ad.AdNameUsername,

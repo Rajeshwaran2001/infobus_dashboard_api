@@ -16,7 +16,7 @@ class bus_Detail(models.Model):
 
 
 class District(models.Model):
-    District = models.CharField(max_length=20, null=True, blank=True)
+    District = models.CharField(max_length=20, null=True, blank=True, unique=False)
     DistrictTamil = models.CharField(max_length=50, null=True, blank=True)
     is_Active = models.BooleanField(default=True)
 
