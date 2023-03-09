@@ -17,6 +17,9 @@
         <ul class="navbar-nav  justify-content-end">
           <li class="nav-item d-flex align-items-center text-dark">
                <span class="d-sm-inline d-none text-xl"><span class="text-success">Welcome!</span>&nbsp;{{ user.username }}</span>
+          </li>&nbsp;
+             <li class="nav-item d-flex align-items-center text-dark">
+               <span class="d-sm-inline d-none text-xl">{% for d in franchise.district.all %}{{ d.District }},{% endfor %}</span>
           </li>
             &nbsp;&nbsp;<li class="nav-item dropdown pe-2 d-flex align-items-center">
               <a href="javascript:" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">

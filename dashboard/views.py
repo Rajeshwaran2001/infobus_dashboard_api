@@ -139,7 +139,8 @@ def dash(request):
         'filled': filled_spots,
         'free': free,
         'percentage': percentage,
-        'last': last_modified_str
+        'last': last_modified_str,
+        'franchise': franchise
     }
     return render(request, 'Fdashboard/dashboard.html', context)
 
