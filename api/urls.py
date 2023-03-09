@@ -1,9 +1,11 @@
 from django.urls import path, include
-from rest_framework.authtoken import views
+from . import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('ads', views.AdViewSet)
+router.register('district', views.DistrictViewSet)
 
 urlpatterns = [
-
-    path('ads/', include('api.ads.urls')),
-    path('vehical/', include('api.vehical.urls')),
-    path('district/', include('api.District.urls')),
+    path('', include(router.urls))
 ]

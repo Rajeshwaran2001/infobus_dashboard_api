@@ -4,8 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Sum
-from api.ads.models import Ads
-from dashboard.models import MyAds
+from utility.models import Ads
+from utility.models import MyAds
 from django.utils import timezone
 from datetime import timedelta, date
 import json

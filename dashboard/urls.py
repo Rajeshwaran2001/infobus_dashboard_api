@@ -1,6 +1,5 @@
 from django.contrib.auth.views import LoginView
-
-from dashboard import views
+from . import views
 from django.urls import path
 
 app_name = "FDashboard"

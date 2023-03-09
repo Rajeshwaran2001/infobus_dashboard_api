@@ -1,7 +1,7 @@
 from django import forms
 from .models import Franchise
 from django.contrib.auth.models import User
-from api.District.models import District
+from utility.models import District
 
 class FranchiseForm(forms.ModelForm):
     class Meta:

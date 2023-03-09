@@ -7,10 +7,9 @@ from django.contrib.auth.models import Group
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from api.ads.models import Ads
-from api.District.models import District
+from utility.models import Ads, District,MyAds
 from dashboard.forms import FranchiseForm, FranchiseUserForm
-from .models import MyAds, Franchise
+from .models import Franchise
 import datetime as dt
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone

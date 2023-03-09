@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Ads
+from utility.models import Ads, District
 
 
 class AdSerializer(serializers.HyperlinkedModelSerializer):
@@ -7,3 +7,9 @@ class AdSerializer(serializers.HyperlinkedModelSerializer):
         model = Ads
         fields = ['id', 'AdName', 'AdNameUsername', 'StartDate', 'EndDate', 'TotalCount', 'No_of_Days', 'ECPD', 'ECPM',
                   'BusCount', 'District', 'display']
+
+
+class DistrictSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = District
+        fields = ['id', 'District', 'DistrictTamil', ]
