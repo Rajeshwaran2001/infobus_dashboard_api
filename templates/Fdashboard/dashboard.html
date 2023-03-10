@@ -7,7 +7,7 @@
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
           <img src="{% static 'img/info.png' %}" class="navbar-brand-img h-100" width="150" alt="main_logo">
-        <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+        <h6 class="font-weight-bolder mb-0">{% for d in franchise.district.all %}{{ d.District }},{% endfor %}Dashboard</h6>
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="d-sm-inline d-none text-info" aria-current="page">Last Updated: {{ last }}</li>
           </ol>
@@ -17,9 +17,6 @@
         <ul class="navbar-nav  justify-content-end">
           <li class="nav-item d-flex align-items-center text-dark">
                <span class="d-sm-inline d-none text-xl"><span class="text-success">Welcome!</span>&nbsp;{{ user.username }}</span>
-          </li>&nbsp;
-             <li class="nav-item d-flex align-items-center text-dark">
-               <span class="d-sm-inline d-none text-xl">{% for d in franchise.district.all %}{{ d.District }},{% endfor %}</span>
           </li>
             &nbsp;&nbsp;<li class="nav-item dropdown pe-2 d-flex align-items-center">
               <a href="javascript:" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">

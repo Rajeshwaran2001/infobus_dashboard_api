@@ -154,7 +154,6 @@ def view_ad(request, ad_id):
 
     day = timezone.now().date() - timedelta(days=1)
     today = date.today()
-    yesterday = day.strftime("%d/%m/%Y")
     # To get last 7 days data by default
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=7)
@@ -276,9 +275,9 @@ def view_ad(request, ad_id):
         logger.warning('Timeout error for {}'.format(url2))
 
     url3 = 'https://tvl.busads.in/get_adcountv2.php'
-    response2 = requests.get(url3, params2, timeout=timeout)
+    response3 = requests.get(url3, params2, timeout=timeout)
     try:
-        data3 = response2.json()
+        data3 = response3.json()
     except ValueError:
         data3 = []
         logger.warning('Value error')
@@ -819,9 +818,9 @@ def update_bus_count(request):
         logger.warning('Timeout error for {}'.format(url2))
 
     url3 = 'https://tvl.busads.in/get_adcountv3.php'
-    response2 = requests.get(url3, params, timeout=timeout)
+    response3 = requests.get(url3, params, timeout=timeout)
     try:
-        data3 = response2.json()
+        data3 = response3.json()
     except ValueError:
         data3 = []
         logger.warning('Value error')

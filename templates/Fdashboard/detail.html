@@ -22,7 +22,7 @@
   <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
-
+           <img src="{% static 'img/info.png' %}" class="navbar-brand-img h-100" width="150" alt="main_logo">
         <h6 class="font-weight-bolder mb-0">{{ ad.AdName }}</h6>
       </nav>
       <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -301,7 +301,7 @@ function fetchApiData() {
 // Fetch API data every 40 seconds
 setInterval(fetchApiData, 40000);
      // Pass the URL to your JavaScript code
-    window.imageURL = "{% static 'img/logo.png' %}";
+window.imageURL = "{% static 'img/50pixel.png' %}";
 
 </script>
 <script>
@@ -329,6 +329,17 @@ setInterval(fetchApiData, 40000);
 
 // Fetch API data every 40 seconds
 setInterval(fetchApiData2, 40000);
+
+let map;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 9.939093, lng: 78.121719 },
+    zoom: 8,
+  });
+}
+
+window.initMap = initMap;
 
 </script>
 
@@ -448,7 +459,6 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
 const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
    flatpickr("#start-date", {
     dateFormat: "y-m-d",
-    minDate: minDate,
     maxDate: new Date(),
    });
   flatpickr("#end-date", {
