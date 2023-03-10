@@ -195,7 +195,7 @@ def view_ad(request, ad_id):
             for key, value in item.items():
                 if key in ['imei', 'bus_no', 'route_no', 'route_name']:
                     continue
-                day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m")
                 count = int(value)
                 day_counts[day] += count
 
@@ -885,7 +885,7 @@ def get_data(request):
                 for key, value in item.items():
                     if key in ['imei', 'bus_no', 'route_no', 'route_name']:
                         continue
-                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m")
                     count = int(value)
                     day_counts[day] += count
 
