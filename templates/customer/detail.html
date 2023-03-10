@@ -2,6 +2,21 @@
 {% load static %}
 {% block css %}
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+ <style>
+ .spinner-border {
+  animation: spin 1s infinite linear;
+  width: 40px;
+  height: 40px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+    </style>
 {% endblock css %}
 {% block content %}
     <!-- Navbar -->
@@ -9,7 +24,7 @@
     <div class="container-fluid py-1 px-3">
      <nav aria-label="breadcrumb">
           <img src="{% static 'img/info.png' %}" class="navbar-brand-img h-100" width="150" alt="main_logo">
-        <h6 class="font-weight-bolder mb-0"><span class="text-success">Welcome,</span> {{ ad.AdName }}</h6>
+        <h4 class="font-weight-bolder mb-0"><span class="text-success">Welcome,</span> {{ ad.AdName }}</h4>
 
       </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -29,7 +44,7 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
               <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
@@ -37,7 +52,7 @@
               </div>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">Today's Count</p>
-                <h4 class="mb-0" id="sum">{{ data }}</h4>
+                <h4 class="mb-0" id="sum">{{ json_data }}</h4>
               </div>
             </div>
             <hr class="horizontal my-0">
@@ -47,15 +62,15 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
               <div class="icon icon-lg icon-shape bg-gradient-info shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">person</i>
+                <i class="material-icons opacity-10">verified</i>
               </div>
               <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">yesterday Count</p>
-                <h4 class="mb-0">{{ yesterday }}</h4>
+                <p class="text-sm mb-0 text-capitalize">Total Count</p>
+                <h4 class="mb-0">{{ ad.myads_count }}</h4>
               </div>
             </div>
             <hr class="horizontal my-0">
@@ -64,11 +79,28 @@
             </div>
           </div>
         </div>
+           <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+          <div class="card" >
+            <div class="card-header p-3 pt-2" style="background: #8a4f7d">
+              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10"> record_voice_over </i>
+              </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize text-white">Targeted Audience Till Date</p>
+                <h4 class="mb-0 text-white">{{ ad.tg }}</h4>
+              </div>
+            </div>
+              <hr class="horizontal my-0">
+            <div class="card-footer p-3">
 
-          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            </div>
+          </div>
+        </div>
+
+          <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+              <div class="icon icon-lg icon-shape shadow-primary text-center border-radius-xl mt-n4 position-absolute" style="background: #008080;">
                 <i class="material-icons opacity-10">restart_alt</i>
               </div>
               <div class="text-end pt-1">
@@ -83,7 +115,7 @@
           </div>
 
         </div>
-          <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
               <div class="icon icon-lg icon-shape bg-gradient-warning shadow-primary text-center border-radius-xl mt-n4 position-absolute">
@@ -162,8 +194,61 @@
           </div>
         </div>
        <div class="col-lg-6 col-md-6 map-container" style="display:none;">
-        <div class="card" id="map" style="height: 400px;"></div>
+        <div class="card h-100" id="map" style="height: 400px;"></div>
         </div>
+        <div class="row mt-4">
+             <div class="col-lg-12 col-md-6 mt-4 mb-4">
+          <div class="card z-index-2  ">
+              <div class="card-body">
+                <h4 class="mb-0 text-center ">Targeted Audience Till Date</h4>
+            </div>
+              <div class="card-body">
+            </div>
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class="shadow-success border-radius-lg py-3 pe-1" style="background: #8a4f7d">
+                <div class="chart1">
+                  <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-lg-12 col-md-6 mt-4 mb-4">
+          <div class="card z-index-2  ">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+              <div class="shadow-success border-radius-lg py-3 pe-1">
+                <div class="chart">
+                  <canvas id="chart-bar" class="chart-canvas" height="170"></canvas>
+                    <div id="chart-spinner" class="spinner-border text-light" role="status" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+                <h6 class="mb-0 ">From - <span id="start-date-text">{{ start_date }}</span> To - <span id="end-date-text">{{ end_date }}</span></h6>
+              <!-- Create a form with date range inputs and a submit button -->
+                <form id="date-range-form">
+                    <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdNameUsername }}">
+                   <label class="text-sm " for="start-date">Start date:</label>
+                  <input type="text" id="start-date" name="start_date">
+
+                  <label class="text-sm " for="end-date">End date:</label>
+                  <input type="text" id="end-date" name="end_date">
+
+                 <button class="btn btn-outline-info btn-sm mb-0" type="button" id="submit-button">Submit</button>
+                </form>
+                <div class="d-flex">
+                <p class="mb-0 text-sm text-danger" id="error-container" style="display: none;"> No data available for selected dates. </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
     <div id="district-data" data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
@@ -252,16 +337,15 @@ window.initMap = initMap;
 
 <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
 <script>
-
-var ctx = document.getElementById("chart-bar").getContext("2d");
+var ctx = document.getElementById("chart-line").getContext("2d");
 
     new Chart(ctx, {
-      type: "bar",
+      type: "line",
       data: {
-        labels: {{ labels|safe }},
+        labels: {{ labelss|safe }},
          datasets: [{
-              id: 'chart-data',
-              label: "Total Count",
+              id: 'chart-line',
+              label: "Targeted Audience Till Date",
               tension: 0,
               borderWidth: 0,
               pointRadius: 5,
@@ -272,7 +356,7 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
               borderWidth: 4,
               backgroundColor: "transparent",
               fill: true,
-              data: {{ data|safe }},
+              data: {{ dataa|safe }},
               maxBarThickness: 6
     }],
   },
@@ -304,10 +388,10 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
             ticks: {
               display: true,
               color: '#f8f9fa',
-              padding: 10,
+              padding: 22,
               font: {
-                size: 14,
-                weight: 300,
+                size: 12,
+                weight: 500,
                 family: "Roboto",
                 style: 'normal',
                 lineHeight: 2
@@ -328,7 +412,115 @@ var ctx = document.getElementById("chart-bar").getContext("2d");
               padding: 10,
               font: {
                 size: 14,
-                weight: 300,
+                weight: 500,
+                family: "Roboto",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+        },
+      },
+    });
+
+    Chart.register({
+  id: "barLabel",
+  beforeDraw: function (chart) {
+    var ctx = chart.ctx;
+    chart.data.datasets.forEach(function (dataset, i) {
+      var meta = chart.getDatasetMeta(i);
+      if (!meta.hidden) {
+        meta.data.forEach(function (element, index) {
+          // Draw the text at the top of the bar
+          var label = dataset.data[index];
+          ctx.save();
+          ctx.font = Chart.helpers.fontString(14, "bold", "Roboto");
+          ctx.fillStyle = "#fff";
+          ctx.textAlign = "center";
+          ctx.fillText(label, element.x, element.y - 10);
+          ctx.restore();
+        });
+      }
+    });
+  },
+});
+
+var ctx = document.getElementById("chart-bar").getContext("2d");
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: {{ labels|safe }},
+         datasets: [{
+              id: 'chart-data',
+              label: "Total Count",
+              tension: 0,
+              borderWidth: 0,
+              pointRadius: 5,
+              pointBackgroundColor: "rgb(32, 121, 233)",
+              pointBorderColor: "transparent",
+              borderColor: "rgb(32, 121, 233)",
+              borderColor: "rgb(32, 121, 233)",
+              borderWidth: 4,
+              backgroundColor: "rgb(32, 121, 233)",
+              fill: true,
+              data: {{ data|safe }},
+              maxBarThickness: 6
+    }],
+  },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+            barLabel: {
+      // options for the plugin
+        },
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5],
+              color: 'rgb(138, 79, 125)'
+            },
+            ticks: {
+              display: true,
+              color: '#000000',
+              padding: 10,
+              font: {
+                size: 14,
+                weight: 500,
+                family: "Roboto",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              color: '#000000',
+              padding: 10,
+              font: {
+                size: 14,
+                weight: 500,
                 family: "Roboto",
                 style: 'normal',
                 lineHeight: 2

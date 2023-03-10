@@ -120,7 +120,7 @@ async function fetchData() {
           position: { lat: parseFloat(position.latitude), lng: parseFloat(position.longitude) },
           map,
           title: position.bus_no,
-          label: { text: position.bus_no, color: 'red', fontSize: '14px' },
+          label: { text: position.bus_no, color: 'white', fontSize: '14px' },
           icon: {
             url: window.imageURL,
             scaledSize: new google.maps.Size(50, 50),

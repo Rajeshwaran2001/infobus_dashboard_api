@@ -12,7 +12,7 @@
     background: none;
     position: relative;
   }
-  
+
   .progresss::after {
     content: "";
     width: 100%;
@@ -23,7 +23,7 @@
     top: 0;
     left: 0;
   }
-  
+
   .progresss>span {
     width: 50%;
     height: 100%;
@@ -32,11 +32,11 @@
     top: 0;
     z-index: 1;
   }
-  
+
   .progresss .progresss-left {
     left: 0;
   }
-  
+
   .progresss .progresss-bar {
     width: 100%;
     height: 100%;
@@ -46,7 +46,7 @@
     position: absolute;
     top: 0;
   }
-  
+
   .progresss .progresss-left .progresss-bar {
     left: 100%;
     border-top-right-radius: 80px;
@@ -55,11 +55,11 @@
     -webkit-transform-origin: center left;
     transform-origin: center left;
   }
-  
+
   .progresss .progresss-right {
     right: 0;
   }
-  
+
   .progresss .progresss-right .progresss-bar {
     left: -100%;
     border-top-left-radius: 80px;
@@ -68,15 +68,14 @@
     -webkit-transform-origin: center right;
     transform-origin: center right;
   }
-  
+
   .progresss .progresss-value {
     position: absolute;
     top: 0;
     left: 0;
   }
-  
+
   .scroll {
-    max-height: 800px;
     overflow-y: auto;
     overflow-x: auto;
     display: inline-block;
@@ -86,11 +85,10 @@
   max-height: 300px;
   overflow-y: auto;
 }
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+

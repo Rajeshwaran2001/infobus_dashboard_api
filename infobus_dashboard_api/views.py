@@ -75,28 +75,113 @@ def customer_view(request):
         ad = Ads.objects.get(AdNameUsername=ad_name_upper)
         ad.myads_count = MyAds.objects.filter(adname=ad.AdName).aggregate(Sum('Count'))['Count__sum']
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
+        ad.tg = ad.myads_count * 60
 
         day = timezone.now().date() - timedelta(days=1)
         today = date.today()
-        yesterday = day.strftime("%Y-%m-%d")
-        total_count_yesterday = \
-        MyAds.objects.filter(adname=ad.AdName, date_time__contains=yesterday).aggregate(Sum('Count'))['Count__sum'] or 0
-        if not total_count_yesterday:
-            total_count_yesterday = 0
-        # print(myad)
-        # print(bus_nos)
-        # print(total_count_yesterday, yesterday)
+        # To get last 7 days data by default
+        end_date = datetime.now().date()
+        start_date = end_date - timedelta(days=7)
+        start_str = start_date.strftime('%d/%m/%y')
+        end_str = end_date.strftime('%d/%m/%y')
+
+        param = {
+            'name': ad.AdNameUsername,
+            'from': start_date.strftime("%Y-%m-%d"),
+            'to': end_date.strftime("%Y-%m-%d"),
+        }
+        # Query the MyAds model to get the required data
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
+                'https://tvl.busads.in/get_adcountv2.php']
+        for url in urls:
+            response = requests.get(url, params=param, timeout=timeout)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
+                continue
+            try:
+                data = response.json()
+            except JSONDecodeError:
+                print(f"Error decoding JSON: {response.text}")
+                logger.warning(f"Error decoding JSON: {response.text}")
+                continue
+            except Timeout:
+                print("Request TimeOut")
+                logger.error(f"Timeout Error: {url}")
+                continue
+            if data is None:
+                print("API returned None")
+                logger.warning('API returned None')
+                continue
+
+            day_counts = defaultdict(int)
+
+            for item in data:
+                for key, value in item.items():
+                    if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                        continue
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    count = int(value)
+                    day_counts[day] += count
+
+            date_count_array = [{'date': date, 'count': count} for date, count in day_counts.items()]
+
+        # print(date_count_array)
+        urls = ['https://delta.busads.in/get_adcountv2.php', 'https://track.siliconharvest.net/get_adcountv2.php',
+                'https://tvl.busads.in/get_adcountv2.php']
+        for url in urls:
+            response = requests.get(url, params=param, timeout=timeout)
+            if response.status_code != 200:
+                print(f"Error response received with status code {response.status_code}")
+                logger.error(f"Error response received with status code {response.status_code}")
+                continue
+            try:
+                data = response.json()
+            except JSONDecodeError:
+                print(f"Error decoding JSON: {response.text}")
+                logger.warning(f"Error decoding JSON: {response.text}")
+                continue
+            except Timeout:
+                print("Request TimeOut")
+                logger.error(f"Timeout Error: {url}")
+                continue
+            if data is None:
+                print("API returned None")
+                logger.warning('API returned None')
+                continue
+
+            day_counts = defaultdict(int)
+
+            for item in data:
+                for key, value in item.items():
+                    if key in ['imei', 'bus_no', 'route_no', 'route_name']:
+                        continue
+                    day = dt.datetime.strptime(key, "%d/%m/%Y").date().strftime("%d/%m/%Y")
+                    count = int(value) * 60
+                    day_counts[day] += count
+
+            date_count_array1 = [{'date': date, 'count': count} for date, count in day_counts.items()]
+            # print(date_count_array1)
+
+        if ad.myads_count is not None:  # To handle the total count is 0
+            if ad.TotalCount:
+                # print(ad.AdName, ad.myads_count, ad.TotalCount)
+                ad.percentage = (ad.myads_count / ad.TotalCount) * 100
+            else:
+                ad.percentage = 0
+        else:
+            ad.percentage = 0
 
         # Fetch API data and give inital data
         params1 = {
-                'name': ad.AdNameUsername,
-                'from': today.strftime("%Y-%m-%d"),
-                'length': 1,
-            }
+            'name': ad.AdNameUsername,
+            'from': today.strftime("%Y-%m-%d"),
+            'length': 1,
+        }
         urls = [
-                'https://delta.busads.in/get_adcountv3.php',
-                'https://track.siliconharvest.net/get_adcountv3.php',
-                'https://tvl.busads.in/get_adcountv3.php']
+            'https://delta.busads.in/get_adcountv3.php',
+            'https://track.siliconharvest.net/get_adcountv3.php',
+            'https://tvl.busads.in/get_adcountv3.php']
         api_data = 0
 
         for url in urls:
@@ -121,17 +206,6 @@ def customer_view(request):
 
         # Convert dictionary to JSON
         json_data = json.dumps(today_count)
-
-
-        if ad.myads_count is not None:  # To handle the total count is 0
-            if ad.TotalCount:
-                # print(ad.AdName, ad.myads_count, ad.TotalCount)
-                ad.percentage = (ad.myads_count / ad.TotalCount) * 100
-            else:
-                ad.percentage = 0
-        else:
-            ad.percentage = 0
-
 
         params2 = {
             'name': ad.AdNameUsername,
@@ -186,11 +260,27 @@ def customer_view(request):
                         }
                         result.append(d)
 
+        labels = []
+        data = []
+        for item in date_count_array:
+            labels.append(item['date'])
+            data.append(item['count'])
+
+        labelss = []
+        dataa = []
+        for item in date_count_array1:
+            labelss.append(item['date'])
+            dataa.append(item['count'])
         context = {
             'ad': ad,
             'result': result,
-            'yesterday': total_count_yesterday,
-            'data': json_data,
+            'json_data': json_data,
+            'labels': labels,
+            'data': data,
+            'start_date': start_str,
+            'end_date': end_str,
+            'labelss': labelss,
+            'dataa': dataa,
         }
         return render(request, 'customer/detail.html', context)
 
