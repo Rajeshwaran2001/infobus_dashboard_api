@@ -18,7 +18,7 @@ from requests.exceptions import Timeout
 
 logger = logging.getLogger(__name__)
 # Create your views here.
-timeout = 100
+timeout = 200
 
 
 def is_patner(user):

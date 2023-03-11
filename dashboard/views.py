@@ -27,7 +27,7 @@ from requests.exceptions import Timeout
 
 logger = logging.getLogger(__name__)
 # Set the timeout value to 5 seconds
-timeout = 100
+timeout = 200
 
 
 # Create your views here.
