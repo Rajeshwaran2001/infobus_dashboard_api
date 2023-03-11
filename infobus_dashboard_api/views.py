@@ -33,7 +33,7 @@ def afterlogin_view(request):
     if is_patner(request.user):
         return redirect('FDashboard:dashboard')
     elif is_office(request.user):
-        return redirect('FDashboard:dashboard')
+        return redirect('Office:office-dashboard')
     else:
         return redirect('Login')
 

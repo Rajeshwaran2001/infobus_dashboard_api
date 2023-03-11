@@ -2,6 +2,18 @@ from django.db import models
 import datetime as dt
 from django.contrib.auth.models import User
 
+Invoice_status_Choice = (
+    ('Billed', "Billed"),
+    ('Not Billed', "Not Billed"),
+    ('Not Generated', "Not Generated"),
+)
+
+Payment_status_Choice = (
+    ('Credited', "Credited"),
+    ('Not Credited', "Not Credited"),
+    ('Not Generated', "Not Generated"),
+)
+
 
 # Create your models here.
 class bus_Detail(models.Model):
@@ -40,6 +52,9 @@ class Ads(models.Model):
     District = models.ManyToManyField(District, blank=False)
     display = models.BooleanField(default=True, help_text="check this to display the ads")
     agent = models.ManyToManyField(User, blank=True)
+    Invoice_Date = models.DateField(null=True, blank=True)
+    Invoice_Status = models.CharField(choices=Invoice_status_Choice, max_length=50, blank=True, null=True)
+    Payment_Status = models.CharField(choices=Payment_status_Choice, max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.AdName

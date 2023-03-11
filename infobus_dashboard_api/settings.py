@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'dashboard.apps.DashboardConfig',
     'utility.apps.UtilityConfig',
+    'office.apps.OfficeConfig',
     'django_crontab',
 ]
 
@@ -60,8 +62,7 @@ ROOT_URLCONF = 'infobus_dashboard_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,7 +154,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': './file.log', # Relative path to the file
+            'filename': './file.log',  # Relative path to the file
         },
     },
     'loggers': {
