@@ -6,6 +6,7 @@ from utility.models import District
 # Create your models here.
 class Office(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    mobile_no_1 = models.CharField(max_length=10, null=True, blank=False)
     is_Active = models.BooleanField(default=True)
 
     @property
