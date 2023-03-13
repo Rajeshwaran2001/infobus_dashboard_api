@@ -669,7 +669,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(user=request.user)
     context = {'form': form}
-    return render(request, 'Fdashboard/change_password.html', context)
+    return render(request, 'common/change_password.html', context)
 
 
 def Franchise_signup_view(request):

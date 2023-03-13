@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from .forms import OfficeForm, OfficeUserForm
 from django.contrib.auth.models import Group
 from utility.models import District, Ads, MyAds
-from .models import Office
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Sum
 import logging
 import requests
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 from datetime import timedelta, date, datetime
 from json.decoder import JSONDecodeError
 from django.utils import timezone
@@ -298,8 +300,6 @@ def view_ad(request, ad_id):
     return render(request, 'office/detail.html', context)
 
 
-@login_required()
-@user_passes_test(is_office)
 def Office_signup_view(request):
     userForm = OfficeForm()
     OfficeUser = OfficeUserForm()
@@ -318,3 +318,21 @@ def Office_signup_view(request):
             my_group[0].user_set.add(user)
         return redirect('Office:Office-login')
     return render(request, 'office/signup.html', context=mydict)
+
+
+@login_required()
+@user_passes_test(is_office)
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to maintain user session
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('Office:office-dashboard')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(user=request.user)
+    context = {'form': form}
+    return render(request, 'common/change_password.html', context)
