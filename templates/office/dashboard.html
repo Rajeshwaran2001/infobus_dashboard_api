@@ -1,4 +1,4 @@
-{% extends 'franchise_base.html' %}
+{% extends 'office_base.html' %}
 {% load static %}
 {% block css %}
     <style>
@@ -94,76 +94,32 @@
   <!-- End Navbar -->
   <div class="container-fluid py-4">
     <div class="row">
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-3 pt-2">
-            <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-              <i class="material-icons opacity-10" style="font-size:35px;">mode_of_travel</i>
+      <div class="col-lg-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header pb-0">
+                            <form id="district-form">
+                                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                                <label>Select District</label>
+                                    <div class="input-group input-group-outline my-3">
+                                        <select class="form-control mx-3" id="district-select" name="district">
+                                            <option value="">Select a District</option>
+                                            <option value="All">All</option>
+                                            {% for d in district %}
+                                                <option value="{{ d }}">{{ d }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+                </div>
             </div>
-            <div class="text-end pt-1">
-              <p class="text-xl mb-0 text-capitalize text-dark">Availalbe Ad slot</p>
-              <h5 class="mb-0">{{ total }}</h5>
-            </div>
-          </div>
-          <hr class="horizontal my-0">
-          <div class="card-footer p-3">
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-3 pt-2">
-            <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-              <i class="material-icons opacity-10">person</i>
-            </div>
-            <div class="text-end pt-1">
-              <p class="text-xl mb-0 text-capitalize text-dark">Total Filled Ad slot</p>
-              <h5 class="mb-0">{{ filled }}</h5>
-            </div>
-          </div>
-          <hr class="horizontal my-0">
-          <div class="card-footer p-3">
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-3 pt-2">
-            <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-              <i class="material-icons opacity-10">person</i>
-            </div>
-            <div class="text-end pt-1">
-              <p class="text-xl mb-0 text-capitalize text-dark">Total Free Ad slot</p>
-              <h5 class="mb-0">{{ free }}</h5>
-            </div>
-          </div>
-          <hr class="horizontal my-0">
-          <div class="card-footer p-3">
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-sm-6">
-        <div class="card">
-          <div class="card-header p-3 pt-2">
-            <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-              <i class="material-icons opacity-10">weekend</i>
-            </div>
-            <div class="text-end pt-1">
-              <p class="text-xl mb-0 text-capitalize text-dark">Total Filled slots in %</p>
-              <h5 class="mb-0">{{ percentage }}%</h5>
-            </div>
-          </div>
-          <hr class="horizontal my-0">
-          <div class="card-footer p-3">
-          </div>
-        </div>
-      </div>
     </div>
     <div class="row mt-4">
         <div id="loading" style="display:none;">
     <!-- your loading animation code here -->
     <img src="{% static 'img/loading.gif' %}" alt="loading">
-</div>
+        </div>
     </div>
     <div class="row">
       <div class="col-lg-10 col-md-10 mb-md-0 mb-4 scroll">
@@ -307,6 +263,11 @@ function showLoading(event, url) {
         window.location.href = url;
     }, 1000);
 }
+
+// Submit form on selecting route
+        $('#district-select').change(function () {
+            $('#district-form').submit();
+        });
   </script>
 {% endblock %}
 
