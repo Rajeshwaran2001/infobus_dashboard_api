@@ -31,7 +31,7 @@ def getupdate():
             urls = ['https://delta.busads.in/get_adcountv3.php', 'https://track.siliconharvest.net/get_adcountv3.php',
                     'https://tvl.busads.in/get_adcountv3.php']
             for url in urls:
-                response = requests.get(url, params=params, timeout=timeout)
+                response = requests.get(url, params=params, timeout=timeout, headers={'User-Agent': 'Mozilla/5.0'})
                 if response.status_code != 200:
                     print(f"Error response received with status code {response.status_code}")
                     continue
@@ -72,7 +72,7 @@ def getstatus(request):
             'https://tvl.busads.in/get_status.php']
     error_messages = []
     for url in urls:
-        response = requests.get(url)
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         if response.status_code != 200:
             # Log the error message for debugging purposes
             error_messages.append(f"Error response received with status code {response.status_code} from {url}")
