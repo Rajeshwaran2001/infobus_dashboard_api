@@ -1,29 +1,31 @@
 import csv
+import datetime as dt
 import json
 import logging
-from json.decoder import JSONDecodeError
-import requests
-from django.contrib.auth.models import Group
-from django.db.models import Sum
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from utility.models import Ads, District,MyAds
-from dashboard.forms import FranchiseForm, FranchiseUserForm
-from .models import Franchise
-import datetime as dt
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.utils import timezone
-from datetime import timedelta, date, datetime
-from utility.models import bus_Detail
 import os
-from django.contrib import messages
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
 from collections import defaultdict
+from datetime import timedelta, date, datetime
+from json.decoder import JSONDecodeError
+
+import requests
 import xlrd
 import xlwt
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import Group
+from django.db.models import Sum
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.utils import timezone
 from requests.exceptions import Timeout
+
+from dashboard.forms import FranchiseForm, FranchiseUserForm
+from utility.models import Ads, District, MyAds
+from utility.models import bus_Detail
+from .models import Franchise
 
 logger = logging.getLogger(__name__)
 # Set the timeout value to 5 seconds
@@ -102,7 +104,9 @@ def dash(request):
             five_days.append(ad)
             # print(five_days)
 
-        ad.myads_count = MyAds.objects.filter(adname=ad.AdName, date_time__range=[ad.StartDate, ad.EndDate]).aggregate(Sum('Count'))['Count__sum']
+        ad.myads_count = \
+        MyAds.objects.filter(adname=ad.AdName, date_time__range=[ad.StartDate, ad.EndDate]).aggregate(Sum('Count'))[
+            'Count__sum']
 
         ad.myads_count = ad.myads_count if ad.myads_count is not None else 0  # To Print the total count is 0
         statuss = ad.day * ad.ECPD
@@ -665,7 +669,7 @@ def change_password(request):
     else:
         form = PasswordChangeForm(user=request.user)
     context = {'form': form}
-    return render(request, 'change_password.html', context)
+    return render(request, 'Fdashboard/change_password.html', context)
 
 
 def Franchise_signup_view(request):
@@ -689,7 +693,7 @@ def Franchise_signup_view(request):
             Franchise.district.add(*selected_districts)
             my_group = Group.objects.get_or_create(name='Franchise')
             my_group[0].user_set.add(user)
-        return redirect('FDashboard:Flogin')
+        return redirect('Login')
     return render(request, 'Fdashboard/signup.html', context=mydict)
 
 
@@ -832,7 +836,7 @@ def update_bus_count(request):
     for data in [data1, data2, data3]:
         for item in data:
             for key, value in item.items():
-                if key != 'imei' and key != 'bus_no' :
+                if key != 'imei' and key != 'bus_no':
                     d = {
                         'bus_no': item['bus_no'],
                         'date': key,

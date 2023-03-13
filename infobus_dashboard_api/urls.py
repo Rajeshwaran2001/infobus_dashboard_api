@@ -24,7 +24,7 @@ app_name = "home"
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('api/', include('api.urls')),
-                  path('dashboard/', include('dashboard.urls')),
+                  path('franchise/', include('dashboard.urls')),
                   path('office/', include('office.urls')),
                   path('utlity/', include('utility.urls')),
                   path('afterlogin', views.afterlogin_view, name='afterlogin'),

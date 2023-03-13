@@ -1,647 +1,670 @@
-{% extends 'basev2.html' %}
+{% extends 'login_base.html' %}
 {% load static %}
 {% block css %}
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbDh-8jCf6_K3ncfVCFpvBxu_Du4J5iy8&callback=initMap"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
- <style>
- .spinner-border {
-  animation: spin 1s infinite linear;
-  width: 40px;
-  height: 40px;
-}
+    <style>
+        .spinner-border {
+            animation: spin 1s infinite linear;
+            width: 40px;
+            height: 40px;
+        }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 {% endblock css %}
 {% block content %}
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
-    <div class="container-fluid py-1 px-3">
-     <nav aria-label="breadcrumb">
-          <img src="{% static 'img/info.png' %}" class="navbar-brand-img h-100" width="150" alt="main_logo">
-        <h4 class="font-weight-bolder mb-0"><span class="text-success">Welcome,</span> {{ ad.AdName }}</h4>
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+         data-scroll="true">
+        <div class="container-fluid py-1 px-3">
+            <nav aria-label="breadcrumb">
+                <img src="{% static 'img/info.png' %}" class="navbar-brand-img h-100" width="150" alt="main_logo">
+                <h4 class="font-weight-bolder mb-0"><span class="text-success">Welcome,</span> {{ ad.AdName }}</h4>
 
-      </nav>
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            </nav>
+            <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
 
-          </div>
-          <ul class="navbar-nav  justify-content-end">
+                </div>
+                <ul class="navbar-nav  justify-content-end">
 
-               <li class="nav-item d-flex align-items-center">
-              <a class="btn btn-outline-danger btn-sm mb-0 me-3" href="{% url 'customer-view' %}">LogOut</a>
+                    <li class="nav-item d-flex align-items-center">
+                        <a class="btn btn-outline-danger btn-sm mb-0 me-3" href="{% url 'customer-view' %}">LogOut</a>
 
 
-          </ul>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">event</i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Today's Count</p>
-                <h4 class="mb-0" id="sum">{{ json_data }}</h4>
-              </div>
-            </div>
-            <hr class="horizontal my-0">
-            <div class="card-footer p-3">
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-info shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">verified</i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Total Count</p>
-                <h4 class="mb-0">{{ ad.myads_count }}</h4>
-              </div>
-            </div>
-            <hr class="horizontal my-0">
-            <div class="card-footer p-3">
-
-            </div>
-          </div>
-        </div>
-           <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card" >
-            <div class="card-header p-3 pt-2" style="background: #8a4f7d">
-              <div class="icon icon-lg icon-shape bg-gradient-primary shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10"> record_voice_over </i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize text-white">Audience Reached Till Date</p>
-                <h4 class="mb-0 text-white">{{ ad.tg }}</h4>
-              </div>
-            </div>
-              <hr class="horizontal my-0">
-            <div class="card-footer p-3">
-
-            </div>
-          </div>
-        </div>
-
-          <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape shadow-primary text-center border-radius-xl mt-n4 position-absolute" style="background: #008080;">
-                <i class="material-icons opacity-10">restart_alt</i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Start Date</p>
-                <h5 class="mb-0">{{ ad.StartDate|date:"d/m/Y"}}</h5>
-              </div>
-            </div>
-            <hr class="horizontal my-0">
-            <div class="card-footer p-3">
-
-            </div>
-          </div>
-
-        </div>
-          <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-warning shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">flag</i>
-              </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">End Date</p>
-                <h5 class="mb-0">{{ ad.EndDate|date:"d/m/Y"}}</h5>
-              </div>
-            </div>
-            <hr class="horizontal my-0">
-            <div class="card-footer p-3">
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <div class="row mt-4">
-
-      </div>
-        <div class="row mb-6">
-        <div class="col-lg-12 col-md-6 mb-md-0 mb-4 contain">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="row">
-                <h5 class="text-center">Bus List</h5>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Id</th>
-                        <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Map</th>
-                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Bus No</th>
-                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Route</th>
-                      <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Count</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  {% for bus in result|dictsort:"bus_no" %}
-                      <tr>
-                      <td class="align-middle text-center text-sm">
-                        <div class="d-flex flex-column justify-content-center">
-                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ forloop.counter }}</h4>
+        <div class="row">
+            <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">event</i>
                         </div>
-                    </td>
-                          <td class="align-middle text-center text-sm">
-                        <div class="d-flex flex-column justify-content-center">
-                           <input type="checkbox" class="log-checkboxes" name="my-checkbox" data-bus="{{ bus.bus_no }}" value="{{ bus.bus_no }}">
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Today's Count</p>
+                            <h4 class="mb-0" id="sum">{{ json_data }}</h4>
                         </div>
-                    </td>
-                      <td class="align-middle text-center text-sm">
-                        <div class="d-flex flex-column justify-content-center">
-                          <h4 class="mb-0 text-dark" style="font-size: 16px;">{{ bus.bus_no }}</h4>
-                        </div>
-                    </td>
+                    </div>
+                    <hr class="horizontal my-0">
+                    <div class="card-footer p-3">
 
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" style="font-size: 16px;">{{ bus.route_no }}</span>
-                      </td>
-
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}" style="font-size: 16px;" >{{ bus.count }}</span>
-                      </td>
-
-
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-       <div class="col-lg-6 col-md-6 map-container" style="display:none;">
-        <div class="card h-100" id="map" style="height: 400px;"></div>
-        </div>
-        <!-- chart 1 -->
-        <div class="row mt-4">
-             <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
-          <div class="card z-index-2  ">
-              <div class="card-body">
-                <h4 class="mb-0 text-center ">Audience Reached in Last 7 Days</h4>
-            </div>
-              <div class="card-body">
-            </div>
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="shadow-success border-radius-lg py-3 pe-1" style="background: #8a4f7d">
-                <div class="chart1">
-                  <canvas id="chart-line" class="chart-canvas" height="170" width="100"></canvas>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-            </div>
-        </div>
- <div class="row mt-4">
-        <div class="col-lg-12 col-md-6 mt-4 mb-4">
-          <div class="card z-index-2  ">
-              <div class="card-body">
-                <h4 class="text-center">Playback Count</h4>
-            </div>
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="shadow-success border-radius-lg py-3 pe-1">
-                <div class="chart">
-                  <canvas id="chart-bar" class="chart-canvas" height="170"></canvas>
-                    <div id="chart-spinner" class="spinner-border text-dark" role="status" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;">
-                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-              </div>
             </div>
 
-            <div class="card-body">
-                <h6 class="mb-0 ">From - <span id="start-date-text">{{ start_date }}</span> To - <span id="end-date-text">{{ end_date }}</span></h6>
-              <!-- Create a form with date range inputs and a submit button -->
-                <form id="date-range-form">
-                    <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdNameUsername }}">
-                   <label class="text-sm " for="start-date">Start date:</label>
-                  <input type="text" id="start-date" name="start_date">
+            <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-info shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">verified</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Count</p>
+                            <h4 class="mb-0">{{ ad.myads_count }}</h4>
+                        </div>
+                    </div>
+                    <hr class="horizontal my-0">
+                    <div class="card-footer p-3">
 
-                  <label class="text-sm " for="end-date">End date:</label>
-                  <input type="text" id="end-date" name="end_date">
-
-                 <button class="btn btn-outline-info btn-sm mb-0" type="button" id="submit-button">Submit</button>
-                </form>
-                <div class="d-flex">
-                <p class="mb-0 text-sm text-danger" id="error-container" style="display: none;"> No data available for selected dates. </p>
-              </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2" style="background: #8a4f7d">
+                        <div class="icon icon-lg icon-shape bg-gradient-primary shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10"> record_voice_over </i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize text-white">Audience Reached Till Date</p>
+                            <h4 class="mb-0 text-white">{{ ad.tg }}</h4>
+                        </div>
+                    </div>
+                    <hr class="horizontal my-0">
+                    <div class="card-footer p-3">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape shadow-primary text-center border-radius-xl mt-n4 position-absolute"
+                             style="background: #008080;">
+                            <i class="material-icons opacity-10">restart_alt</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Start Date</p>
+                            <h5 class="mb-0">{{ ad.StartDate|date:"d/m/Y" }}</h5>
+                        </div>
+                    </div>
+                    <hr class="horizontal my-0">
+                    <div class="card-footer p-3">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div class="icon icon-lg icon-shape bg-gradient-warning shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">flag</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">End Date</p>
+                            <h5 class="mb-0">{{ ad.EndDate|date:"d/m/Y" }}</h5>
+                        </div>
+                    </div>
+                    <hr class="horizontal my-0">
+                    <div class="card-footer p-3">
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-      </div>
-      </div>
+        <div class="row mt-4">
+
+        </div>
+        <div class="row mb-6">
+            <div class="col-lg-12 col-md-6 mb-md-0 mb-4 contain">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <h5 class="text-center">Bus List</h5>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Id</th>
+                                    <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Map</th>
+                                    <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Bus No
+                                    </th>
+                                    <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Route
+                                    </th>
+                                    <th class="text-center text-uppercase text-dark text-xl font-weight-bolder">Count
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for bus in result|dictsort:"bus_no" %}
+                                    <tr>
+                                        <td class="align-middle text-center text-sm">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h4 class="mb-0 text-dark"
+                                                    style="font-size: 16px;">{{ forloop.counter }}</h4>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <input type="checkbox" class="log-checkboxes" name="my-checkbox"
+                                                       data-bus="{{ bus.bus_no }}" value="{{ bus.bus_no }}">
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h4 class="mb-0 text-dark"
+                                                    style="font-size: 16px;">{{ bus.bus_no }}</h4>
+                                            </div>
+                                        </td>
+
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="text-dark font-weight-bold"
+                                                  style="font-size: 16px;">{{ bus.route_no }}</span>
+                                        </td>
+
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="text-dark font-weight-bold" id="count-{{ bus.bus_no }}"
+                                                  style="font-size: 16px;">{{ bus.count }}</span>
+                                        </td>
+
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 map-container" style="display:none;">
+                <div class="card h-100" id="map" style="height: 400px;"></div>
+            </div>
+            <!-- chart 1 -->
+            <div class="row mt-4">
+                <div class="col-lg-12 col-md-6 mb-md-0 mb-4">
+                    <div class="card z-index-2  ">
+                        <div class="card-body">
+                            <h4 class="mb-0 text-center ">Audience Reached in Last 7 Days</h4>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="shadow-success border-radius-lg py-3 pe-1" style="background: #8a4f7d">
+                                <div class="chart1">
+                                    <canvas id="chart-line" class="chart-canvas" height="170" width="100"></canvas>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-12 col-md-6 mt-4 mb-4">
+                    <div class="card z-index-2  ">
+                        <div class="card-body">
+                            <h4 class="text-center">Playback Count</h4>
+                        </div>
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                            <div class="shadow-success border-radius-lg py-3 pe-1">
+                                <div class="chart">
+                                    <canvas id="chart-bar" class="chart-canvas" height="170"></canvas>
+                                    <div id="chart-spinner" class="spinner-border text-dark" role="status"
+                                         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <h6 class="mb-0 ">From - <span id="start-date-text">{{ start_date }}</span> To - <span
+                                    id="end-date-text">{{ end_date }}</span></h6>
+                            <!-- Create a form with date range inputs and a submit button -->
+                            <form id="date-range-form">
+                                <input type="hidden" id="ad-name" name="ad_name" value="{{ ad.AdNameUsername }}">
+                                <label class="text-sm " for="start-date">Start date:</label>
+                                <input type="text" id="start-date" name="start_date">
+
+                                <label class="text-sm " for="end-date">End date:</label>
+                                <input type="text" id="end-date" name="end_date">
+
+                                <button class="btn btn-outline-info btn-sm mb-0" type="button" id="submit-button">
+                                    Submit
+                                </button>
+                            </form>
+                            <div class="d-flex">
+                                <p class="mb-0 text-sm text-danger" id="error-container" style="display: none;"> No data
+                                    available for selected dates. </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="district-data" data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
-          <footer class="footer py-4  ">
+    <div id="district-data"
+         data-districts="{% for district in ad.District.all %}{{ district.District }},{% endfor %}"></div>
+    <footer class="footer py-4  ">
         <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-xl  text-lg-start text-dark ">
-              © <script>
-                document.write(new Date().getFullYear())
-              </script>,
-              maintained and developed by
-              <a href="https://www.infobus.in" class="font-weight-bolder" target="_blank">Infobus</a>.
-            </div>
-            </div>
+            <div class="row align-items-center justify-content-lg-between">
+                <div class="col-lg-6 mb-lg-0 mb-4">
+                    <div class="copyright text-center text-xl  text-lg-start text-dark ">
+                        ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                        ,
+                        maintained and developed by
+                        <a href="https://www.infobus.in" class="font-weight-bolder" target="_blank">Infobus</a>.
+                    </div>
+                </div>
 
-          </div>
+            </div>
         </div>
-      </footer>
+    </footer>
 {% endblock %}
 {% block js %}
-<script src="{% static 'js/mapv2.js' %}"></script>
- <script>
- if (/Mobi/.test(navigator.userAgent)) {
-  // the browsing device is mobile
-  // add your code to modify the DOM element here
-    document.getElementById('map').classList.remove('h-100');
-} else {
-  // the browsing device is not mobile
-  // add your code to modify the DOM element here
-     document.getElementById('map').classList.add('h-100');
-}
- </script>
- <script>
-function fetchApiData() {
-  // Fetch API data using AJAX
-  $.ajax({
-    url: '/dashboard/today_count', // Replace with the URL of your API view
-    type: 'GET',
-      data: {
-        'ad_name': '{{ ad.AdNameUsername }}'
-    },
-    dataType: 'json',
-    success: function (json_data) {
-        console.log('Success!', json_data);
-    },
-    error: function (xhr, status, error) {
-        console.log('Error!', error);
-    },
-    success: function(json_data) {
-      // Update HTML element with API data
-      $('#sum').html(json_data);
-      //console.log(json_data)
-    }
-  });
-}
-
-// Fetch API data every 40 seconds
-setInterval(fetchApiData, 40000);
-     // Pass the URL to your JavaScript code
-window.imageURL = "{% static 'img/50pixel.png' %}";
-
-</script>
-<script>
-    function fetchApiData2() {
-      $.ajax({
-        url: '/dashboard/bus_count',
-        type: 'GET',
-        data: {
-        'ad_name': '{{ ad.AdNameUsername }}'
-        },
-        success: function(result) {
-          // Iterate over the bus objects in the result
-          $.each(result, function(index, bus) {
-            // Find the table cell with the count for this bus
-            var countCell = $('#count-' + bus.bus_no);
-            if (countCell.length > 0) {
-              // Update the count value in the table cell
-              countCell.text(bus.count);
-               //console.log(bus.count)
-            }
-          });
+    <script src="{% static 'js/mapv2.js' %}"></script>
+    <script>
+        if (/Mobi/.test(navigator.userAgent)) {
+            // the browsing device is mobile
+            // add your code to modify the DOM element here
+            document.getElementById('map').classList.remove('h-100');
+        } else {
+            // the browsing device is not mobile
+            // add your code to modify the DOM element here
+            document.getElementById('map').classList.add('h-100');
         }
-      });
-    };
-
-// Fetch API data every 40 seconds
-setInterval(fetchApiData2, 40000);
-
-let map;
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 9.939093, lng: 78.121719 },
-    zoom: 8,
-  });
-}
-
-window.initMap = initMap;
-
-</script>
-
-<script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
-<script>
-var ctx = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: {{ labelss|safe }},
-         datasets: [{
-              id: 'chart-line',
-              label: "Targeted Audience Till Date",
-              tension: 0,
-              borderWidth: 0,
-              pointRadius: 5,
-              pointBackgroundColor: "rgba(255, 255, 255, .8)",
-              pointBorderColor: "transparent",
-              borderColor: "rgba(255, 255, 255, .8)",
-              borderColor: "rgba(255, 255, 255, .8)",
-              borderWidth: 4,
-              backgroundColor: "transparent",
-              fill: true,
-              data: {{ dataa|safe }},
-              maxBarThickness: 6
-    }],
-  },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-            barLabel: {
-      // options for the plugin
-        },
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-          display: true,
-          color: '#f8f9fa',
-          padding: 10,
-          font: {
-            size: 14,
-            weight: 500,
-            family: "Roboto",
-            style: 'normal',
-            lineHeight: 2
-          },
-          // Set custom labels
-          callback: function(value, index, values) {
-            var customLabels = ["10k", "20k", "30k", "40k", "50k", "60k", "70k", "80k", "90k", "100k"]; // Your custom labels
-            if (customLabels[index]) {
-              return customLabels[index];
-            }
-            return value;
-          }
+    </script>
+    <script>
+        function fetchApiData() {
+            // Fetch API data using AJAX
+            $.ajax({
+                url: '/dashboard/today_count', // Replace with the URL of your API view
+                type: 'GET',
+                data: {
+                    'ad_name': '{{ ad.AdNameUsername }}'
+                },
+                dataType: 'json',
+                success: function (json_data) {
+                    console.log('Success!', json_data);
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error!', error);
+                },
+                success: function (json_data) {
+                    // Update HTML element with API data
+                    $('#sum').html(json_data);
+                    //console.log(json_data)
+                }
+            });
         }
-      },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 500,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
 
-    Chart.register({
-  id: "barLabel",
-  beforeDraw: function (chart) {
-    var ctx = chart.ctx;
-    chart.data.datasets.forEach(function (dataset, i) {
-      var meta = chart.getDatasetMeta(i);
-      if (!meta.hidden) {
-        meta.data.forEach(function (element, index) {
-          // Draw the text at the top of the bar
-          var label = dataset.data[index];
-          ctx.save();
-          ctx.font = Chart.helpers.fontString(10, "bold", "Roboto");
-          ctx.fillStyle = "#fff";
-          ctx.textAlign = "center";
-          ctx.fillText(label, element.x, element.y - 10);
-          ctx.restore();
+        // Fetch API data every 40 seconds
+        setInterval(fetchApiData, 40000);
+        // Pass the URL to your JavaScript code
+        window.imageURL = "{% static 'img/50pixel.png' %}";
+
+    </script>
+    <script>
+        function fetchApiData2() {
+            $.ajax({
+                url: '/dashboard/bus_count',
+                type: 'GET',
+                data: {
+                    'ad_name': '{{ ad.AdNameUsername }}'
+                },
+                success: function (result) {
+                    // Iterate over the bus objects in the result
+                    $.each(result, function (index, bus) {
+                        // Find the table cell with the count for this bus
+                        var countCell = $('#count-' + bus.bus_no);
+                        if (countCell.length > 0) {
+                            // Update the count value in the table cell
+                            countCell.text(bus.count);
+                            //console.log(bus.count)
+                        }
+                    });
+                }
+            });
+        }
+
+        // Fetch API data every 40 seconds
+        setInterval(fetchApiData2, 40000);
+
+        let map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: {lat: 9.939093, lng: 78.121719},
+                zoom: 8,
+            });
+        }
+
+        window.initMap = initMap;
+
+    </script>
+
+    <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
+    <script>
+        var ctx = document.getElementById("chart-line").getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ labelss|safe }},
+                datasets: [{
+                    id: 'chart-line',
+                    label: "Targeted Audience Till Date",
+                    tension: 0,
+                    borderWidth: 0,
+                    pointRadius: 5,
+                    pointBackgroundColor: "rgba(255, 255, 255, .8)",
+                    pointBorderColor: "transparent",
+                    borderColor: "rgba(255, 255, 255, .8)",
+                    borderColor: "rgba(255, 255, 255, .8)",
+                    borderWidth: 4,
+                    backgroundColor: "transparent",
+                    fill: true,
+                    data: {{ dataa|safe }},
+                    maxBarThickness: 6
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    barLabel: {
+                        // options for the plugin
+                    },
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 500,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                            // Set custom labels
+                            callback: function (value, index, values) {
+                                var customLabels = ["10k", "20k", "30k", "40k", "50k", "60k", "70k", "80k", "90k", "100k"]; // Your custom labels
+                                if (customLabels[index]) {
+                                    return customLabels[index];
+                                }
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 500,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
         });
-      }
-    });
-  },
-});
 
-var ctx = document.getElementById("chart-bar").getContext("2d");
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: {{ labels|safe }},
-         datasets: [{
-              id: 'chart-data',
-              label: "Total Count",
-              tension: 0,
-              borderWidth: 0,
-              pointRadius: 5,
-              pointBackgroundColor: "rgb(32, 121, 233)",
-              pointBorderColor: "transparent",
-              borderColor: "rgb(32, 121, 233)",
-              borderColor: "rgb(32, 121, 233)",
-              borderWidth: 4,
-              backgroundColor: "rgb(32, 121, 233)",
-              fill: true,
-              data: {{ data|safe }},
-              maxBarThickness: 6
-    }],
-  },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-            barLabel: {
-      // options for the plugin
-        },
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgb(138, 79, 125)'
+        Chart.register({
+            id: "barLabel",
+            beforeDraw: function (chart) {
+                var ctx = chart.ctx;
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach(function (element, index) {
+                            // Draw the text at the top of the bar
+                            var label = dataset.data[index];
+                            ctx.save();
+                            ctx.font = Chart.helpers.fontString(10, "bold", "Roboto");
+                            ctx.fillStyle = "#fff";
+                            ctx.textAlign = "center";
+                            ctx.fillText(label, element.x, element.y - 10);
+                            ctx.restore();
+                        });
+                    }
+                });
             },
-            ticks: {
-              display: true,
-              color: '#000000',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 500,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#000000',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 500,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-    Chart.register({
-  id: "barLabel",
-  beforeDraw: function (chart) {
-    var ctx = chart.ctx;
-    chart.data.datasets.forEach(function (dataset, i) {
-      var meta = chart.getDatasetMeta(i);
-      if (!meta.hidden) {
-        meta.data.forEach(function (element, index) {
-          // Draw the text at the top of the bar
-          var label = dataset.data[index];
-          ctx.save();
-          ctx.font = Chart.helpers.fontString(14, "bold", "Roboto");
-          ctx.fillStyle = "#fff";
-          ctx.textAlign = "center";
-          ctx.fillText(label, element.x, element.y - 10);
-          ctx.restore();
         });
-      }
-    });
-  },
-});
-</script>
+
+        var ctx = document.getElementById("chart-bar").getContext("2d");
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    id: 'chart-data',
+                    label: "Total Count",
+                    tension: 0,
+                    borderWidth: 0,
+                    pointRadius: 5,
+                    pointBackgroundColor: "rgb(32, 121, 233)",
+                    pointBorderColor: "transparent",
+                    borderColor: "rgb(32, 121, 233)",
+                    borderColor: "rgb(32, 121, 233)",
+                    borderWidth: 4,
+                    backgroundColor: "rgb(32, 121, 233)",
+                    fill: true,
+                    data: {{ data|safe }},
+                    maxBarThickness: 6
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    barLabel: {
+                        // options for the plugin
+                    },
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgb(138, 79, 125)'
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#000000',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 500,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#000000',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 500,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
+        });
+
+        Chart.register({
+            id: "barLabel",
+            beforeDraw: function (chart) {
+                var ctx = chart.ctx;
+                chart.data.datasets.forEach(function (dataset, i) {
+                    var meta = chart.getDatasetMeta(i);
+                    if (!meta.hidden) {
+                        meta.data.forEach(function (element, index) {
+                            // Draw the text at the top of the bar
+                            var label = dataset.data[index];
+                            ctx.save();
+                            ctx.font = Chart.helpers.fontString(14, "bold", "Roboto");
+                            ctx.fillStyle = "#fff";
+                            ctx.textAlign = "center";
+                            ctx.fillText(label, element.x, element.y - 10);
+                            ctx.restore();
+                        });
+                    }
+                });
+            },
+        });
+    </script>
     <!-- Initialize the date range picker -->
-<script>
-const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
-   flatpickr("#start-date", {
-    dateFormat: "y-m-d",
-    maxDate: new Date(),
-   });
-  flatpickr("#end-date", {
-    dateFormat: "y-m-d",
-    maxDate: new Date(),
-  });
-  const submitButton = document.getElementById("submit-button");
-  const startDateInput = document.getElementById("start-date");
-  const endDateInput = document.getElementById("end-date");
-  const adNameInput = document.getElementById("ad-name");
-  const startDateText = document.getElementById("start-date-text");
-const endDateText = document.getElementById("end-date-text");
-const chartSpinner = document.getElementById("chart-spinner");
+    <script>
+        const minDate = "{{ ad.StartDate|date:"d/m/Y"}}";
+        flatpickr("#start-date", {
+            dateFormat: "y-m-d",
+            maxDate: new Date(),
+        });
+        flatpickr("#end-date", {
+            dateFormat: "y-m-d",
+            maxDate: new Date(),
+        });
+        const submitButton = document.getElementById("submit-button");
+        const startDateInput = document.getElementById("start-date");
+        const endDateInput = document.getElementById("end-date");
+        const adNameInput = document.getElementById("ad-name");
+        const startDateText = document.getElementById("start-date-text");
+        const endDateText = document.getElementById("end-date-text");
+        const chartSpinner = document.getElementById("chart-spinner");
 
-  submitButton.addEventListener("click", () => {
-    chartSpinner.style.display = "block";
-    const startDate = startDateInput.value;
-    const endDate = endDateInput.value;
-    const adName = adNameInput.value;
+        submitButton.addEventListener("click", () => {
+            chartSpinner.style.display = "block";
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            const adName = adNameInput.value;
 
-    fetch("{% url 'FDashboard:get_chart_data' %}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}",
-      },
-      body: JSON.stringify({ start_date: startDate, end_date: endDate, ad_name: adName }),
-    })
-      .then((response) => response.json())
-  .then((data) => {
-      // Hide the spinner
-      chartSpinner.style.display = "none";
-    const hasData = data;
-    if (hasData) {
-      const labels = data.labels;
-      const chartData = data.data;
-      const chart = Chart.getChart(ctx);
-      chart.data.labels = labels;
-      chart.data.datasets.find((d) => d.id === "chart-data").data = chartData;
-      chart.update();
-      // Update date range text
-      startDateText.textContent = startDate;
-      endDateText.textContent = endDate;
-    } else {
-      const errorContainer = document.getElementById("error-container");
-      errorContainer.innerHTML = "No data available for selected dates.";
-      errorContainer.style.display = "block";
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-     // Hide the spinner
-      chartSpinner.style.display = "none";
-  });
-  });
-</script>
+            fetch("{% url 'FDashboard:get_chart_data' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({start_date: startDate, end_date: endDate, ad_name: adName}),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Hide the spinner
+                    chartSpinner.style.display = "none";
+                    const hasData = data;
+                    if (hasData) {
+                        const labels = data.labels;
+                        const chartData = data.data;
+                        const chart = Chart.getChart(ctx);
+                        chart.data.labels = labels;
+                        chart.data.datasets.find((d) => d.id === "chart-data").data = chartData;
+                        chart.update();
+                        // Update date range text
+                        startDateText.textContent = startDate;
+                        endDateText.textContent = endDate;
+                    } else {
+                        const errorContainer = document.getElementById("error-container");
+                        errorContainer.innerHTML = "No data available for selected dates.";
+                        errorContainer.style.display = "block";
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    // Hide the spinner
+                    chartSpinner.style.display = "none";
+                });
+        });
+    </script>
 
 {% endblock js %}
