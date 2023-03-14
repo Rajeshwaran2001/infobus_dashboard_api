@@ -1,27 +1,6 @@
 {% extends 'franchise_base.html' %}
 {% load static %}
-{% block css %}
-    <style>
-        #loading {
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        #loading img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-        }
-    </style>
-{% endblock css %}
 {% block content %}
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
@@ -48,7 +27,7 @@
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton">
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="{% url 'FDashboard:change' %}">
+                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'FDashboard:change' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -62,7 +41,7 @@
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="{% url 'Logout' %}">
+                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'Logout' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -114,7 +93,7 @@
                                     </div>
                                     <div class="input-group input-group-outline my-3 p-3">
                                         <a class="btn btn-outline-success btn-sm mb-0"
-                                           href="{% url 'FDashboard:route_summary' %}?select={{ selected_sheet }}"
+                                           href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary' %}?select={{ selected_sheet }}')"
                                            type="button" id="export-excel">Export to Excel</a>
                                     </div>
                                 </div>
@@ -235,6 +214,20 @@
                 $('#loading').show();
             });
         });
+    </script>
+    <script>
+        function showLoading(event, url) {
+            // Prevent the default behavior of the hyperlink
+            event.preventDefault();
+
+            // Display the loading animation
+            document.getElementById("loading").style.display = "block";
+
+            // Redirect to the URL after a 1-second delay
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        }
     </script>
 
 {% endblock %}

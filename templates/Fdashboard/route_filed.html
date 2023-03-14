@@ -1,27 +1,6 @@
 {% extends 'franchise_base.html' %}
 {% load static %}
-{% block css %}
-    <style>
-        #loading {
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        #loading img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-        }
-    </style>
-{% endblock css %}
 {% block content %}
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
@@ -47,7 +26,7 @@
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton">
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="{% url 'FDashboard:change' %}">
+                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'FDashboard:change' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -61,7 +40,7 @@
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="{% url 'Logout' %}">
+                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'Logout' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -140,7 +119,7 @@
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <a class="btn btn-outline-success"
-                                   href="{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}"
+                                   href="#"onclick="showLoading(event, '{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}')"
                                    id="excel-export">export</a>
                             </div>
                         </div>
@@ -165,7 +144,7 @@
                                         </td>
                                         <td class="align-middle text-center text-sm">
                                             <a class="font-weight-bold"
-                                               href="{% url 'FDashboard:route_summary' %}?route={{ row.0 }}">
+                                               href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary' %}?route={{ row.0 }}')">
                                                 <span class="text-xs text-dark font-weight-bold"> {{ row.0 }} </span>
                                             </a>
                                         </td>
@@ -196,7 +175,7 @@
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <a class="btn btn-outline-success"
-                                   href="{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}"
+                                   href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}')"
                                    id="excel-export">export</a>
                             </div>
                         </div>
@@ -222,13 +201,13 @@
                                         </td>
                                         <td class="align-middle text-center text-sm">
                                             <a class="font-weight-bold"
-                                               href="{% url 'FDashboard:route_summary' %}?route={{ row.1 }}">
+                                               href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary' %}?route={{ row.1 }}')">
                                                 <span class="text-xs text-dark font-weight-bold"> {{ row.0 }} </span>
                                             </a>
                                         </td>
                                         <td class="align-middle text-center text-sm">
                                             <a class="font-weight-bold"
-                                               href="{% url 'FDashboard:route_summary' %}?route={{ row.1 }}">
+                                               href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary' %}?route={{ row.1 }}')">
                                                 <span class="text-xs text-dark font-weight-bold"> {{ row.1 }} </span>
                                             </a>
                                         </td>
@@ -278,6 +257,20 @@
             });
         });
 
+    </script>
+    <script>
+        function showLoading(event, url) {
+            // Prevent the default behavior of the hyperlink
+            event.preventDefault();
+
+            // Display the loading animation
+            document.getElementById("loading").style.display = "block";
+
+            // Redirect to the URL after a 1-second delay
+            setTimeout(function () {
+                window.location.href = url;
+            }, 1000);
+        }
     </script>
 
 {% endblock %}
