@@ -298,7 +298,7 @@
         function fetchApiData() {
             // Fetch API data using AJAX
             $.ajax({
-                url: '/franchise/today_count', // Replace with the URL of your API view
+                url: '/utility/today_count', // Replace with the URL of your API view
                 type: 'GET',
                 data: {
                     'ad_name': '{{ ad.AdNameUsername }}'
@@ -327,7 +327,7 @@
     <script>
         function fetchApiData2() {
             $.ajax({
-                url: '/franchise/bus_count',
+                url: '/utility/bus_count',
                 type: 'GET',
                 data: {
                     'ad_name': '{{ ad.AdNameUsername }}'
