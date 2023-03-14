@@ -26,7 +26,8 @@
                     <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                         aria-labelledby="dropdownMenuButton">
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'FDashboard:change' %}')">
+                            <a class="dropdown-item border-radius-md" href="#"
+                               onclick="showLoading(event, '{% url 'FDashboard:change' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-key" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -40,7 +41,8 @@
                             </a>
                         </li>
                         <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="#" onclick="showLoading(event, '{% url 'Logout' %}')">
+                            <a class="dropdown-item border-radius-md" href="#"
+                               onclick="showLoading(event, '{% url 'Logout' %}')">
                                 <div class="d-flex py-1">
                                     <div class="my-auto">
                                         <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;
@@ -196,21 +198,21 @@
         // Trigger download on clicking Excel export button
         // Trigger download on clicking Excel export button
         $(document).ready(function () {
-        $('#export-excel').click(function (event) {
-            event.preventDefault();
-            // Show loading animation
-            $('#loading').show();
-            // Create a hidden iframe with the download URL as its src
-            var iframe = $('<iframe>', {
-                src: $(this).attr('href'),
-                style: 'display: none;'
-            }).appendTo('body');
-            // Wait for the download to start before hiding the loading animation
-            setTimeout(function () {
-                $('#loading').hide();
-            }, 1000);
+            $('#export-excel').click(function (event) {
+                event.preventDefault();
+                // Show loading animation
+                $('#loading').show();
+                // Create a hidden iframe with the download URL as its src
+                var iframe = $('<iframe>', {
+                    src: $(this).attr('href'),
+                    style: 'display: none;'
+                }).appendTo('body');
+                // Wait for the download to start before hiding the loading animation
+                setTimeout(function () {
+                    $('#loading').hide();
+                }, 1000);
+            });
         });
-    });
 
         $(document).ready(function () {
             $('form').submit(function () {
