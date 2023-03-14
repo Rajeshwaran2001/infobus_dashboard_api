@@ -26,7 +26,7 @@ urlpatterns = [
                   path('api/', include('api.urls')),
                   path('franchise/', include('dashboard.urls')),
                   path('office/', include('office.urls')),
-                  path('utlity/', include('utility.urls')),
+                  path('utility/', include('utility.urls')),
                   path('afterlogin', views.afterlogin_view, name='afterlogin'),
                   path('login/', views.login_user, name='Login'),
                   path('logout/', views.logout_user, name='Logout'),
