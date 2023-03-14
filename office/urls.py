@@ -7,7 +7,7 @@ app_name = "Office"
 urlpatterns = [
     path('', LoginView.as_view(template_name='common/login.html'), name='Office-login'),
     path('office-signup', views.Office_signup_view, name='office-signup'),
-    path('office', views.dashboard, name='office-dashboard'),
+    path('dashboard', views.dashboard, name='office-dashboard'),
     path('ad_detail/<int:ad_id>', views.view_ad, name="ad_detail"),
     path('change-password', views.change_password, name="change"),
 ]
