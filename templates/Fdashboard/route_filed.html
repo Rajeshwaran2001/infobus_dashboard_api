@@ -119,7 +119,7 @@
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <a class="btn btn-outline-success"
-                                   href="#"onclick="showLoading(event, '{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}')"
+                                   href="{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}"
                                    id="excel-export">export</a>
                             </div>
                         </div>
@@ -175,8 +175,8 @@
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
                                 <a class="btn btn-outline-success"
-                                   href="#" onclick="showLoading(event, '{% url 'FDashboard:route_summary_filled' %}?route_select={{ route|join:',' }}')"
-                                   id="excel-export">export</a>
+                                   href="{% url 'FDashboard:route_summary_filled' %}?bus_select={{ route|join:',' }}"
+                                   id="export-excel">export</a>
                             </div>
                         </div>
                     </div>
@@ -236,23 +236,25 @@
     <script type="text/javascript">
 
         // Trigger download on clicking Excel export button
-        $('#excel-export').click(function (e) {
-            e.preventDefault();
-            window.location.href = $(this).attr('href');
+        $(document).ready(function () {
+        $('#excel-export, #export-excel').click(function (event) {
+            event.preventDefault();
+            // Show loading animation
+            $('#loading').show();
+            // Create a hidden iframe with the download URL as its src
+            var iframe = $('<iframe>', {
+                src: $(this).attr('href'),
+                style: 'display: none;'
+            }).appendTo('body');
+            // Wait for the download to start before hiding the loading animation
+            setTimeout(function () {
+                $('#loading').hide();
+            }, 1000);
         });
-        $('#excel-export2').click(function (e) {
-            e.preventDefault();
-            window.location.href = $(this).attr('href');
-        });
+    });
 
         $(document).ready(function () {
             $('form').submit(function () {
-                $('#loading').show();
-            });
-        });
-
-        $(document).ready(function () {
-            $('export-excel').submit(function () {
                 $('#loading').show();
             });
         });

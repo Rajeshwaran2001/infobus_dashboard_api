@@ -198,19 +198,25 @@
         });
 
         // Trigger download on clicking Excel export button
-        $('#excel-export').click(function (e) {
-            e.preventDefault();
-            window.location.href = $(this).attr('href');
+        $(document).ready(function () {
+        $('#export-excel').click(function (event) {
+            event.preventDefault();
+            // Show loading animation
+            $('#loading').show();
+            // Create a hidden iframe with the download URL as its src
+            var iframe = $('<iframe>', {
+                src: $(this).attr('href'),
+                style: 'display: none;'
+            }).appendTo('body');
+            // Wait for the download to start before hiding the loading animation
+            setTimeout(function () {
+                $('#loading').hide();
+            }, 1000);
         });
+    });
 
         $(document).ready(function () {
             $('form').submit(function () {
-                $('#loading').show();
-            });
-        });
-
-        $(document).ready(function () {
-            $('export-excel').submit(function () {
                 $('#loading').show();
             });
         });
