@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Sum
+
+from infobus_dashboard_api.settings import LOGIN_REDIRECT_URL
 from utility.models import Ads
 from utility.models import MyAds
 from django.utils import timezone
@@ -44,6 +46,9 @@ def logout_user(request):
 
 
 def login_user(request):
+    if request.user.is_authenticated:
+        return redirect(LOGIN_REDIRECT_URL)
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
